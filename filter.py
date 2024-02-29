@@ -14,7 +14,7 @@ def filter_yaml_file(input_file):
     data = content.replace("::", ":")
 
     # 使用列表推导式过滤出满足条件的项目
-    filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings ]
+    filtered_data = [item for item in data['proxies'] if item.get('type') == "hysteria2" or item.get('type') == "hysteria" or item.get('type') == "trojan"]
     vmess = [item for item in data['proxies'] if item.get('type') == 'vmess']
 
     # 打印过滤后的结果
