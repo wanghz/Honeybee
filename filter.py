@@ -5,8 +5,9 @@ def gathering_clash():
     url = "https://api.v1.mk/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
     hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
         
-    req = urllib.request.urlopen(url, headers=hdr)
-    content = req.read().decode('utf-8')
+    req = urllib.request.Request(url, headers=hdr)
+    response = urllib.request.urlopen(req)
+    content = response.read().decode('utf-8')
 
     #源数据中有非法字符，修改一下
     data = content.replace("::", "")
