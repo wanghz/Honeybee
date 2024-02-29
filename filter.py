@@ -9,7 +9,7 @@ def should_filter(entry):
 
 
 def filter_yaml_file(input_file):
-    with open(filename, 'r') as file:
+    with open(input_file, 'r', encoding='utf-8') as file:
         content = file.read()
     data = content.replace("::", ":")
 
@@ -24,11 +24,11 @@ def filter_yaml_file(input_file):
     # 将结果写回YAML文件
     output_file = 'htonly.yml'
     output_vmess = 'vmess.yml'
-    with open(output_file, 'w') as file:
+    with open(output_file, 'w', encoding='utf-8') as file:
         # 写入 "proxies:" 头部
         file.write("proxies:\n")
         yaml.dump(filtered_data, file)
-    with open(output_vmess, 'w') as file:
+    with open(output_vmess, 'w', encoding='utf-8') as file:
         # 写入 "proxies:" 头部
         file.write("proxies:\n")
         yaml.dump(vmess, file)
