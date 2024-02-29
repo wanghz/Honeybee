@@ -21,7 +21,7 @@ def should_filter(entry):
 
 
 def filter_yaml_file():
-    data = gathering_clash()
+    data = data = yaml.safe_load(gathering_clash())
 
     # 要过滤的字符串列表
     filter_strings = ["hysteria2", "hysteria", "trojan"]
