@@ -5,9 +5,8 @@ def gathering_clash():
     url = "https://api.v1.mk/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
     hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
         
-    req = urllib.request.Request(url, headers=hdr)
-    response = urllib.request.urlopen(req)
-    content = response.read().decode('utf-8')
+    req = urllib.request.urlopen(url, headers=hdr)
+    content = req.read().decode('utf-8')
 
     #源数据中有非法字符，修改一下
     data = content.replace("::", "")
@@ -20,11 +19,8 @@ def should_filter(entry):
     return any(filter_string in str(entry) for filter_string  in filter_strings)
 
 
-def filter_yaml_file():
+def filter_yaml_file(filter_strings):
     data = data = yaml.safe_load(gathering_clash())
-
-    # 要过滤的字符串列表
-    filter_strings = ["hysteria2", "hysteria", "trojan"]
 
     # 使用列表推导式过滤出满足条件的项目
     #filtered_data = [item for item in data['proxies'] if item.get('type') == "hysteria2" or item.get('type') == "hysteria" or item.get('type') == "trojan"]
@@ -41,7 +37,9 @@ def filter_yaml_file():
 # Main
 input_file = 'clash.yaml'
 
-htonly, vmess = filter_yaml_file()
+# 要过滤的字符串列表
+filter_strings = ["hysteria2", "hysteria", "trojan"]
+htonly, vmess = filter_yaml_file(filter_strings)
 
 # 将结果写回YAML文件
 output_file = 'htonly.yml'
