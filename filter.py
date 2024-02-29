@@ -10,7 +10,7 @@ def gathering_clash():
     content = response.read().decode('utf-8')
 
     #源数据中有非法字符，修改一下
-    data = content.replace("::", ":")
+    data = content.replace("::", "")
 
     return data
 
