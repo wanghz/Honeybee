@@ -85,7 +85,7 @@ def filter_yaml_file(clash, output_file):
 # 示例用法
 path = "./"
 input_file = path + 'clash-1.yaml'
-output_file = path + 'clash-1-ht.yml'
+output_file = path + 'htonly.yml'
 output_vmess = path + 'clash-1-v.yml'
 url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
 
