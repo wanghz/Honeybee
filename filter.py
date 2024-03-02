@@ -55,18 +55,15 @@ def filter_yaml_file(filter_strings):
 input_file = 'clash.yaml'
 
 # 要过滤的字符串列表
-filter_strings = ["hysteria2", "hysteria", "trojan"]
+filter_strings = ["hysteria2", "hysteria", "trojan", "vmess"]
 htonly, vmess = filter_yaml_file(filter_strings)
 
 # 将结果写回YAML文件
-output_file = 'htonly.yml'
-output_vmess = 'vmess.yml'
+output_file = 'note.yml'
+output_vmess = 'notevmess.yml'
 with open(output_file, 'w', encoding='utf-8') as file:
     # 写入 "proxies:" 头部
     file.write("proxies:\n")
     yaml.dump(htonly, file)
-with open(output_vmess, 'w', encoding='utf-8') as file:
-    # 写入 "proxies:" 头部
-    file.write("proxies:\n")
-    yaml.dump(vmess, file)
+
     
