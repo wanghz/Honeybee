@@ -5,7 +5,7 @@ import re
 yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 
 # 要过滤的字符串列表
-filter_strings = ["hysteria2", "trojan","hysteria"."vmess"]
+filter_strings = ["hysteria2", "trojan","hysteria", "vmess"]
 
 def gather_clash(url):
     hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
