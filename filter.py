@@ -5,7 +5,7 @@ import re
 yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 
 # 要过滤的字符串列表
-filter_strings = ["hysteria2", "trojan","hysteria"]
+filter_strings = ["hysteria2", "trojan","hysteria"."vmess"]
 
 def gather_clash(url):
     hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
@@ -63,7 +63,6 @@ def filter_yaml_file(clash, output_file):
         # 处理 YAMLError 异常
         print(f"Error loading YAML with safe_load: {e}")
 
-
     print("读入clash yaml数据")
     # 使用列表推导式过滤出满足条件的项目
     filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings]
@@ -82,11 +81,11 @@ def filter_yaml_file(clash, output_file):
     print("完成。")
         
 # 示例用法
-path = "/Users/wangjiaozhu/download/"
+path = "./"
 input_file = path + 'clash-1.yaml'
-output_file = path + 'clash-1-ht.yml'
+output_file = path + 'note.yml'
 output_vmess = path + 'clash-1-v.yml'
-url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
+url = "https://api-suc.0z.gs/sub?target=clash&url=https%3A%2F%2Fanaer.github.io%2FSub%2Fclash.yaml%7Chttps%3A%2F%2Fproxy.v2gh.com%2Fhttps%3A%2F%2Fraw.githubusercontent.com%2FPawdroid%2FFree-servers%2Fmain%2Fsub%7Chttps%3A%2F%2Fraw.githubusercontent.com%2Fermaozi01%2Ffree_clash_vpn%2Fmain%2Fsubscribe%2Fclash.yml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FNZESupB%2FProfile%2Fmain%2Foutpref%2Fpypref%2Fpyfull.ini&filename=GitHub-GetNode&append_type=true&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=true&udp=true&new_name=true"
 
 clash = gather_clash(url)
 verified_lash = verify_clash(clash)
