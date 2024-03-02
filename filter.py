@@ -15,7 +15,7 @@ def gathering_clash():
     data = content.replace("::", "")
 
     # 定义正则表达式模式
-    pattern = re.compile(r'password:\s*!<[^\s]+')
+    pattern = re.compile(r'password:\s*!')
 
     newdata = ""
     # 处理字符串列表
