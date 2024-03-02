@@ -1,34 +1,53 @@
 import yaml
-import re
-import urllib.request
+from yaml.constructor import ConstructorError
+import re 
 
-def gathering_clash():
-    #url = "https://api-suc.0z.gs/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
-    url = "https://api-suc.0z.gs/sub?target=clash&url=https%3A%2F%2Fanaer.github.io%2FSub%2Fclash.yaml%7Chttps%3A%2F%2Fproxy.v2gh.com%2Fhttps%3A%2F%2Fraw.githubusercontent.com%2FPawdroid%2FFree-servers%2Fmain%2Fsub%7Chttps%3A%2F%2Fraw.githubusercontent.com%2Fermaozi01%2Ffree_clash_vpn%2Fmain%2Fsubscribe%2Fclash.yml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FNZESupB%2FProfile%2Fmain%2Foutpref%2Fpypref%2Fpyfull.ini&filename=GitHub-GetNode&append_type=true&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=true&udp=true&new_name=true"
-    #url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
-    hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }
-        
+yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
+
+# 要过滤的字符串列表
+filter_strings = ["hysteria2", "trojan","hysteria"]
+
+def gather_clash(url):
+    hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
     req = urllib.request.Request(url, headers=hdr)
     response = urllib.request.urlopen(req)
     content = response.read().decode('utf-8')
+    return content
 
-    #源数据中有非法字符，修改一下
-    data = content.replace("::", "")
+def verify_clash(clash):
+    #源数据中有非法字符，修改一下,否则load yaml报错。有两种非法字符：1. :: ；2. !<str> 
+    #1. 去掉::
+    data = clash.replace("::", "")
 
+    # 按行分割字符串
+    lines = data.splitlines()
+
+    #2. 去掉 !<str>
+    print(len(lines))
     # 定义正则表达式模式
-    pattern = re.compile(r'3135771619')
-    filter_string = '3135771619'
+    pattern = re.compile(r'password:\s+!<str>')
 
-    newdata = ""
+    filtered_lines = []
     # 处理字符串列表
-    for line in data:
+    for line in lines:
         # 检查是否包含模式
-        #if not pattern.search(line):
-        if filter_string not in line:
+        if not pattern.search(line):
             # 如果不包含，则处理该行
-            newdata += line
+            filtered_lines.append(line)
+        else:
+            print("发现错误行---")
+            print(line)
     
-    return newdata
+    # 过滤非法字符完毕，组装回去
+    # 使用换行符连接列表元素
+    my_string = '\n'.join(filtered_lines)
+
+    # 打开文本文件以写入模式
+    with open('verified.yaml', 'w', encoding='utf-8') as file:
+        # 将内容写入文件
+        file.write(my_string)
+
+    return my_string
 
 
 # 过滤含有指定字符串的条目
@@ -36,11 +55,17 @@ def should_filter(entry):
     return any(filter_string in str(entry) for filter_string  in filter_strings)
 
 
-def filter_yaml_file(filter_strings):
-    data = yaml.load(gathering_clash(), Loader=yaml.Loader)
+def filter_yaml_file(clash, output_file):
+    # 读取YAML文件
+    try:
+        data = yaml.safe_load(clash)
+    except yaml.YAMLError as e:
+        # 处理 YAMLError 异常
+        print(f"Error loading YAML with safe_load: {e}")
 
+
+    print("读入clash yaml数据")
     # 使用列表推导式过滤出满足条件的项目
-    #filtered_data = [item for item in data['proxies'] if item.get('type') == "hysteria2" or item.get('type') == "hysteria" or item.get('type') == "trojan"]
     filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings]
     vmess = [item for item in data['proxies'] if item.get('type') == 'vmess']
 
@@ -48,22 +73,21 @@ def filter_yaml_file(filter_strings):
     print(len(filtered_data), " 个代理")
     print(len(vmess), " 个vmess")
 
-    return  filtered_data, vmess
+    # 将结果写回YAML文件
+    with open(output_file, 'w', encoding='utf-8') as file:
+        # 写入 "proxies:" 头部
+        file.write("proxies:\n")
+        yaml.dump(filtered_data, file)
 
+    print("完成。")
+        
+# 示例用法
+path = "/Users/wangjiaozhu/download/"
+input_file = path + 'clash-1.yaml'
+output_file = path + 'clash-1-ht.yml'
+output_vmess = path + 'clash-1-v.yml'
+url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
 
-# Main
-input_file = 'clash.yaml'
-
-# 要过滤的字符串列表
-filter_strings = ["hysteria2", "hysteria", "trojan", "vmess"]
-htonly, vmess = filter_yaml_file(filter_strings)
-
-# 将结果写回YAML文件
-output_file = 'note.yml'
-output_vmess = 'notevmess.yml'
-with open(output_file, 'w', encoding='utf-8') as file:
-    # 写入 "proxies:" 头部
-    file.write("proxies:\n")
-    yaml.dump(htonly, file)
-
-    
+clash = gather_clash(url)
+verified_lash = verify_clash(clash)
+filter_yaml_file(verified_lash, output_file)
