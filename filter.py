@@ -36,7 +36,7 @@ def should_filter(entry):
 
 
 def filter_yaml_file(filter_strings):
-    data = yaml.safe_load(gathering_clash(), Loader=yaml.Loader)
+    data = yaml.load(gathering_clash(), Loader=yaml.Loader)
 
     # 使用列表推导式过滤出满足条件的项目
     #filtered_data = [item for item in data['proxies'] if item.get('type') == "hysteria2" or item.get('type') == "hysteria" or item.get('type') == "trojan"]
