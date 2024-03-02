@@ -7,15 +7,17 @@ yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 # 要过滤的字符串列表
 filter_strings = ["hysteria2", "trojan","hysteria"]
 
-def verify_clash(input_file):
-    # 打开文本文件以只读模式
-    with open(input_file, 'r',encoding='utf-8') as file:
-        # 逐行读取文件内容
-        data = file.read()
+def gather_clash(url):
+    hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
+    req = urllib.request.Request(url, headers=hdr)
+    response = urllib.request.urlopen(req)
+    content = response.read().decode('utf-8')
+    return content
 
+def verify_clash(clash):
     #源数据中有非法字符，修改一下,否则load yaml报错。有两种非法字符：1. :: ；2. !<str> 
     #1. 去掉::
-    data = data.replace("::", "")
+    data = clash.replace("::", "")
 
     # 按行分割字符串
     lines = data.splitlines()
@@ -41,7 +43,7 @@ def verify_clash(input_file):
     my_string = '\n'.join(filtered_lines)
 
     # 打开文本文件以写入模式
-    with open('111.yaml', 'w',encoding='utf-8') as file:
+    with open('verified.yaml', 'w', encoding='utf-8') as file:
         # 将内容写入文件
         file.write(my_string)
 
@@ -72,14 +74,10 @@ def filter_yaml_file(clash, output_file):
     print(len(vmess), " 个vmess")
 
     # 将结果写回YAML文件
-    with open(output_file, 'w') as file:
+    with open(output_file, 'w', encoding='utf-8') as file:
         # 写入 "proxies:" 头部
         file.write("proxies:\n")
         yaml.dump(filtered_data, file)
-    with open(output_vmess, 'w') as file:
-        # 写入 "proxies:" 头部
-        file.write("proxies:\n")
-        yaml.dump(vmess, file)
 
     print("完成。")
         
@@ -88,6 +86,8 @@ path = "/Users/wangjiaozhu/download/"
 input_file = path + 'clash-1.yaml'
 output_file = path + 'clash-1-ht.yml'
 output_vmess = path + 'clash-1-v.yml'
-clash = verify_clash(input_file)
-filter_yaml_file(clash, output_file)
+url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
 
+clash = gather_clash(url)
+verified_lash = verify_clash(clash)
+filter_yaml_file(verified_lash, output_file)
