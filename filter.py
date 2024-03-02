@@ -16,12 +16,14 @@ def gathering_clash():
 
     # 定义正则表达式模式
     pattern = re.compile(r'3135771619')
+    filter_string = '3135771619'
 
     newdata = ""
     # 处理字符串列表
     for line in data:
         # 检查是否包含模式
-        if not pattern.search(line):
+        #if not pattern.search(line):
+        if filter_string not in line:
             # 如果不包含，则处理该行
             newdata += line
     
@@ -34,7 +36,7 @@ def should_filter(entry):
 
 
 def filter_yaml_file(filter_strings):
-    data = data = yaml.safe_load(gathering_clash())
+    data = yaml.safe_load(gathering_clash())
 
     # 使用列表推导式过滤出满足条件的项目
     #filtered_data = [item for item in data['proxies'] if item.get('type') == "hysteria2" or item.get('type') == "hysteria" or item.get('type') == "trojan"]
