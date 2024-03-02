@@ -1,4 +1,5 @@
 import yaml
+import re
 import urllib.request
 
 def gathering_clash():
@@ -13,7 +14,18 @@ def gathering_clash():
     #源数据中有非法字符，修改一下
     data = content.replace("::", "")
 
-    return data
+    # 定义正则表达式模式
+    pattern = re.compile(r'password:\s*!<[^\s]+')
+
+    newdata = ""
+    # 处理字符串列表
+    for line in data:
+        # 检查是否包含模式
+        if not pattern.search(line):
+            # 如果不包含，则处理该行
+            newdata += line
+    
+    return newdata
 
 
 # 过滤含有指定字符串的条目
