@@ -10,9 +10,12 @@ filter_strings = ["hysteria2", "trojan","hysteria"]
 
 def gather_clash(url):
     hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
-    req = urllib.request.Request(url, headers=hdr)
-    response = urllib.request.urlopen(req)
-    content = response.read().decode('utf-8')
+    try:
+        req = urllib.request.Request(url, headers=hdr)
+        response = urllib.request.urlopen(req)
+        content = response.read().decode('utf-8')
+    except (http.client.IncompleteRead) as e:
+        content = e.partial        
     return content
 
 def verify_clash(clash):
