@@ -83,12 +83,13 @@ def filter_yaml_file(clash, output_file):
 
     print("读入clash yaml数据")
     # 使用列表推导式过滤出满足条件的项目
-    filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings]
-    vmess = [item for item in data['proxies'] if item.get('type') == 'vmess']
+    #filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings]
+    #vmess = [item for item in data['proxies'] if item.get('type') == 'vmess']
+    filtered_data = data
 
     # 打印过滤后的结果
     print(len(filtered_data), " 个代理")
-    print(len(vmess), " 个vmess")
+    #print(len(vmess), " 个vmess")
 
     # 将结果写回YAML文件
     with open(output_file, 'w', encoding='utf-8') as file:
