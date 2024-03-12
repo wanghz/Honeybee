@@ -1,8 +1,9 @@
 import yaml
 from yaml.constructor import ConstructorError
 import re 
+import requests
 import urllib.request
-import http.client
+
 
 yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 
@@ -10,13 +11,20 @@ yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 filter_strings = ["hysteria2", "trojan","hysteria"]
 
 def gather_clash(url):
-    hdr = { 'User-Agent' : 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)' }    
+    hdr = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64)'}
     try:
-        req = urllib.request.Request(url, headers=hdr)
-        response = urllib.request.urlopen(req)
-        content = response.read().decode('utf-8')
-    except (http.client.IncompleteRead) as e:
-        content = e.partial        
+        response = requests.get(url, headers=hdr)
+        response.raise_for_status()  # Check for any HTTP errors
+        content = response.text
+    except requests.exceptions.RequestException as e:
+        print("An error occurred:", e)
+        content = None
+    except requests.exceptions.HTTPError as e:
+        print("HTTP error occurred:", e)
+        content = None
+    except requests.exceptions.ConnectionError as e:
+        print("A connection error occurred:", e)
+        content = None     
     return content
 
 def verify_clash(clash):
