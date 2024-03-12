@@ -2,6 +2,7 @@ import yaml
 from yaml.constructor import ConstructorError
 import re 
 import urllib.request
+import http.client
 
 yaml.add_multi_constructor('str', lambda loader, suffix, node: None)
 
