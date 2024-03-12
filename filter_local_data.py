@@ -25,7 +25,11 @@ def gather_clash(url):
     except requests.exceptions.ConnectionError as e:
         print("A connection error occurred:", e)
         content = None     
-    return content
+    if content is not None:
+        return content
+    else:
+        print("没有内容。")
+        exit(400)
 
 def verify_clash(clash):
     #源数据中有非法字符，修改一下,否则load yaml报错。有两种非法字符：1. :: ；2. !<str> 
@@ -99,8 +103,8 @@ path = "./"
 input_file = path + 'clash-1.yaml'
 output_file = path + 'htonly.yml'
 output_vmess = path + 'clash-1-v.yml'
-url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
-
+#url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fpp.dcd.one%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Frvorch.treze.cc%2Fclash%2Fproxies%3Fspeed%3D10%7Chttps%3A%2F%2Fkiwi2.cgweb.top%2Fclash%2Fproxies%3Fspeed%3D10"    
+url = "http://0.0.0.0:2550/sub?target=clash&url=https%3A%2F%2Fclashe.eu.org%2Fclash%2Fproxies%7Chttp%3A%2F%2F129.153.114.100%3A12580%2Fclash%2Fproxies%7Chttp%3A%2F%2F150.230.195.209%3A12580%2Fclash%2Fproxies"
 clash = gather_clash(url)
 verified_lash = verify_clash(clash)
 filter_yaml_file(verified_lash, output_file)
