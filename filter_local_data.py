@@ -85,7 +85,7 @@ def filter_yaml_file(clash, output_file):
     # 使用列表推导式过滤出满足条件的项目
     #filtered_data = [item for item in data['proxies'] if item.get('type') in filter_strings]
     #vmess = [item for item in data['proxies'] if item.get('type') == 'vmess']
-    filtered_data = data
+    filtered_data = data['proxies']
 
     # 打印过滤后的结果
     print(len(filtered_data), " 个代理")
