@@ -128,15 +128,6 @@ def process_url(url, filename):
 #1. 下载含有代理内容的文本文件
 
 #url = "https://raw.githubusercontent.com/Barabama/FreeNodes/master/nodes/merged.txt"
-filenames = ["barabama.yml",
-			"barabama1.yml",
-			"Barabama2.yml",
-			"barabama3.yml",
-			"barabama4.yml",
-			"barabama5.yml",
-			"barabama6.yml",
-			"barabama7.yml"
-			]
 link = "https://github.com/Barabama/FreeNodes/raw/master/nodes/"
 urls = []
 
@@ -160,10 +151,14 @@ if response.status_code == 200:
 	print(len(names), "个文件")
 	for name in names:
 		urls.append(link+name+".txt")
+	urls.append(link+ "merged.txt")
 else:
 	print("打开网页出错,", response.status_code)
 	exit(102)
 
-for url, filename in zip(urls, filenames):
-    process_url(url, filename)
+num = 0 
+for url in urls:
+	filename = "barabama" +str(num)+ ".yml"
+	process_url(url, filename)
+	num += 1
 
