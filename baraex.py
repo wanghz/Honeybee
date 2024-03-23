@@ -4,8 +4,6 @@ import requests
 import re
 import yaml
 #import urllib.parse
-from bs4 import BeautifulSoup
-import urllib
 import ssl
 import argparse
 ssl._create_default_https_context = ssl._create_unverified_context
