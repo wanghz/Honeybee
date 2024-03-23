@@ -3,7 +3,6 @@ import json
 import requests
 import re
 import yaml
-#import urllib.parse
 import ssl
 import argparse
 ssl._create_default_https_context = ssl._create_unverified_context
@@ -101,7 +100,7 @@ def process_url(url, filename):
 		print(f"代理服务器数量：\t{len(filtered_lines)}")
 
 		proxies_str = '|'.join(filtered_lines)
-		urlencode_str = urllib.parse.quote(proxies_str, safe="")
+		urlencode_str = parse.quote(proxies_str, safe="")
 
 		convert_url = f"http://127.0.0.1:2550/sub?target=clash&url={urlencode_str}"
 		response = requests.get(convert_url)
