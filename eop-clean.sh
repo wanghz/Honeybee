@@ -1,3 +1,4 @@
+#!/bin/bash
 currentdate=$(date +%Y%m%d)  
 currentmonth=$(date +%Y%m)
 currentmonths=$(date +%m)
