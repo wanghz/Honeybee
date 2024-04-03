@@ -26,7 +26,7 @@ download_and_filter() {
     curl -s "$url" -o "$filename"
 
     # Filter the file
-    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^trojan:\/\//!d' "$filename"
+    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
 }
 
 # Loop through URLs and process each one
