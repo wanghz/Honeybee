@@ -42,13 +42,8 @@ curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/vmess.txt" 
 curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/reality.txt" -o "reality.txt"
 
 # do some edit
-sed -i '/"tag": "dns-in"/,/},/d; /"tag": "tun-in"/,/},/d'  mix.json
-sed -i '/"tag": "dns-in"/,/},/d; /"tag": "tun-in"/,/},/d'  mixlite.json
-sed -i 's/"listen_port": 2080/"listen_port": 7890/' mix.json
-sed -i 's/"listen_port": 2080/"listen_port": 7890/' mixlite.json
-# 替换JSON文件中的字段值
-sed -i 's/"tag": "dns-direct",\s*"address": "tcp:\/\/185.228.168.9"/"tag": "dns-direct", "address": "tcp:\/\/233.5.5.5"/g' mix.json
-sed -i 's/"tag": "dns-direct",\s*"address": "tcp:\/\/95.85.95.85"/"tag": "dns-direct", "address": "tcp:\/\/233.5.5.5"/g' mixlite.json
+python editjson.py  mix.json
+python editjson.py  mixlite.json
 
 # end
 echo get subscribe sucessfully
