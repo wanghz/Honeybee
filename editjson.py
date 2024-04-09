@@ -1,5 +1,5 @@
 import json
-
+import sys
 
 def load_json_with_comments(file_path):
     with open(file_path, 'r',encoding='utf-8') as f:
@@ -15,10 +15,11 @@ def load_json_with_comments(file_path):
 #---Main---
 # 下载的配置json有两项不适合，一是本地dns服务器地址，二是入口端口，在这里修改一下
 # 使用自定义加载函数读取 JSON 文件
-data = load_json_with_comments('m.json')
+filename = sys.argv[1]
+
+data = load_json_with_comments(filename)
 
 dns = data['dns']
-
 # 替换本地dns服务器
 dns['servers'][1]['address'] = "tcp://233.5.5.5"
 
@@ -30,5 +31,5 @@ print(dns['servers'][1]['address'], '\n***')
 print(data['inbounds'])
 
 # 写回到文件中
-with open('m.json', 'w',encoding="utf-8") as file:
+with open(filename, 'w',encoding="utf-8") as file:
     json.dump(data, file, indent=4)
