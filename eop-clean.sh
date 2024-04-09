@@ -37,7 +37,7 @@ done
 # download some others
 curl -s "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/singbox/mix.json" -o "mix.json"
 curl -s "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/singbox/sfasfi/mixLite.json" -o "mixlite.json"
-curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/master/collected-proxies/xray-json/actives_under_1000ms.txt" -o "under1k.txt"
+curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/master/collected-proxies/clash-meta/actives_under_1000ms.yaml" -o "under1k.yml"
 curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/vmess.txt" -o "vmess.txt"
 curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/reality.txt" -o "reality.txt"
 
