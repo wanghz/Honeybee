@@ -25,7 +25,7 @@ dns['servers'][1]['address'] = "tcp://233.5.5.5"
 
 # 删除 "inbounds" 中的前两项，修改端口
 data['inbounds'] = data['inbounds'][-1:]
-data['inbounds'][0]['listen_port'] = "7890"
+data['inbounds'][0]['listen_port'] = 7890
 
 print(dns['servers'][1]['address'], '\n***')
 print(data['inbounds'])
