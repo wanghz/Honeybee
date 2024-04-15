@@ -11,97 +11,116 @@
                 "outbound": [
                     "any"
                 ],
-                "server": "local"
+                "server": "dns_resolver"
             },
             {
                 "disable_cache": true,
                 "geosite": [
                     "category-ads-all"
                 ],
-                "server": "block"
+                "server": "dns_block"
+            },
+            {
+                "mode": "and",
+                "rules": [
+                    {
+                        "geosite": [
+                            "geolocation-!cn"
+                        ]
+                    },
+                    {
+                        "query_type": [
+                            "A",
+                            "AAAA"
+                        ]
+                    }
+                ],
+                "server": "dns_fakeip",
+                "type": "logical"
+            },
+            {
+                "geosite": [
+                    "geolocation-!cn"
+                ],
+                "server": "dns_proxy"
+            },
+            {
+                "geosite": [
+                    "cn",
+                    "private"
+                ],
+                "server": "dns_direct"
             },
             {
                 "query_type": [
                     "A",
                     "AAAA"
                 ],
-                "rewrite_ttl": 1,
-                "server": "fakeip"
-            },
-            {
-                "clash_mode": "global",
-                "server": "remote"
-            },
-            {
-                "clash_mode": "direct",
-                "server": "local"
-            },
-            {
-                "geosite": "cn",
-                "server": "local"
+                "server": "dns_fakeip"
             }
         ],
         "servers": [
             {
-                "address": "8.8.8.8",
-                "detour": "select",
-                "tag": "remote"
+                "address": "https://1.1.1.1/dns-query",
+                "address_resolver": "dns_resolver",
+                "detour": "proxy",
+                "strategy": "ipv4_only",
+                "tag": "dns_proxy"
+            },
+            {
+                "address": "h3://dns.alidns.com/dns-query",
+                "address_resolver": "dns_resolver",
+                "detour": "direct",
+                "strategy": "ipv4_only",
+                "tag": "dns_direct"
+            },
+            {
+                "address": "rcode://refused",
+                "tag": "dns_block"
+            },
+            {
+                "address": "fakeip",
+                "strategy": "ipv4_only",
+                "tag": "dns_fakeip"
             },
             {
                 "address": "223.5.5.5",
                 "detour": "direct",
-                "tag": "local"
-            },
-            {
-                "address": "rcode://success",
-                "tag": "block"
-            },
-            {
-                "address": "fakeip",
-                "tag": "fakeip"
+                "strategy": "ipv4_only",
+                "tag": "dns_resolver"
             }
-        ],
-        "strategy": "prefer_ipv4"
+        ]
     },
     "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
         "clash_api": {
-            "external_controller": "127.0.0.1:9090",
-            "secret": ""
+            "default_mode": "rule",
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_detour": "proxy",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
         }
     },
     "inbounds": [
         {
-            "auto_route": false,
-            "domain_strategy": "prefer_ipv4",
-            "endpoint_independent_nat": true,
-            "inet4_address": "172.19.0.1/30",
-            "inet6_address": "2001:0470:f9da:fdfa::1/64",
-            "mtu": 9000,
-            "strict_route": true,
-            "type": "tun"
-        },
-        {
             "domain_strategy": "prefer_ipv4",
             "listen": "127.0.0.1",
-            "listen_port": 2333,
-            "tag": "socks-in",
-            "type": "socks",
-            "users": []
-        },
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 2334,
+            "listen_port": 7890,
             "set_system_proxy": true,
             "tag": "mixed-in",
             "type": "mixed",
             "users": []
         }
     ],
-    "log": {},
+    "log": {
+        "level": "info",
+        "timestamp": true        
+    },
     "outbounds": [
         {
-            "tag": "select",
+            "tag": "proxy",
             "type": "selector",
             "default": "urltest",
             "outbounds": [
@@ -9161,22 +9180,72 @@
     ],
     "route": {
         "auto_detect_interface": true,
+        "geoip": {
+            "download_detour": "direct",
+            "path": "d:/tools/sing-box/geoip.db"
+        },
+        "geosite": {
+            "download_detour": "direct",
+            "path": "d:/tools/sing-box/geosite.db"
+        },
+        "rule_set": [
+            {
+                "format": "binary",
+                "path": "d:/tools/sing-box/geosite-geolocation-!cn.srs",
+                "tag": "geosite-geolocation-!cn",
+                "type": "local"
+            }
+        ],
         "rules": [
             {
-                "geosite": "category-ads-all",
-                "outbound": "block"
-            },
-            {
                 "outbound": "dns-out",
-                "port": 53
+                "protocol": "dns"
             },
             {
-                "clash_mode": "direct",
+                "outbound": "direct",
+                "process_name": [
+                    "xray.exe",
+                    "hysteria.exe",
+                    "tuic.exe",
+                    "tuic-client.exe",
+                    "juicity.exe",
+                    "juicity-client.exe"
+                ]
+            },
+            {
+                "outbound": "block",
+                "protocol": [
+                    "quic"
+                ]
+            },
+            {
+                "geosite": [
+                    "geolocation-!cn"
+                ],
+                "outbound": "proxy"
+            },
+            {
+                "mode": "and",
+                "outbound": "direct",
+                "rules": [
+                    {
+                        "geosite": [
+                            "cn"
+                        ]
+                    },
+                    {
+                        "geoip": [
+                            "cn"
+                        ]
+                    }
+                ],
+                "type": "logical"
+            },
+            {
+                "geosite": [
+                    "private"
+                ],
                 "outbound": "direct"
-            },
-            {
-                "clash_mode": "global",
-                "outbound": "select"
             },
             {
                 "geoip": [
@@ -9184,6 +9253,23 @@
                     "private"
                 ],
                 "outbound": "direct"
+            },
+            {
+                "domain": [
+                    "clash.razord.top",
+                    "yacd.metacubex.one",
+                    "yacd.haishan.me",
+                    "d.metacubex.one"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "domain": [
+                    "top81.org",
+                    "wxno.com",
+                    "blockaway.net"
+                ],
+                "outbound": "proxy"
             }
         ]
     }
