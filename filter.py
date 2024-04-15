@@ -14,7 +14,7 @@ def gather_clash(url):
         req = urllib.request.Request(url, headers=hdr)
         response = urllib.request.urlopen(req)
         content = response.read().decode('utf-8')
-    except (http.client.IncompleteRead) as e:
+    except:
         content = e.partial
     return content
 
