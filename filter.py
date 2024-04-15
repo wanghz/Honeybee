@@ -15,7 +15,7 @@ def gather_clash(url):
         response = urllib.request.urlopen(req)
         content = response.read().decode('utf-8')
     except:
-        content = e.partial
+        content = None
     return content
 
 def verify_clash(clash):
@@ -92,5 +92,9 @@ output_vmess = path + 'clash-1-v.yml'
 url = "https://api-suc.0z.gs/sub?target=clash&url=https%3A%2F%2Fanaer.github.io%2FSub%2Fclash.yaml%7Chttps%3A%2F%2Fproxy.v2gh.com%2Fhttps%3A%2F%2Fraw.githubusercontent.com%2FPawdroid%2FFree-servers%2Fmain%2Fsub%7Chttps%3A%2F%2Fraw.githubusercontent.com%2Fermaozi01%2Ffree_clash_vpn%2Fmain%2Fsubscribe%2Fclash.yml&insert=false&config=https%3A%2F%2Fraw.githubusercontent.com%2FNZESupB%2FProfile%2Fmain%2Foutpref%2Fpypref%2Fpyfull.ini&filename=GitHub-GetNode&append_type=true&emoji=true&list=false&tfo=false&scv=true&fdn=false&sort=true&udp=true&new_name=true"
 
 clash = gather_clash(url)
-verified_lash = verify_clash(clash)
-filter_yaml_file(verified_lash, output_file)
+if clash:
+    verified_lash = verify_clash(clash)
+    filter_yaml_file(verified_lash, output_file)
+else:
+    print("download clash error")
+    exit
