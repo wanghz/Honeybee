@@ -48,7 +48,7 @@ cd ./sub
 cp editjson.py .
 python editjson.py  mix.json
 python editjson.py  mixlite.json
-cp ./sing-box-subscribe-no-flask-2.7.0/e*.json .
+cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
 cd ..
 # end
 echo get subscribe sucessfully
