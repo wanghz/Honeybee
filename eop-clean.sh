@@ -45,7 +45,7 @@ curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/reality.txt
 
 # do some edit
 cd ./sub
-cp editjson.py .
+cp ../editjson.py .
 python editjson.py  mix.json
 python editjson.py  mixlite.json
 cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
