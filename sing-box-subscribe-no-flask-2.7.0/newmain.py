@@ -557,7 +557,7 @@ if __name__ == '__main__':
     #config_template_path = 'config_template/' + template_list[uip] + '.json'
     #print('选择: \033[33m' + template_list[uip] + '.json\033[0m')
     #config = load_json(config_template_path)
-    config = load_json("./9-config_template_no_groups.json")
+    config = load_json("../sb_config_template/9-config_template_no_groups.json")
     
     nodes = process_subscribes(providers["subscribes"])
     if providers.get('Only-nodes'):
