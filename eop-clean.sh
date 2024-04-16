@@ -44,9 +44,12 @@ curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/vmess.txt" 
 curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/reality.txt" -o "./sub/reality.txt"
 
 # do some edit
+cd ./sub
+cp editjson.py .
 python editjson.py  mix.json
 python editjson.py  mixlite.json
-
+cp ./sing-box-subscribe-no-flask-2.7.0/e*.json .
+cd ..
 # end
 echo get subscribe sucessfully
 echo hope you have a good day~
