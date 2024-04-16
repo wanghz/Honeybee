@@ -15,9 +15,5 @@ fi
 echo get subscribe
 wget $subscribeclash -O ./sub/clash.yaml
 #wget $subscribeV2ray -O ./v2ray.txt
-# 下载转换工具
-wget https://github.com/Toperlock/sing-box-subscribe/releases/download/v2.7.0/sing-box-subscribe-no-flask-2.7.0.zip -o sb-sub.zip
-unzip sb-sub.zip
-
 echo download sucessfully
 echo bye~
