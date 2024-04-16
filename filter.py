@@ -47,7 +47,7 @@ def verify_clash(clash):
     my_string = '\n'.join(filtered_lines)
 
     # 打开文本文件以写入模式
-    with open('verified.yaml', 'w', encoding='utf-8') as file:
+    with open(path+'verified.yaml', 'w', encoding='utf-8') as file:
         # 将内容写入文件
         file.write(my_string)
 
