@@ -26,8 +26,7 @@ for url in "${urls[@]}"; do
     # curl "$url" | jq -r '.proxies[]'
     filename="./k${counter}.json"
     echo "Saving to file: $filename"
-    jq '.subscribes[0].url = $url' provx.json > tmpfile && mv tmpfile provx.json
-    jq '.save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
+    jq --arg url "$url" --arg filename "$filename" '.subscribes[0].url = $url | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
     python ./newmain.py -c provx.json
     ((counter++))
 done
