@@ -24,10 +24,10 @@ for url in "${urls[@]}"; do
     # 在这里添加您的提取逻辑
     # 例如:
     # curl "$url" | jq -r '.proxies[]'
-    filename="k${counter}.json"
+    filename="./k${counter}.json"
     echo "Saving to file: $filename"
-    jq '.subscribes[0].url = "$url"' provx.json > tmpfile && mv tmpfile provx.json
-    jq '.save_config_path = "$filename"' provx.json > tmpfile && mv tmpfile provx.json
+    jq '.subscribes[0].url = $url' provx.json > tmpfile && mv tmpfile provx.json
+    jq '.save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
     python ./newmain.py -c provx.json
     ((counter++))
 done
