@@ -17,7 +17,7 @@ counter=1
 for file in "${files[@]}"; do
     echo "Extracting from URL: $url"
     # 在这里添加您的提取逻辑
-    localfile = "file:///home/runner/work/Honeybee/Honeybee/sub/$file"
+    localfile="file:///home/runner/work/Honeybee/Honeybee/sub/$file"
     filename="./f${counter}.json"
     echo "Saving to file: $filename"
     jq --arg url "$url" --arg filename "$filename" '.subscribes[0].url = $localfile | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
