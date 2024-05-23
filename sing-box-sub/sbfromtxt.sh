@@ -20,9 +20,10 @@ for file in "${files[@]}"; do
     echo "Extracting from local file: $localfile"
     filename="./f${counter}.json"
     echo "Saving to file: $filename"
-    jq --arg url "$url" --arg filename "$filename" '.subscribes[0].url = $localfile | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
+    jq --arg localfile "$localfile" --arg filename "$filename" '.subscribes[0].url = $localfile | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
     python ./newmain.py -c provx.json
     ((counter++))
+    
 done
 
 
