@@ -16,7 +16,7 @@ files=(
 counter=1
 for file in "${files[@]}"; do
     # 在这里添加您的提取逻辑
-    localfile="file:///home/runner/work/Honeybee/Honeybee/sub/$file"
+    localfile="file:///../sub/$file"
     echo "Extracting from local file: $localfile"
     filename="./f${counter}.json"
     echo "Saving to file: $filename"
