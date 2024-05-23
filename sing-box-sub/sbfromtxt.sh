@@ -1,16 +1,16 @@
 #!/bin/bash
 
 files=(
-        "Config%20list1.txt"
-        "Config%20list10.txt"
-        "Config%20list2.txt"
-        "Config%20list3.txt"
-        "Config%20list4.txt"
-        "Config%20list5.txt"
-        "Config%20list6.txt"
-        "Config%20list7.txt"
-        "Config%20list8.txt"
-        "Config%20list9.txt"
+        "Config%2520list1.txt"
+        "Config%2520list10.txt"
+        "Config%2520list2.txt"
+        "Config%2520list3.txt"
+        "Config%2520list4.txt"
+        "Config%2520list5.txt"
+        "Config%2520list6.txt"
+        "Config%2520list7.txt"
+        "Config%2520list8.txt"
+        "Config%2520list9.txt"
 )
 
 counter=1
