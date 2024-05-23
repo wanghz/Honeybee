@@ -15,6 +15,10 @@ urls=(
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list8.txt"
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list9.txt"
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list10.txt"
+  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list11.txt"
+  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list12.txt"
+  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list13.txt"
+  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list14.txt"
 )
 
 cd ./sub
@@ -22,10 +26,8 @@ cd ./sub
 download_and_filter() {
     url="$1"
     filename="${url##*/}"
-
     # Download the file
     curl -s "$url" -o "$filename"
-
     # Filter the file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
 }
