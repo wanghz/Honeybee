@@ -3,6 +3,10 @@
 files=(
         "Config%2520list1.txt"
         "Config%2520list10.txt"
+        "Config%2520list11.txt"
+        "Config%2520list12.txt"
+        "Config%2520list13.txt"
+        "Config%2520list14.txt"
         "Config%2520list2.txt"
         "Config%2520list3.txt"
         "Config%2520list4.txt"
