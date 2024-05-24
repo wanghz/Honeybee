@@ -15,6 +15,10 @@ files=(
         "Config%2520list7.txt"
         "Config%2520list8.txt"
         "Config%2520list9.txt"
+        "htonly.yml"
+        "under1k.yml"
+        "reality.txt"
+        "vmess.txt"
 )
 
 counter=1
