@@ -16,13 +16,23 @@ urls=(
     "https://proxypool.link/clash/proxies"
     "https://proxypool1999.banyunxiaoxi.icu/clash/proxies"
     "https://timell.pages.dev/clash/proxies"
+    "https://raw.githubusercontent.com/Surfboardv2ray/Proxy-sorter/main/output/converted.txt"
+    "https://raw.githubusercontent.com/mheidari98/.proxy/main/all"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub1.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub2.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub3.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub4.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub5.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub6.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub7.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub8.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub9.txt"
+    "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub10.txt"
 )
 
 counter=1
 for url in "${urls[@]}"; do
     echo "Extracting from URL: $url"
-    # 在这里添加您的提取逻辑
-    # 例如:
     # curl "$url" | jq -r '.proxies[]'
     filename="./k${counter}.json"
     echo "Saving to file: $filename"
