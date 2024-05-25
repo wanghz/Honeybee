@@ -32,8 +32,8 @@ urls=(
     "https://raw.githubusercontent.com/ssrsub/ssr/master/ssrsub"
     "https://proxypool.link/clash/proxies"
     "https://pp.dcd.one/clash/proxies?speed=15,50&type=ss"
-    "https://pp.dcd.one/clash/proxies?speed=15,50&type=vmess”
-    “https://pp.dcd.one/clash/proxies?speed=15,50&type=trojan”
+    "https://pp.dcd.one/clash/proxies?speed=15,50&type=vmess"
+    "https://pp.dcd.one/clash/proxies?speed=15,50&type=trojan"
 )
 
 counter=1
