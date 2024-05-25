@@ -16,6 +16,7 @@ urls=(
     "https://proxypool.link/clash/proxies"
     "https://proxypool1999.banyunxiaoxi.icu/clash/proxies"
     "https://timell.pages.dev/clash/proxies"
+    "https://raw.githubusercontent.com/linzjian666/chromego_extractor/main/outputs/proxy_urls.txt"
     "https://raw.githubusercontent.com/Surfboardv2ray/Proxy-sorter/main/output/converted.txt"
     "https://raw.githubusercontent.com/mheidari98/.proxy/main/all"
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub1.txt"
