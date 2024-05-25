@@ -31,6 +31,9 @@ urls=(
     "https://pp.dcd.one/clash/proxies?speed=15,50&type=ss"
     "https://pp.dcd.one/clash/proxies?speed=15,50&type=vmess"
     "https://pp.dcd.one/clash/proxies?speed=15,50&type=trojan"
+    "https://proxy.crazygeeky.com/clash/proxies"
+    "https://proxies.haisto.cn/clash/proxies"
+    "https://clashe.eu.org/clash/proxies"
 )
 
 counter=1
