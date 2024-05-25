@@ -29,6 +29,8 @@ urls=(
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub8.txt"
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub9.txt"
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub10.txt"
+    "https://raw.githubusercontent.com/ssrsub/ssr/master/ssrsub"
+    "https://www.liesauer.net/yogurt/subscribe?ACCESS_TOKEN=DAYxR3mMaZAsaqUb"
 )
 
 counter=1
