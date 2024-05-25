@@ -30,7 +30,10 @@ urls=(
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub9.txt"
     "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/Sub10.txt"
     "https://raw.githubusercontent.com/ssrsub/ssr/master/ssrsub"
-    "https://www.liesauer.net/yogurt/subscribe?ACCESS_TOKEN=DAYxR3mMaZAsaqUb"
+    "https://proxypool.link/clash/proxies"
+    "https://pp.dcd.one/clash/proxies?speed=15,50&type=ss"
+    "https://pp.dcd.one/clash/proxies?speed=15,50&type=vmess”
+    “https://pp.dcd.one/clash/proxies?speed=15,50&type=trojan”
 )
 
 counter=1
