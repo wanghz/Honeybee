@@ -6,113 +6,73 @@
   "dns": {
     "servers": [
       {
-        "tag": "dns_proxy",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "dns_resolver",
-        "strategy": "ipv4_only",
-        "detour": "proxy"
+        "tag": "google",
+        "address": "tls://8.8.8.8"
       },
       {
-        "tag": "dns_direct",
-        "address": "h3://dns.alidns.com/dns-query",
-        "address_resolver": "dns_resolver",
-        "strategy": "ipv4_only",
-        "detour": "direct"
-      },
-      {
-        "tag": "dns_block",
-        "address": "rcode://refused"
-      },
-      {
-        "tag": "dns_fakeip",
-        "address": "fakeip",
-        "strategy": "ipv4_only"
-      },
-      {
-        "tag": "dns_resolver",
-        "address": "223.5.5.5",
-        "strategy": "ipv4_only",
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
         "detour": "direct"
       }
     ],
     "rules": [
       {
-        "outbound": [
-          "any"
-        ],
-        "server": "dns_resolver"
+        "outbound": "any",
+        "server": "local"
       },
       {
-        "geosite": [
-          "category-ads-all"
-        ],
-        "server": "dns_block",
-        "disable_cache": true
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
       },
       {
         "type": "logical",
         "mode": "and",
         "rules": [
           {
-            "geosite": [
-              "geolocation-!cn"
-            ]
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
           },
           {
-            "query_type": [
-              "A",
-              "AAAA"
-            ]
+            "rule_set": "geoip-cn"
           }
         ],
-        "server": "dns_fakeip"
-      },
-      {
-        "geosite": [
-          "geolocation-!cn"
-        ],
-        "server": "dns_proxy"
-      },
-      {
-        "geosite": [
-          "cn",
-          "private"
-        ],
-        "server": "dns_direct"
-      },
-      {
-        "query_type": [
-          "A",
-          "AAAA"
-        ],
-        "server": "dns_fakeip"
+        "server": "local"
       }
-    ],
-    "independent_cache": true,
-    "fakeip": {
-      "enabled": true,
-      "inet4_range": "198.18.0.0/15",
-      "inet6_range": "fc00::/18"
-    }
+    ]
   },
   "route": {
     "rule_set": [
       {
         "type": "remote",
-        "download_detour": "proxy",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      {
+        "type": "remote",
         "tag": "geosite-geolocation-!cn",
         "format": "binary",
-        "url": "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-!cn.srs"
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
       }
     ],
-    "geoip": {
-      "download_detour": "proxy",
-      "download_url": "https://github.com/soffchen/sing-geoip/releases/latest/download/geoip.db"
-    },
-    "geosite": {
-      "download_detour": "proxy",
-      "download_url": "https://github.com/soffchen/sing-geosite/releases/latest/download/geosite.db"
-    },
     "rules": [
       {
         "protocol": "dns",
@@ -211,40 +171,39 @@
       "outbounds": [
         "auto",
         "direct",
-        "🇦🇹 disney_netflix_AT",
+        "🇦🇹 netflix_AT",
         "🇩🇪 netflix_DE",
-        "🇫🇷 netflix_FR",
+        "🇩🇪 netflix_DE 2",
         "🇫🇷 FR_04",
+        "🇫🇷 netflix_FR",
         "netflix_GB",
         "netflix_GB 2",
         "netflix_GB 3",
         "netflix_GB 4",
         "netflix_GB 5",
-        "🇬🇧 GB_10",
-        "🇮🇪 netflix_IE",
-        "🇮🇪 IE_12",
+        "🇮🇪 IE_11",
         "🇯🇵 netflix_JP",
         "🇳🇱 netflix_NL",
-        "🇩🇪 netflix_DE 2",
-        "🇺🇸 netflix_US",
+        "🇩🇪 netflix_DE 3",
         "🇫🇷 netflix_FR 2",
-        "🇺🇸 netflix_US 2",
+        "🇺🇸 netflix_US",
+        "🇫🇷 netflix_FR 3",
         "🇸🇪 netflix_SE",
+        "🇸🇪 SE_19",
         "🇸🇪 netflix_SE 2",
         "🇸🇪 SE_21",
-        "🇺🇸 netflix_US 3",
-        "🇩🇪 netflix_DE 3",
-        "🇸🇬 netflix_SG",
-        "🇫🇷 netflix_FR 3",
-        "🇫🇷 netflix_FR 4",
+        "🇺🇸 netflix_US 2",
+        "🇺🇸 US_23",
         "🇩🇪 netflix_DE 4",
-        "🇸🇬 disney_SG",
-        "🇫🇷 netflix_FR 5",
-        "🇺🇸 netflix_US 4",
         "🇩🇪 netflix_DE 5",
+        "🇫🇷 netflix_FR 4",
+        "🇫🇷 netflix_FR 5",
+        "🇫🇷 netflix_FR 6",
+        "🇺🇸 netflix_US 3",
+        "🇫🇷 netflix_FR 7",
+        "🇺🇸 netflix_US 4",
         "🇮🇳 netflix_IN",
-        "🇺🇸 netflix_US 5",
-        "🇫🇷 netflix_FR 6"
+        "🇫🇷 netflix_FR 8"
       ]
     },
     {
@@ -252,80 +211,78 @@
       "type": "selector",
       "outbounds": [
         "direct",
-        "🇦🇹 disney_netflix_AT",
+        "🇦🇹 netflix_AT",
         "🇩🇪 netflix_DE",
-        "🇫🇷 netflix_FR",
+        "🇩🇪 netflix_DE 2",
         "🇫🇷 FR_04",
+        "🇫🇷 netflix_FR",
         "netflix_GB",
         "netflix_GB 2",
         "netflix_GB 3",
         "netflix_GB 4",
         "netflix_GB 5",
-        "🇬🇧 GB_10",
-        "🇮🇪 netflix_IE",
-        "🇮🇪 IE_12",
+        "🇮🇪 IE_11",
         "🇯🇵 netflix_JP",
         "🇳🇱 netflix_NL",
-        "🇩🇪 netflix_DE 2",
-        "🇺🇸 netflix_US",
+        "🇩🇪 netflix_DE 3",
         "🇫🇷 netflix_FR 2",
-        "🇺🇸 netflix_US 2",
+        "🇺🇸 netflix_US",
+        "🇫🇷 netflix_FR 3",
         "🇸🇪 netflix_SE",
+        "🇸🇪 SE_19",
         "🇸🇪 netflix_SE 2",
         "🇸🇪 SE_21",
-        "🇺🇸 netflix_US 3",
-        "🇩🇪 netflix_DE 3",
-        "🇸🇬 netflix_SG",
-        "🇫🇷 netflix_FR 3",
-        "🇫🇷 netflix_FR 4",
+        "🇺🇸 netflix_US 2",
+        "🇺🇸 US_23",
         "🇩🇪 netflix_DE 4",
-        "🇸🇬 disney_SG",
-        "🇫🇷 netflix_FR 5",
-        "🇺🇸 netflix_US 4",
         "🇩🇪 netflix_DE 5",
+        "🇫🇷 netflix_FR 4",
+        "🇫🇷 netflix_FR 5",
+        "🇫🇷 netflix_FR 6",
+        "🇺🇸 netflix_US 3",
+        "🇫🇷 netflix_FR 7",
+        "🇺🇸 netflix_US 4",
         "🇮🇳 netflix_IN",
-        "🇺🇸 netflix_US 5",
-        "🇫🇷 netflix_FR 6"
+        "🇫🇷 netflix_FR 8"
       ]
     },
     {
       "tag": "auto",
       "type": "urltest",
       "outbounds": [
-        "🇦🇹 disney_netflix_AT",
+        "🇦🇹 netflix_AT",
         "🇩🇪 netflix_DE",
-        "🇫🇷 netflix_FR",
+        "🇩🇪 netflix_DE 2",
         "🇫🇷 FR_04",
+        "🇫🇷 netflix_FR",
         "netflix_GB",
         "netflix_GB 2",
         "netflix_GB 3",
         "netflix_GB 4",
         "netflix_GB 5",
-        "🇬🇧 GB_10",
-        "🇮🇪 netflix_IE",
-        "🇮🇪 IE_12",
+        "🇮🇪 IE_11",
         "🇯🇵 netflix_JP",
         "🇳🇱 netflix_NL",
-        "🇩🇪 netflix_DE 2",
-        "🇺🇸 netflix_US",
+        "🇩🇪 netflix_DE 3",
         "🇫🇷 netflix_FR 2",
-        "🇺🇸 netflix_US 2",
+        "🇺🇸 netflix_US",
+        "🇫🇷 netflix_FR 3",
         "🇸🇪 netflix_SE",
+        "🇸🇪 SE_19",
         "🇸🇪 netflix_SE 2",
         "🇸🇪 SE_21",
-        "🇺🇸 netflix_US 3",
-        "🇩🇪 netflix_DE 3",
-        "🇸🇬 netflix_SG",
-        "🇫🇷 netflix_FR 3",
-        "🇫🇷 netflix_FR 4",
+        "🇺🇸 netflix_US 2",
+        "🇺🇸 US_23",
         "🇩🇪 netflix_DE 4",
-        "🇸🇬 disney_SG",
-        "🇫🇷 netflix_FR 5",
-        "🇺🇸 netflix_US 4",
         "🇩🇪 netflix_DE 5",
+        "🇫🇷 netflix_FR 4",
+        "🇫🇷 netflix_FR 5",
+        "🇫🇷 netflix_FR 6",
+        "🇺🇸 netflix_US 3",
+        "🇫🇷 netflix_FR 7",
+        "🇺🇸 netflix_US 4",
         "🇮🇳 netflix_IN",
-        "🇺🇸 netflix_US 5",
-        "🇫🇷 netflix_FR 6"
+        "🇫🇷 netflix_FR 8"
       ],
       "url": "http://www.gstatic.com/generate_204",
       "interval": "1m",
@@ -344,7 +301,7 @@
       "tag": "dns-out"
     },
     {
-      "tag": "🇦🇹 disney_netflix_AT",
+      "tag": "🇦🇹 netflix_AT",
       "type": "shadowsocks",
       "server": "94.228.169.114",
       "server_port": 25663,
@@ -354,7 +311,7 @@
     {
       "tag": "🇩🇪 netflix_DE",
       "type": "trojan",
-      "server": "18.157.246.103",
+      "server": "3.78.86.37",
       "server_port": 22222,
       "password": "telegram-id-privatevpns",
       "tls": {
@@ -364,9 +321,9 @@
       }
     },
     {
-      "tag": "🇫🇷 netflix_FR",
+      "tag": "🇩🇪 netflix_DE 2",
       "type": "trojan",
-      "server": "35.181.203.183",
+      "server": "18.153.125.162",
       "server_port": 22222,
       "password": "telegram-id-privatevpns",
       "tls": {
@@ -378,7 +335,19 @@
     {
       "tag": "🇫🇷 FR_04",
       "type": "trojan",
-      "server": "13.37.182.97",
+      "server": "35.181.226.48",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇫🇷 netflix_FR",
+      "type": "trojan",
+      "server": "35.181.176.193",
       "server_port": 22222,
       "password": "telegram-id-privatevpns",
       "tls": {
@@ -390,7 +359,7 @@
     {
       "tag": "netflix_GB",
       "type": "shadowsocks",
-      "server": "212.102.53.80",
+      "server": "212.102.53.197",
       "server_port": 443,
       "method": "aes-128-gcm",
       "password": "shadowsocks"
@@ -406,7 +375,7 @@
     {
       "tag": "netflix_GB 3",
       "type": "shadowsocks",
-      "server": "212.102.53.197",
+      "server": "212.102.53.194",
       "server_port": 443,
       "method": "aes-128-gcm",
       "password": "shadowsocks"
@@ -414,7 +383,7 @@
     {
       "tag": "netflix_GB 4",
       "type": "shadowsocks",
-      "server": "212.102.53.194",
+      "server": "212.102.53.80",
       "server_port": 443,
       "method": "aes-128-gcm",
       "password": "shadowsocks"
@@ -422,7 +391,7 @@
     {
       "tag": "netflix_GB 5",
       "type": "trojan",
-      "server": "3.10.8.116",
+      "server": "18.134.36.114",
       "server_port": 22222,
       "password": "telegram-id-privatevpns",
       "tls": {
@@ -432,33 +401,9 @@
       }
     },
     {
-      "tag": "🇬🇧 GB_10",
+      "tag": "🇮🇪 IE_11",
       "type": "trojan",
-      "server": "35.178.209.4",
-      "server_port": 22222,
-      "password": "telegram-id-privatevpns",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "🇮🇪 netflix_IE",
-      "type": "trojan",
-      "server": "63.34.192.157",
-      "server_port": 22222,
-      "password": "telegram-id-privatevpns",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_12",
-      "type": "trojan",
-      "server": "34.249.214.253",
+      "server": "54.246.160.166",
       "server_port": 22222,
       "password": "telegram-id-privatevpns",
       "tls": {
@@ -490,7 +435,7 @@
       "password": "a8bt9fY0QsLS6eLnXUe0Ym"
     },
     {
-      "tag": "🇩🇪 netflix_DE 2",
+      "tag": "🇩🇪 netflix_DE 3",
       "type": "vmess",
       "server": "zula.ir",
       "server_port": 443,
@@ -506,25 +451,6 @@
       "transport": {
         "type": "ws",
         "path": "/vmess"
-      }
-    },
-    {
-      "tag": "🇺🇸 netflix_US",
-      "type": "vmess",
-      "server": "188.114.99.183",
-      "server_port": 443,
-      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "linde06.indiavideo.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkws"
       }
     },
     {
@@ -547,7 +473,7 @@
       }
     },
     {
-      "tag": "🇺🇸 netflix_US 2",
+      "tag": "🇺🇸 netflix_US",
       "type": "vmess",
       "server": "upload.ir",
       "server_port": 443,
@@ -566,7 +492,38 @@
       }
     },
     {
+      "tag": "🇫🇷 netflix_FR 3",
+      "type": "vmess",
+      "server": "188.114.99.183",
+      "server_port": 443,
+      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "linde06.indiavideo.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/linkws"
+      }
+    },
+    {
       "tag": "🇸🇪 netflix_SE",
+      "type": "trojan",
+      "server": "51.20.172.0",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇸🇪 SE_19",
       "type": "trojan",
       "server": "16.170.18.210",
       "server_port": 22222,
@@ -602,7 +559,7 @@
       }
     },
     {
-      "tag": "🇺🇸 netflix_US 3",
+      "tag": "🇺🇸 netflix_US 2",
       "type": "shadowsocks",
       "server": "205.134.180.137",
       "server_port": 443,
@@ -610,26 +567,7 @@
       "password": "g13S7doXar0A"
     },
     {
-      "tag": "🇩🇪 netflix_DE 3",
-      "type": "vmess",
-      "server": "172.67.170.103",
-      "server_port": 443,
-      "uuid": "76221bfb-e92f-4e80-81c5-6fe48f50ac0b",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "glweidf.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇸🇬 netflix_SG",
+      "tag": "🇺🇸 US_23",
       "type": "vmess",
       "server": "205.234.231.35",
       "server_port": 31433,
@@ -637,44 +575,6 @@
       "security": "auto",
       "alter_id": 0,
       "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇫🇷 netflix_FR 3",
-      "type": "vmess",
-      "server": "172.67.161.77",
-      "server_port": 443,
-      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "linde06.indiavideo.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇫🇷 netflix_FR 4",
-      "type": "vmess",
-      "server": "172.67.196.112",
-      "server_port": 443,
-      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "linde06.indiavideo.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkws"
-      }
     },
     {
       "tag": "🇩🇪 netflix_DE 4",
@@ -696,32 +596,18 @@
       }
     },
     {
-      "tag": "🇸🇬 disney_SG",
+      "tag": "🇩🇪 netflix_DE 5",
       "type": "vmess",
-      "server": "172.67.164.78",
-      "server_port": 2052,
-      "uuid": "c286daa2-59de-455c-8de8-ec032b6ce2e8",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇫🇷 netflix_FR 5",
-      "type": "vmess",
-      "server": "104.21.4.6",
+      "server": "172.67.170.103",
       "server_port": 443,
-      "uuid": "1052f24e-7b09-45eb-b0c5-d858eb124192",
+      "uuid": "76221bfb-e92f-4e80-81c5-6fe48f50ac0b",
       "security": "auto",
       "alter_id": 0,
       "packet_encoding": "xudp",
       "tls": {
         "enabled": true,
         "insecure": true,
-        "server_name": "glweidf.cfd"
+        "server_name": "glweidf.sbs"
       },
       "transport": {
         "type": "ws",
@@ -729,26 +615,45 @@
       }
     },
     {
-      "tag": "🇺🇸 netflix_US 4",
+      "tag": "🇫🇷 netflix_FR 4",
       "type": "vmess",
-      "server": "104.21.83.108",
+      "server": "172.67.161.77",
       "server_port": 443,
-      "uuid": "6c168fcc-2231-4f3b-8c1e-f6391692df4a",
+      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
       "security": "auto",
       "alter_id": 0,
       "packet_encoding": "xudp",
       "tls": {
         "enabled": true,
         "insecure": true,
-        "server_name": "hms02.fxiaomi.sbs"
+        "server_name": "linde06.indiavideo.sbs"
       },
       "transport": {
         "type": "ws",
-        "path": "/link"
+        "path": "/linkws"
       }
     },
     {
-      "tag": "🇩🇪 netflix_DE 5",
+      "tag": "🇫🇷 netflix_FR 5",
+      "type": "vmess",
+      "server": "172.67.196.112",
+      "server_port": 443,
+      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "linde06.indiavideo.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/linkws"
+      }
+    },
+    {
+      "tag": "🇫🇷 netflix_FR 6",
       "type": "vmess",
       "server": "caretaker.com",
       "server_port": 443,
@@ -767,21 +672,45 @@
       }
     },
     {
-      "tag": "🇮🇳 netflix_IN",
+      "tag": "🇺🇸 netflix_US 3",
       "type": "vmess",
-      "server": "hk.wish.ml",
-      "server_port": 2052,
-      "uuid": "c286daa2-59de-455c-8de8-ec032b6ce2e8",
+      "server": "104.21.83.108",
+      "server_port": 443,
+      "uuid": "6c168fcc-2231-4f3b-8c1e-f6391692df4a",
       "security": "auto",
       "alter_id": 0,
       "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hms02.fxiaomi.sbs"
+      },
       "transport": {
         "type": "ws",
-        "path": "/"
+        "path": "/link"
       }
     },
     {
-      "tag": "🇺🇸 netflix_US 5",
+      "tag": "🇫🇷 netflix_FR 7",
+      "type": "vmess",
+      "server": "104.21.15.36",
+      "server_port": 443,
+      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "linde06.indiavideo.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/linkws"
+      }
+    },
+    {
+      "tag": "🇺🇸 netflix_US 4",
       "type": "vmess",
       "server": "gur.gov.ua",
       "server_port": 2087,
@@ -800,18 +729,32 @@
       }
     },
     {
-      "tag": "🇫🇷 netflix_FR 6",
+      "tag": "🇮🇳 netflix_IN",
       "type": "vmess",
-      "server": "104.21.15.36",
+      "server": "hk.wish.ml",
+      "server_port": 2052,
+      "uuid": "c286daa2-59de-455c-8de8-ec032b6ce2e8",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇫🇷 netflix_FR 8",
+      "type": "vmess",
+      "server": "104.21.4.6",
       "server_port": 443,
-      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
+      "uuid": "1052f24e-7b09-45eb-b0c5-d858eb124192",
       "security": "auto",
       "alter_id": 0,
       "packet_encoding": "xudp",
       "tls": {
         "enabled": true,
         "insecure": true,
-        "server_name": "linde06.indiavideo.sbs"
+        "server_name": "glweidf.cfd"
       },
       "transport": {
         "type": "ws",
