@@ -20,7 +20,7 @@ download_and_filter() {
     # Filter the file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
     split -l 300 "$filename" "$output_prefix"
-
+}
 # Loop through URLs and process each one
 for url in "${urls[@]}"; do
     download_and_filter "$url"
