@@ -42,17 +42,6 @@ python editjson.py  mixlite.json
 cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
 
 # cleaning
-# 定义要检查和删除的文件列表
-files_to_check=("Config%20list*.txt")
-# 遍历文件列表并检查每个文件是否存在
-for file in "${files_to_check[@]}"; do
-  if [ -f "$file" ] || [ -d "$file" ]; then
-    # 文件或目录存在，进行删除
-    rm -rf "$file"
-    echo "Deleted: $file"
-  fi
-done
-
 cd ..
 # end
 echo get subscribe sucessfully
