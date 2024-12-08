@@ -31,8 +31,6 @@ cd ..
 curl -s "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/singbox/mix.json" -o "./sub/mix.json"
 curl -s "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/singbox/sfasfi/mixLite.json" -o "./sub/mixlite.json"
 curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/master/collected-proxies/clash-meta/actives_under_1000ms.yaml" -o "./sub/under1k.yml"
-curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/vmess.txt" -o "./sub/vmess.txt"
-curl -s "https://raw.githubusercontent.com/lagzian/SS-Collector/main/reality.txt" -o "./sub/reality.txt"
 
 # do some editing
 cd ./sub
@@ -43,7 +41,9 @@ cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
 
 # cleaning
 # 定义要检查和删除的文件列表
-rm -rf ./Config%20list*.txt
+#rm -rf ./Config%20list*.txt
+rm -rf vmess.txt
+rm -rf reality.txt
 
 
 
