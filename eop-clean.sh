@@ -42,6 +42,11 @@ python editjson.py  mixlite.json
 cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
 
 # cleaning
+# 定义要检查和删除的文件列表
+rm -rf ./Config%20list*.txt
+
+
+
 cd ..
 # end
 echo get subscribe sucessfully
