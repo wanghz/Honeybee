@@ -5,20 +5,7 @@ currentmonths=$(date +%m)
 currentyears=$(date +%Y)
 
 urls=(
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list1.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list2.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list3.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list4.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list5.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list6.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list7.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list8.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list9.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list10.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list11.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list12.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list13.txt"
-  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/main/Config%20list14.txt"
+  "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
 )
 
 cd ./sub
@@ -26,11 +13,13 @@ cd ./sub
 download_and_filter() {
     url="$1"
     filename="${url##*/}"
+    output_prefix="split_"   # 分割后文件的前缀
+
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
-}
+    split -l 300 "$filename" "$output_prefix"
 
 # Loop through URLs and process each one
 for url in "${urls[@]}"; do
