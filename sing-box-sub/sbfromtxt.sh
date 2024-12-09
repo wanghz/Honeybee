@@ -9,7 +9,7 @@ files_split=$(find . -maxdepth 1 -type f -name "split*" | sed 's|^\./||')
 all_files="$files_split $files"
 
 counter=1
-for file in "${all_files[@]}"; do
+for file in "${files_split[@]}"; do
     # 在这里添加您的提取逻辑
     localfile="https://raw.githubusercontent.com/wanghz/Honeybee/main/sub/$file"
     echo "Extracting from local file: $localfile"
