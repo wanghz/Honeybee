@@ -8,7 +8,7 @@ files=(
 )
 
 # 使用 find 匹配以 "split" 开头的文件
-files_split=$(find . -maxdepth 1 -type f -name "split*" | sort)
+files_split=$(find . -maxdepth 1 -type f -name "split*" -printf "%f\n")
 all_files="$files $files_split"
 
 counter=1
