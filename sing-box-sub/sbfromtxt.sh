@@ -5,7 +5,7 @@ files=(
 )
 
 # 使用 find 匹配以 "split" 开头的文件
-files_split=$(find . -maxdepth 1 -type f -name "split*" -printf "%f\n")
+files_split=$(find . -maxdepth 1 -type f -name "split*" | sed 's|^\./||')
 all_files="$files_split $files"
 
 counter=1
