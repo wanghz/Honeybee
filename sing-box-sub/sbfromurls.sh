@@ -9,6 +9,7 @@ local="https://raw.githubusercontent.com/wanghz/Honeybee/refs/heads/main/sing-bo
 curl -o snakem982url1.txt "$snakem982url1"
 curl -o snakem982url2.txt "$snakem982url2"
 curl -o localurl.txt "$local"
+echo "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml" >> localurl.txt
 
 # 初始化数组
 urls=()
