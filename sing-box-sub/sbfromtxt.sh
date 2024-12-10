@@ -11,6 +11,8 @@ files=(
         "split_ah"
         "split_ai"
         "split_aj"
+        "split_act"
+        "split_1k"
         "htonly.yml"
 )
 
