@@ -28,24 +28,21 @@ done
 
 cd ..
 # download some others
-curl -s "https://raw.githubusercontent.com/yebekhe/TVC/main/subscriptions/singbox/mix.json" -o "./sub/mix.json"
-curl -s "https://raw.githubusercontent.com/yebekhe/TelegramV2rayCollector/main/singbox/sfasfi/mixLite.json" -o "./sub/mixlite.json"
-curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/master/collected-proxies/clash-meta/actives_under_1000ms.yaml" -o "./sub/under1k.yml"
+curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/refs/heads/master/collected-proxies/row-url/actives.txt" -o "./sub/split_act"
+curl -s "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/master/collected-proxies/clash-meta/actives_under_1000ms.yaml" -o "./sub/split_1k"
 
 # do some editing
 cd ./sub
 cp ../editjson.py .
-python editjson.py  mix.json
-python editjson.py  mixlite.json
-cp ../sing-box-subscribe-no-flask-2.7.0/e*.json .
 
 # cleaning
 # 定义要检查和删除的文件列表
 #rm -rf ./Config%20list*.txt
-rm -rf vmess.txt
-rm -rf reality.txt
-
-
+rm -rf ./mix.json
+rm -rf ./mixlite.json
+rm -rf ./under1k.yml
+rm -rf ./verified.yaml
+rm -rf ./note.yml
 
 cd ..
 # end
