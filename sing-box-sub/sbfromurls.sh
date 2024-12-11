@@ -9,7 +9,10 @@ local="https://raw.githubusercontent.com/wanghz/Honeybee/refs/heads/main/sing-bo
 curl -o snakem982url1.txt "$snakem982url1"
 curl -o snakem982url2.txt "$snakem982url2"
 curl -o localurl.txt "$local"
-echo "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/main/sub/merged_proxies_new.yaml" >> localurl.txt
+echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
+echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
+echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
+echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
 
 # 初始化数组
 urls=()
