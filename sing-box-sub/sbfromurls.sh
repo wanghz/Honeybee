@@ -14,6 +14,10 @@ echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> local
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
+echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml" >> localurl.txt
+echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta-2.yaml" >> localurl.txt
+echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/v2ray.txt" >> localurl.txt
+echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/v2ray-2.txt" >> localurl.txt
 
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' snakem982url1.txt
