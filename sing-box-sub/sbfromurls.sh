@@ -16,12 +16,12 @@ echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >>
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
 
 # 删除一些找不到的或没内容的
-sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' nodelist.txt
-sed -i '/Vauth\/node\/main\/Master/d' nodelist.txt
-sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' proxies.txt
-sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' proxies.txt
-sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' proxies.txt
-sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' proxies.txt
+sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' snakem982url1.txt
+sed -i '/Vauth\/node\/main\/Master/d' snakem982url1.txt
+sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' snakem982url2.txt
+sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' snakem982url2.txt
+sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' snakem982url2.txt
+sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' snakem982url2.txt
 sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
 
 # 初始化数组
