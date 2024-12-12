@@ -22,6 +22,7 @@ sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' snakem982url2.txt
 sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' snakem982url2.txt
 sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' snakem982url2.txt
 sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' snakem982url2.txt
+sed -i '/banyunxiaoxi\.icu/d' snakem982url2.txt
 sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
 
 # 初始化数组
