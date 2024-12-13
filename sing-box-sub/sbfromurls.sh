@@ -15,9 +15,15 @@ echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> 
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
 echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml" >> localurl.txt
-echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta-2.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/v2ray.txt" >> localurl.txt
-echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/v2ray-2.txt" >> localurl.txt
+echo "https://raw.githubusercontent.com/aiboboxx/clashfree/refs/heads/main/clash.yml" >> localurl.txt
+echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
+echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
+echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
+echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
+echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >> localurl.txt
+echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/v2" >> localurl.txt
+echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/tr" >> localurl.txt
 
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' snakem982url1.txt
