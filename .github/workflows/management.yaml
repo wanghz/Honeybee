@@ -1,60 +1,55 @@
 name: management
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  schedule:   
-    - cron: '45 */2 * * *'   #国际标准时间，北京时间+8，即下午1点钟
-  # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    - cron: '45 */2 * * *'
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   management:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v3  # 建议使用明确的版本号
+        with:
+          fetch-depth: 0  # 获取完整历史记录
+          
       - name: list newly updated files
         run: |
           cd /home/runner/work/Honeybee/Honeybee/sub
           pwd
-          rm -f sub.txt
-          ls -l
-          find . -type f \( -iname "f*.json" -o -iname "k*.json" \) -mmin -60 > sub.txt
+          echo "Generated at: $(date)" > sub.txt  # 添加时间戳作为内容
+          find . -type f \( -iname "f*.json" -o -iname "k*.json" \) -mmin -60 >> sub.txt
           cat sub.txt
-          stat sub.txt
-        continue-on-error: true  # 即使出错也继续执行后续步骤
-      - name: Update sub.txt
-        run: |
-          # 强制更新 sub.txt 的时间戳
-          touch sub.txt
-          echo "sub.txt timestamp updated"
-          stat sub.txt  # 输出文件的状态信息，便于调试        
+        continue-on-error: true
+
       - name: remove outdated files
         run: |
           cd /home/runner/work/Honeybee/Honeybee/sub
           pwd
-          ls -l
           find . -type f \( -name "f*.json" -o -name "k*.json" \) -mtime +5 -exec echo Deleting: {} \; -delete
-        continue-on-error: true  # 即使出错也继续执行后续步骤
-      - name: Pull changes
+        continue-on-error: true
+
+      - name: Git Setup
         run: |
           git config --global user.email "wanghz518@gmail.com"
           git config --global user.name "shenmyisi"
-          #git pull origin main
-      - name: Add sub.txt to Git
+
+      - name: Check for changes
+        id: verify_diff
         run: |
-          git add sub.txt
-      #Commit
-      - name: Auto Commit and Push Changes
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes_exist=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and Push
+        if: steps.verify_diff.outputs.changes_exist == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update sub.txt with timestamp"
+          commit_message: "Update sub.txt with new content"
+          file_pattern: 'sub/sub.txt'
