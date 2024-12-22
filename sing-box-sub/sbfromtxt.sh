@@ -7,7 +7,7 @@ files=(
 )
 
 # 使用 find 匹配以 "split" 开头的文件
-files_split=$(find /home/runner/work/Honeybee/Honeybee/sub -maxdepth 1 -type f -name "split*" | sed 's|^\./||')
+files_split=$(find /home/runner/work/Honeybee/Honeybee/sub -maxdepth 1 -type f -name "split*" | sed 's|.*/||')
 all_files="$files_split $files"
 
 counter=1
