@@ -1,16 +1,15 @@
 #!/bin/bash
 
-files=(
+all_files=(
         "split_act"
         "split_1k"
         "htonly.yml"
 )
 
-# 使用 find 匹配以 "split" 开头的文件
-#files_split=$(find /home/runner/work/Honeybee/Honeybee/sub -maxdepth 1 -type f -name "split*" | sed 's|.*/||')
-recent_files=$(find /home/runner/work/Honeybee/Honeybee/sub -type f -mmin -60 -name "split*" -printf "%f\n")
-
-all_files="$recent_files $files"
+# 添加find找到的文件到数组
+while IFS= read -r file; do
+    all_files+=("$file")
+done < <(find /home/runner/work/Honeybee/Honeybee/sub -type f -mmin -60 -name "split*" -printf "%f\n")
 
 counter=1
 for file in "${all_files[@]}"; do
