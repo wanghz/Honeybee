@@ -11,6 +11,8 @@ curl -o snakem982url2.txt "$snakem982url2"
 curl -o url3.txt "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs"
 
 curl -o localurl.txt "$local"
+cat snakem982url1.txt>>localurl.txt
+cat snakem982url2.txt>>localurl.txt
 cat url3.txt>>localurl.txt
 # 添加一些
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
@@ -33,21 +35,24 @@ echo "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/trojan
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">> localurl.txt
 echo "https://raw.githubusercontent.com/Space-00/V2ray-configs/refs/heads/main/config.txt">>localurl.txt
 # 删除一些找不到的或没内容的
-sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' snakem982url1.txt
-sed -i '/Vauth\/node\/main\/Master/d' snakem982url1.txt
-sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' snakem982url2.txt
-sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' snakem982url2.txt
-sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' snakem982url2.txt
-sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' snakem982url2.txt
-sed -i '/banyunxiaoxi\.icu/d' snakem982url2.txt
+sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
+sed -i '/Vauth\/node\/main\/Master/d' localurl.txt
+sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' localurl.txt
+sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' localurl.txt
+sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' localurl.txt
+sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' localurl.txt
+sed -i '/banyunxiaoxi\.icu/d' localurl.txt
 sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
-
+sed -i '/^https:\/\/dpaste\.com/d' local.url.txt
+sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
+sed -i 'baipiaoyes\.com/d' localurl.txt
+sed -i 'Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
 # 初始化数组
 urls=()
 # 将文件内容合并到数组中
 while IFS= read -r line; do
     urls+=("$line")
-done < <(awk '1; ENDFILE {print ""}' snakem982url1.txt snakem982url2.txt localurl.txt)
+done < <(awk '1; ENDFILE {print ""}' localurl.txt)
 
 counter=1
 for url in "${urls[@]}"; do
