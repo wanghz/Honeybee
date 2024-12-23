@@ -8,7 +8,10 @@ local="https://raw.githubusercontent.com/wanghz/Honeybee/refs/heads/main/sing-bo
 # 下载文件
 curl -o snakem982url1.txt "$snakem982url1"
 curl -o snakem982url2.txt "$snakem982url2"
+curl -o url3.txt "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs"
+
 curl -o localurl.txt "$local"
+cat url3.txt>>localurl.txt
 # 添加一些
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
@@ -24,7 +27,11 @@ echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/v2" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/tr" >> localurl.txt
-
+echo "https://github.com/MhdiTaheri/V2rayCollector/blob/main/sub/mix" >> localurl.txt
+echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
+echo "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/trojan">> localurl.txt
+echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/Space-00/V2ray-configs/refs/heads/main/config.txt">>localurl.txt
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' snakem982url1.txt
 sed -i '/Vauth\/node\/main\/Master/d' snakem982url1.txt
