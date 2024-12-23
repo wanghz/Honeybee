@@ -11,8 +11,11 @@ curl -o snakem982url2.txt "$snakem982url2"
 curl -o url3.txt "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs"
 
 curl -o localurl.txt "$local"
+echo "" >> localurl.txt
 cat snakem982url1.txt>>localurl.txt
+echo "" >> localurl.txt
 cat snakem982url2.txt>>localurl.txt
+echo "" >> localurl.txt
 cat url3.txt>>localurl.txt
 # 添加一些
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
@@ -43,10 +46,10 @@ sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' localurl.txt
 sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' localurl.txt
 sed -i '/banyunxiaoxi\.icu/d' localurl.txt
 sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
-sed -i '/^https:\/\/dpaste\.com/d' local.url.txt
+#sed -i '/^https:\/\/dpaste\.com\/3FFLNMKCK/d' local.url.txt
 sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
 sed -i 'baipiaoyes\.com/d' localurl.txt
-sed -i 'Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
+sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
 # 初始化数组
 urls=()
 # 将文件内容合并到数组中
