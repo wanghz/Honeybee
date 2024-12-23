@@ -17,6 +17,7 @@ echo "" >> localurl.txt
 cat snakem982url2.txt>>localurl.txt
 echo "" >> localurl.txt
 cat url3.txt>>localurl.txt
+echo "" >> localurl.txt
 # 添加一些
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
@@ -48,7 +49,7 @@ sed -i '/banyunxiaoxi\.icu/d' localurl.txt
 sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
 #sed -i '/^https:\/\/dpaste\.com\/3FFLNMKCK/d' local.url.txt
 sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
-sed -i 'baipiaoyes\.com/d' localurl.txt
+sed -i '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' localurl.txt
 sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
 # 初始化数组
 urls=()
