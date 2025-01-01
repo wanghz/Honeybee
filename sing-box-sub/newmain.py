@@ -1,8 +1,7 @@
-import json, os, tool, time, requests, sys, urllib, importlib, argparse, yaml, ruamel.yaml
+import json, os, tool, time, requests, sys, urllib, importlib, argparse, yaml
 import re
 from datetime import datetime
 from urllib.parse import urlparse
-from api.app import TEMP_DIR
 from parsers.clash2base64 import clash2v2ray
 
 parsers_mod = {}
@@ -49,6 +48,7 @@ def process_subscribes(subscribes):
         if _nodes and len(_nodes) > 0:
             add_prefix(_nodes, subscribe)
             add_emoji(_nodes, subscribe)
+            nodefilter(_nodes, subscribe)
             if subscribe.get('subgroup'):
                 subscribe['tag'] = subscribe['tag'] + '-' + subscribe['subgroup'] + '-' + 'subgroup'
             if not nodes.get(subscribe['tag']):
@@ -120,6 +120,15 @@ def add_emoji(nodes, subscribe):
                 node['detour'] = tool.rename(node['detour'])
 
 
+def nodefilter(nodes, subscribe):
+    if subscribe.get('ex-node-name'):
+        ex_nodename = re.split(r'[,\|]', subscribe['ex-node-name'])
+        for exns in ex_nodename:
+            for node in nodes[:]:  # 遍历 nodes 的副本，以便安全地删除元素
+                if exns in node['tag']:
+                    nodes.remove(node)
+
+
 def get_nodes(url):
     if url.startswith('sub://'):
         url = tool.b64Decode(url[6:]).decode('utf-8')
@@ -184,7 +193,10 @@ def parse_content(content):
         factory = get_parser(t)
         if not factory:
             continue
-        node = factory(t)
+        try:
+            node = factory(t)
+        except Exception as e:  #节点解析失败，跳过
+            pass
         if node:
             nodelist.append(node)
     return nodelist
@@ -209,9 +221,9 @@ def get_parser(node):
 def get_content_from_url(url, n=6):
     UA = ''
     print('处理: \033[31m' + url + '\033[0m')
-    # print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
+    print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
     prefixes = ["vmess://", "vless://", "ss://", "ssr://", "trojan://", "tuic://", "hysteria://", "hysteria2://",
-                "hy2://", "wg://", "http2://", "socks://", "socks5://"]
+                "hy2://", "wg://", "wireguard://", "http2://", "socks://", "socks5://"]
     if any(url.startswith(prefix) for prefix in prefixes):
         response_text = tool.noblankLine(url)
         return response_text
@@ -224,21 +236,24 @@ def get_content_from_url(url, n=6):
     concount = 1
     while concount <= n and not response:
         print('连接出错，正在进行第 ' + str(concount) + ' 次重试，最多重试 ' + str(n) + ' 次...')
-        # print('Lỗi kết nối, đang thử lại '+str(concount)+'/'+str(n)+'...')
+        print('Lỗi kết nối, đang thử lại '+ str(concount) + '/' + str(n) + '...')
         response = tool.getResponse(url)
         concount = concount + 1
         time.sleep(1)
     if not response:
         print('获取错误，跳过此订阅')
-        # print('Lỗi khi tải link đăng ký, bỏ qua link đăng ký này')
+        print('Lỗi khi tải link đăng ký, bỏ qua link đăng ký này')
         print('----------------------------')
         pass
-    response_content = response.content
-    response_text = response_content.decode('utf-8-sig')  # utf-8-sig 可以忽略 BOM
-    #response_encoding = response.encoding
+    try:
+        response_content = response.content
+        response_text = response_content.decode('utf-8-sig')  # utf-8-sig 可以忽略 BOM
+        #response_encoding = response.encoding
+    except:
+        return ''
     if response_text.isspace():
         print('没有从订阅链接获取到任何内容')
-        # print('Không nhận được proxy nào từ link đăng ký')
+        print('Không nhận được proxy nào từ link đăng ký')
         return None
     if not response_text:
         response = tool.getResponse(url, custom_user_agent='clashmeta')
@@ -249,9 +264,10 @@ def get_content_from_url(url, n=6):
     elif 'proxies' in response_text:
         yaml_content = response.content.decode('utf-8')
         response_text_no_tabs = yaml_content.replace('\t', ' ') #fuckU
-        yaml = ruamel.yaml.YAML()
+        #yaml = ruamel.yaml.YAML()
         try:
-            response_text = dict(yaml.load(response_text_no_tabs))
+            #response_text = dict(yaml.load(response_text_no_tabs))
+            response_text = yaml.safe_load(response_text_no_tabs)
             return response_text
         except:
             pass
@@ -260,7 +276,9 @@ def get_content_from_url(url, n=6):
             response_text = json.loads(response.text)
             return response_text
         except:
-            pass
+            response_text = re.sub(r'//.*', '', response_text)
+            response_text = json.loads(response_text)
+            return response_text
     else:
         try:
             response_text = tool.b64Decode(response_text)
@@ -274,7 +292,7 @@ def get_content_from_url(url, n=6):
 
 def get_content_form_file(url):
     print('处理: \033[31m' + url + '\033[0m')
-    # print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
+    print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
     # encoding = tool.get_encoding(url)
     file_extension = os.path.splitext(url)[1]  # 获取文件的后缀名
     if file_extension.lower() == '.yaml':
@@ -295,43 +313,18 @@ def get_content_form_file(url):
 
 
 def save_config(path, nodes):
-    try:
-        if 'auto_backup' in providers and providers['auto_backup']:
-            now = datetime.now().strftime('%Y%m%d%H%M%S')
-            if os.path.exists(path):
-                os.rename(path, f'{path}.{now}.bak')
+    if 'auto_backup' in providers and providers['auto_backup']:
+        now = datetime.now().strftime('%Y%m%d%H%M%S')
         if os.path.exists(path):
-            os.remove(path)
-            print(f"已删除文件，并重新保存：\033[33m{path}\033[0m")
-            # print(f"File cấu hình đã được lưu vào: \033[33m{path}\033[0m")
-        else:
-            print(f"文件不存在，正在保存：\033[33m{path}\033[0m")
-            # print(f"File không tồn tại, đang lưu tại: \033[33m{path}\033[0m")
-        tool.saveFile(path, json.dumps(nodes, indent=2, ensure_ascii=False))
-    except Exception as e:
-        print(f"保存配置文件时出错：{str(e)}")
-        # print(f"Lỗi khi lưu file cấu hình: {str(e)}")
-        # 如果保存出错，尝试使用 config_file_path 再次保存
-        config_path = json.loads(temp_json_data).get("save_config_path", "config.json")
-        CONFIG_FILE_NAME = config_path
-        config_file_path = os.path.join('/tmp', CONFIG_FILE_NAME)
-        try:
-            if os.path.exists(config_file_path):
-                os.remove(config_file_path)
-                print(f"已删除文件，并重新保存：\033[33m{config_file_path}\033[0m")
-                # print(f"File cấu hình đã được lưu vào: \033[33m{config_file_path}\033[0m")
-            else:
-                print(f"文件不存在，正在保存：\033[33m{config_file_path}\033[0m")
-                # print(f"File không tồn tại, đang lưu tại: \033[33m{config_file_path}\033[0m")
-            tool.saveFile(config_file_path, json.dumps(nodes, indent=2, ensure_ascii=False))
-            # print(f"配置文件已保存到 {config_file_path}")
-            # print(f"Tập tin cấu hình đã được lưu vào {config_file_path}")
-        except Exception as e:
-            os.remove(config_file_path)
-            print(f"已删除文件：\033[33m{config_file_path}\033[0m")
-            # print(f"Các file đã bị xóa: \033[33m{config_file_path}\033[0m")
-            print(f"再次保存配置文件时出错：{str(e)}")
-            # print(f"Lỗi khi lưu lại file cấu hình: {str(e)}")
+            os.rename(path, f'{path}.{now}.bak')
+    if os.path.exists(path):
+        os.remove(path)
+        print(f"已删除文件，并重新保存：\033[33m{path}\033[0m")
+        print(f"File cấu hình đã được lưu vào: \033[33m{path}\033[0m")
+    else:
+        print(f"文件不存在，正在保存：\033[33m{path}\033[0m")
+        print(f"File không tồn tại, đang lưu tại: \033[33m{path}\033[0m")
+    tool.saveFile(path,json.dumps(nodes, indent=2, ensure_ascii=False))
 
 
 def set_proxy_rule_dns(config):
@@ -411,7 +404,7 @@ def combin_to_config(config, data):
             i += 1
             for out in config_outbounds:
                 if out.get("outbounds"):
-                    if out['tag'] == 'proxy':
+                    if out['tag'] == 'Proxy':
                         out["outbounds"] = [out["outbounds"]] if isinstance(out["outbounds"], str) else out["outbounds"]
                         if '{all}' in out["outbounds"]:
                             index_of_all = out["outbounds"].index('{all}')
@@ -421,12 +414,12 @@ def combin_to_config(config, data):
                             out["outbounds"].insert(i, (group.rsplit("-", 1)[0]).rsplit("-", 1)[-1])
             new_outbound = {'tag': (group.rsplit("-", 1)[0]).rsplit("-", 1)[-1], 'type': 'selector', 'outbounds': ['{' + group + '}']}
             config_outbounds.insert(-4, new_outbound)
-        else:
-            for out in config_outbounds:
-                if out.get("outbounds"):
-                    if out['tag'] == 'proxy':
-                        out["outbounds"] = [out["outbounds"]] if isinstance(out["outbounds"], str) else out["outbounds"]
-                        out["outbounds"].append('{' + group + '}')
+            if 'subgroup' not in group:
+                for out in config_outbounds:
+                    if out.get("outbounds"):
+                        if out['tag'] == 'Proxy':
+                            out["outbounds"] = [out["outbounds"]] if isinstance(out["outbounds"], str) else out["outbounds"]
+                            out["outbounds"].append('{' + group + '}')
     temp_outbounds = []
     if config_outbounds:
         # 提前处理all模板
@@ -465,17 +458,12 @@ def combin_to_config(config, data):
                     else:
                         t_o.append(oo)
                 if len(t_o) == 0:
+                    t_o.append('Proxy')
                     print('发现 {} 出站下的节点数量为 0 ，会导致sing-box无法运行，请检查config模板是否正确。'.format(
                         po['tag']))
-                    # print('Sing-Box không chạy được vì không tìm thấy bất kỳ proxy nào trong outbound của {}. Vui lòng kiểm tra xem mẫu cấu hình có đúng không!!'.format(po['tag']))
-                    config_path = json.loads(temp_json_data).get("save_config_path", "config.json")
-                    CONFIG_FILE_NAME = config_path
-                    config_file_path = os.path.join('/tmp', CONFIG_FILE_NAME)
-                    if os.path.exists(config_file_path):
-                        os.remove(config_file_path)
-                        print(f"已删除文件：{config_file_path}")
-                        # print(f"Các tập tin đã bị xóa: {config_file_path}")
-                    sys.exit()
+                    print('Sing-Box không chạy được vì không tìm thấy bất kỳ proxy nào trong outbound của {}. Vui lòng kiểm tra xem mẫu cấu hình có đúng không!!'.format(
+                        po['tag']))
+                    # sys.exit()
                 po['outbounds'] = t_o
                 if po.get('filter'):
                     del po['filter']
@@ -505,39 +493,28 @@ def display_template(tl):
     print(print_str)
 
 
-def select_config_template(tl, selected_template_index=None):
-    if args.template_index is not None:
-        uip = args.template_index
-    else:
-        # print ('Nhập số để chọn mẫu cấu hình tương ứng (nhấn Enter để chọn mẫu cấu hình đầu tiên theo mặc định): ')
-        uip = input('输入序号，载入对应config模板（直接回车默认选第一个配置模板）：')
-        try:
-            if uip == '':
-                return 0
-            uip = int(uip)
-            if uip < 1 or uip > len(tl):
-                print('输入了错误信息！重新输入')
-                # print('Nhập thông tin không chính xác! Vui lòng nhập lại')
-                return select_config_template(tl)
-            else:
-                uip -= 1
-        except:
-            print('输入了错误信息！重新输入')
-            # print('Nhập thông tin không chính xác! Vui lòng nhập lại')
-            return select_config_template(tl)
-    return uip
-
-
-# 自定义函数，用于解析参数为 JSON 格式
-def parse_json(value):
+def select_config_template(tl):
+    print ('Nhập số để chọn mẫu cấu hình tương ứng (nhấn Enter để chọn mẫu cấu hình đầu tiên theo mặc định): ')
+    uip = input('输入序号，载入对应config模板（直接回车默认选第一个配置模板）：')
     try:
-        return json.loads(value)
-    except json.JSONDecodeError:
-        raise argparse.ArgumentTypeError(f"Invalid JSON: {value}")
+        if uip == '':
+            return 0
+        uip = int(uip)
+        if uip < 1 or uip > len(tl):
+            print('输入了错误信息！重新输入')
+            print('Nhập thông tin không chính xác! Vui lòng nhập lại')
+            return select_config_template(tl)
+        else:
+            return uip-1
+    except:
+        print('输入了错误信息！重新输入')
+        print('Nhập thông tin không chính xác! Vui lòng nhập lại')
+        return select_config_template(tl)
 
 
 if __name__ == '__main__':
     init_parsers()
+    providers = load_json('providers.json')
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', 
                         help='Specify the configuration file name (default: provider.json)')
@@ -567,16 +544,8 @@ if __name__ == '__main__':
             for content in contents:
                 # 将内容添加到新列表中
                 combined_contents.append(content)
-        final_config = combined_contents  # 只返回节点信息
+        final_config = combined_contents #只返回节点信息
     else:
-        final_config = combin_to_config(config, nodes)  # 节点信息添加到模板
-
-    #print(final_config["outbounds"])
-    # 要过滤的字符串列表
-    #filter_strings = ["Parsashonam-0"]
-    #LEN = len( "YWVzLTI1Ni1jZmI6YW1hem9uc2tyMDU")
-
-    #filtered_data = [item for item in final_config['outbounds'] if (item.get('method') in filter_strings or len(item.get('method') >= LEN))]
-
+        final_config = combin_to_config(config, nodes) #节点信息添加到模板
     save_config(providers["save_config_path"], final_config)
     # updateLocalConfig('http://127.0.0.1:9090',providers['save_config_path'])
