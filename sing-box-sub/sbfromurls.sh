@@ -30,10 +30,9 @@ echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.ya
 echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
 echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
 echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >> localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/v2" >> localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/tr" >> localurl.txt
-echo "https://github.com/MhdiTaheri/V2rayCollector/blob/main/sub/mix" >> localurl.txt
+echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >> localurl.txt
+echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11" >> localurl.txt
+echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
 echo "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/trojan">> localurl.txt
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">> localurl.txt
