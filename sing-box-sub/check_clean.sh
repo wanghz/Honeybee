@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 检查依赖是否可用
-if ! command -v sing-box &>/dev/null; then
+if ! command -v ./sing-box-1.10.6-linux-amd64/sing-box &>/dev/null; then
     echo "Error: sing-box not installed or not in PATH"
     exit 1
 fi
@@ -12,7 +12,7 @@ if ! command -v python3 &>/dev/null; then
 fi
 
 # 指定要执行的程序
-program="./sing-box check -c"
+program="./sing-box-1.10.6-linux-amd64/sing-box check -c"
 second_program="python3 cfg_clean.py"
 
 # 遍历以 f 和 k 开头的 JSON 文件
