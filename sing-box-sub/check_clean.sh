@@ -3,10 +3,7 @@
 # 指定要执行的程序
 program="./sing-box check -c "
 # 指定第二个要执行的程序
-second_program="python3 cfg_clean.py"
-
-# 创建一个临时文件来存储输出
-temp_output=$(mktemp)
+second_program="python3 clean.py"
 
 # 遍历以 f 和 k 开头的 JSON 文件
 for json_file in f*.json k*.json; do
@@ -30,6 +27,3 @@ for json_file in f*.json k*.json; do
         done
     fi
 done
-
-# 删除临时文件
-rm -f "$temp_output"
