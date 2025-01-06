@@ -14,7 +14,7 @@ second_program="python3 ../sing-box-sub/cfg_clean.py"
 for json_file in f*.json k*.json; do
     if [[ -f "$json_file" ]]; then
         echo "Processing file: $json_file"
-        max_attempts=500
+        max_attempts=100
         attempts=0
         while true; do
             attempts=$((attempts + 1))
@@ -29,7 +29,7 @@ for json_file in f*.json k*.json; do
                 echo "Output: $output"
                 echo "-------------------"
 
-                number=$(echo "$output" | sed -n 's/.*outbound\[\([0-9]*\)\].*/\1/p')
+                number=$(echo "$output" | sed -n 's/.*outbounds\?\[\([0-9]*\)\].*/\1/p')
                 echo "Extracted number: $number"
 
                 $second_program "$json_file" "index" "$number"
