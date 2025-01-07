@@ -10,8 +10,13 @@ def read_json(file_path):
 
 # 写入JSON文件
 def write_json(file_path, data):
+    # 消除可能的多余的逗号
+    # 转换为 JSON 字符串
+    json_str = json.dumps(data, indent=4)
+    # 解析回 Python 对象
+    fixed_data = json.loads(json_str)    
     with open(file_path, 'w', encoding='utf-8') as file:
-        json.dump(data, file, ensure_ascii=False, indent=4)
+        json.dump(fixed_data, file, ensure_ascii=False, indent=4)
 
 def process_outbounds_method(data):
     tag_list = []
@@ -35,6 +40,21 @@ def process_outbounds(data, token):
             try:
                 outbound["outbounds"] = [x for x in outbound["outbounds"] if token not in x]
                 print("消除了 ", token)
+                if outbound["outbounds"][-1].endswith(","):
+                    outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")            
+            except:
+                pass
+    
+        if token in outbound["tag"]:
+            data["outbounds"].remove(outbound)
+            
+    return data
+
+def name_too_long(data):
+    for outbound in data["outbounds"]:
+        if "outbounds" in outbound and len(outbound["outbounds"]) > 5 and isinstance(outbound["outbounds"], list):
+            try:
+                outbound["outbounds"] = [x for x in outbound["outbounds"] if len(x) <= 120]
                 if outbound["outbounds"][-1].endswith(","):
                     outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")            
             except:
