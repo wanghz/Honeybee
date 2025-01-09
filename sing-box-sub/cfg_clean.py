@@ -51,20 +51,23 @@ def process_outbounds(data, token):
     return data
 
 def name_too_long(data):
+    # 创建一个新的列表来存储有效的 outbounds
+    valid_outbounds = []
     for outbound in data["outbounds"]:
-        if "outbounds" in outbound and len(outbound["outbounds"]) > 5 and isinstance(outbound["outbounds"], list):
-            try:
-                outbound["outbounds"] = [x for x in outbound["outbounds"] if len(x) <= 150]
-                if outbound["outbounds"][-1].endswith(","):
-                    outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")            
-            except:
-                pass
-    
-        if len(outbound["tag"]) > 150:
+        # 检查 outbound 是否包含 "outbounds" 并且是一个列表
+        if "outbounds" in outbound and isinstance(outbound["outbounds"], list):
+            # 过滤掉长度大于 150 的项目
+            outbound["outbounds"] = [x for x in outbound["outbounds"] if len(x) <= 150]
+            # 如果最后一个元素以逗号结尾，去掉逗号
+            if outbound["outbounds"] and outbound["outbounds"][-1].endswith(","):
+                outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")
+        
+        # 检查 tag 是否存在并且长度是否大于 150
+        if "tag" in outbound and len(outbound["tag"]) > 150:
+            print('Removing- ', outbound["tag"])
             data["outbounds"].remove(outbound)
-            
+    
     return data
-
 
 def one_by_one(data):
     # 确定固定的 valid_tags
@@ -107,7 +110,7 @@ if __name__ == "__main__":
     print("读取的JSON数据:", file_path)
 
     data = one_by_one(data)   #确保tag匹配
-    data =name_too_long(data) #不要名称太长的
+    data = name_too_long(data) #不要名称太长的
     
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
