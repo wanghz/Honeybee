@@ -54,13 +54,13 @@ def name_too_long(data):
     for outbound in data["outbounds"]:
         if "outbounds" in outbound and len(outbound["outbounds"]) > 5 and isinstance(outbound["outbounds"], list):
             try:
-                outbound["outbounds"] = [x for x in outbound["outbounds"] if len(x) <= 120]
+                outbound["outbounds"] = [x for x in outbound["outbounds"] if len(x) <= 150]
                 if outbound["outbounds"][-1].endswith(","):
                     outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")            
             except:
                 pass
     
-        if token in outbound["tag"]:
+        if len(outbound["tag"]) > 150:
             data["outbounds"].remove(outbound)
             
     return data
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     print("读取的JSON数据:", file_path)
 
     data = one_by_one(data)   #确保tag匹配
+    data =name_too_long(data) #不要名称太长的
     
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
