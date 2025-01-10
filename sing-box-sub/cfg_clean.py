@@ -72,7 +72,7 @@ def name_too_long(data):
 def one_by_one(data):
     # 确定固定的 valid_tags
     invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
-    valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless"]
+    valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless","hysteria","hysteria2"]
 
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
@@ -80,13 +80,12 @@ def one_by_one(data):
         tag = outbound.get("tag")
         if (
             "server" in outbound 
-            and outbound.get("type") in valid_types 
+            and outbound.get("type").lower() in valid_types 
             and isinstance(tag, str)  # 确保 tag 是字符串
             and len(tag) <= 200
         ):
             required_tags.append(tag)
 
-            
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
     data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
     data["outbounds"][2]["outbounds"] = [tag for tag in required_tags]
