@@ -83,7 +83,7 @@ def one_by_one(data):
     # 过滤字典：保持 valid_tags 原样，其他字典的 tag 必须与 required_tags 匹配
     filtered_outbounds = [
         outbound for outbound in data["outbounds"]
-        if outbound["tag"] in valid_tags and outbound["tag"] in required_tags and len(outbound['tag'] <=150
+        if outbound["tag"] in valid_tags and outbound["tag"] in required_tags and len(outbound['tag']) <=150
     ]
 
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
