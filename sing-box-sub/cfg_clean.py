@@ -83,7 +83,7 @@ def one_by_one(data):
     # 过滤字典：保持 valid_tags 原样，其他字典的 tag 必须与 required_tags 匹配
     filtered_outbounds = [
         outbound for outbound in data["outbounds"]
-        if outbound["tag"] in valid_tags or outbound["tag"] in required_tags
+        if outbound["tag"] in valid_tags and outbound["tag"] in required_tags and len(outbound['tag'] <=150
     ]
 
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
@@ -110,7 +110,6 @@ if __name__ == "__main__":
     print("读取的JSON数据:", file_path)
 
     data = one_by_one(data)   #确保tag匹配
-    data = name_too_long(data) #不要名称太长的
     
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
