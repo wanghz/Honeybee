@@ -76,10 +76,16 @@ def one_by_one(data):
 
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
+    for outbound in data.get("outbounds", []):  # 提供默认值以防止缺失
+        tag = outbound.get("tag")
+        if (
+            "server" in outbound 
+            and outbound.get("type") in valid_types 
+            and isinstance(tag, str)  # 确保 tag 是字符串
+            and len(tag) <= 200
+        ):
+            required_tags.append(tag)
 
-    for outbound in data["outbounds"]:
-        if "server" in outbound and outbound["type"] in valid_types :
-            required_tags.append(outbound["tag"])
             
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
     data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
