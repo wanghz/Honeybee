@@ -71,25 +71,19 @@ def name_too_long(data):
 
 def one_by_one(data):
     # 确定固定的 valid_tags
-    valid_tags = ["🌏 !cn", "auto", "block", "dns-out", "proxy"]
-
-    # 提取两个关键的 outbounds 列表
-    cn_outbounds = data["outbounds"][1]["outbounds"]
-    auto_outbounds = data["outbounds"][2]["outbounds"]
+    invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
+    valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless"]
 
     # 合并这两个列表，获取需要保留的 tag 集合
-    required_tags = set(cn_outbounds + auto_outbounds)
+    required_tags = []
 
-    # 过滤字典：保持 valid_tags 原样，其他字典的 tag 必须与 required_tags 匹配
-    filtered_outbounds = [
-        outbound for outbound in data["outbounds"]
-        if outbound["tag"] in valid_tags and outbound["tag"] in required_tags and len(outbound['tag']) <=150
-    ]
-
+    for outbound in data["outbounds"]:
+        if "server" in outbound and outbound["type"] in valid_types :
+            required_tags.append(outbound["tag"])
+            
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
-    existing_tags = {item["tag"] for item in filtered_outbounds}
-    data["outbounds"][1]["outbounds"] = [tag for tag in cn_outbounds if tag in existing_tags]
-    data["outbounds"][2]["outbounds"] = [tag for tag in auto_outbounds if tag in existing_tags]
+    data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
+    data["outbounds"][2]["outbounds"] = [tag for tag in required_tags]
 
     return data
 
