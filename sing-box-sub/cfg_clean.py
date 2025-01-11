@@ -83,7 +83,7 @@ def one_by_one(data):
             and outbound.get("type").lower() in valid_types 
             and isinstance(tag, str)  # 确保 tag 是字符串
             and len(tag) <= 200
-            and outbound.get("method").lower() != "\{\\"add\\\"" 
+            and outbound.get("method").lower() != '{\\"add\\"'
         ):
             required_tags.append(tag)
 
