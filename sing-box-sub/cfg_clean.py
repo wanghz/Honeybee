@@ -83,9 +83,11 @@ def one_by_one(data):
             and outbound.get("type").lower() in valid_types 
             and isinstance(tag, str)  # 确保 tag 是字符串
             and len(tag) <= 200
-            and outbound.get("method").lower() != '{\\"add\\"'
         ):
-            required_tags.append(tag)
+            if "method" in outbound and outbound.get("method") != '{\\"add\\"':
+                required_tags.append(tag)
+            else:
+                required_tags.append(tag)
 
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
     data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
