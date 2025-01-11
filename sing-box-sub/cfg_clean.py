@@ -76,6 +76,8 @@ def one_by_one(data):
 
     # 删除 method 不对的代理
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method"))]
+    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and  item.get("method") == "ss")]
+    data["outbounds"] = [item for item in data["outbounds"] if not ("plugin" in item and 'obfs"' in item.get("plugin"))]
 
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
