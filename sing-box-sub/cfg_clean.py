@@ -31,7 +31,7 @@ def process_outbounds_index(data, index):
     s = data["outbounds"][index]['tag']
     data["outbounds"] = [outbound for outbound in data["outbounds"] if not (outbound["tag"] == s)]
     print(index, "removed")
-
+    print(s)
     return data
         
 def process_outbounds(data, token):
@@ -83,6 +83,7 @@ def one_by_one(data):
             and outbound.get("type").lower() in valid_types 
             and isinstance(tag, str)  # 确保 tag 是字符串
             and len(tag) <= 200
+            and outbound.get("method").lower() != "\{\\"add\\\"" 
         ):
             required_tags.append(tag)
 
