@@ -31,7 +31,7 @@ def process_outbounds_index(data, index):
     s = data["outbounds"][index]['tag']
     data["outbounds"] = [outbound for outbound in data["outbounds"] if not (outbound["tag"] == s)]
     print(index, "removed")
-    print(s)
+    print("Wrong proxy:", s)
     return data
         
 def process_outbounds(data, token):
@@ -74,6 +74,9 @@ def one_by_one(data):
     invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
     valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless","hysteria","hysteria2"]
 
+    # 删除 method 不对的代理
+    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method"))]
+
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
     for outbound in data.get("outbounds", []):  # 提供默认值以防止缺失
@@ -84,10 +87,7 @@ def one_by_one(data):
             and isinstance(tag, str)  # 确保 tag 是字符串
             and len(tag) <= 200
         ):
-            if "method" in outbound and outbound.get("method") != '{\\"add\\"':
-                required_tags.append(tag)
-            else:
-                required_tags.append(tag)
+            required_tags.append(tag)
 
     # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
     data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
