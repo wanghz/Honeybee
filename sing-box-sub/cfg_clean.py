@@ -78,7 +78,7 @@ def one_by_one(data):
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method"))]
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and  item.get("method") == "ss")]
     data["outbounds"] = [item for item in data["outbounds"] if not ("plugin" in item and 'obfs"' in item.get("plugin"))]
-    data["outbounds"] = [item for item in data["outbounds"] if not ('tls' in item and 'reality' in item['tls'] and 'public_key' in item['tls']['reality'] and 'public_key' is not None)] 
+    data["outbounds"] = [item for item in data["outbounds"] if not ('tls' in item and 'reality' in item['tls'] and 'public_key' in item['tls']['reality'] and 'public_key' != None)] 
 
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
