@@ -114,8 +114,6 @@ if __name__ == "__main__":
     data = read_json(file_path)
     print("读取的JSON数据:", file_path)
 
-    data = one_by_one(data)   #确保tag匹配
-    
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
         new_data, tag_list = process_outbounds_method(data)         
@@ -125,7 +123,9 @@ if __name__ == "__main__":
         new_data = process_outbounds_index(data, number)
     else: 
         new_data = process_outbounds(data, token)
-    
+
+    new_data = one_by_one(new_data)   #确保tag匹配
+        
     # 写入JSON文件
     write_json(file_path, new_data)
     print("数据已写入",file_path)
