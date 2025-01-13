@@ -37,7 +37,7 @@ for json_file in f*.json k*.json; do
                 output=$($program "$json_file" 2>&1)
             else
                 echo "No output. checking $json_file"
-                $second_program "$json_file" "check" blank
+                $second_program "$json_file" "check" 000
                 break
             fi
         done
