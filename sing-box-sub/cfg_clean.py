@@ -114,7 +114,6 @@ if __name__ == "__main__":
     if len(sys.argv) <= 3:
         print("用法: python script.py <文件名> <字符串>")
     else:
-        #pass
         # 获取命令行参数
         file_path = sys.argv[1]
         token = sys.argv[2]
@@ -131,6 +130,8 @@ if __name__ == "__main__":
                 new_data = process_outbounds(new_data, tag)
     elif token == "index":
         new_data = process_outbounds_index(data, number)
+    elif token == "check":
+        pass
     else: 
         new_data = process_outbounds(data, token)
 
