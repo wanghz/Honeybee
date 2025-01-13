@@ -36,7 +36,8 @@ for json_file in f*.json k*.json; do
 
                 output=$($program "$json_file" 2>&1)
             else
-                echo "No output. Exiting loop for $json_file"
+                echo "No output. checking $json_file"
+                $second_program "$json_file" "check" 
                 break
             fi
         done
