@@ -127,10 +127,11 @@ if __name__ == "__main__":
         # 先把method不对的去掉，要把相关tag的代理都去掉
         new_data, tag_list = process_outbounds_method(data)         
         for tag in tag_list:
-                new_data = process_outbounds(new_data, tag)
+            new_data = process_outbounds(new_data, tag)
     elif token == "index":
         new_data = process_outbounds_index(data, number)
     elif token == "check":
+        new_data = data
         pass
     else: 
         new_data = process_outbounds(data, token)
