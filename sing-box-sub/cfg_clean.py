@@ -87,7 +87,7 @@ def one_by_one(data):
     # 过滤 outbounds 错误的path
     data["outbounds"] = [
         item for item in data["outbounds"]
-        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and is_url_encoding_valid(item["transport"].get('path')))
+        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and not is_url_encoding_valid(item["transport"].get('path')))
     ]
     
     # 合并这两个列表，获取需要保留的 tag 集合
