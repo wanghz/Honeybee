@@ -79,8 +79,12 @@ def one_by_one(data):
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and  item.get("method") == "ss")]
     data["outbounds"] = [item for item in data["outbounds"] if not ("plugin" in item and 'obfs"' in item.get("plugin"))]
     data["outbounds"] = [item for item in data["outbounds"] if not ('tls' in item and 'reality' in item['tls'] and 'public_key' in item['tls']['reality'] and 'public_key' != None)] 
-    data["outbounds"] = [item for item in data["outbounds"] if not ("transport" in item and 'path' in item["transport"] and item["transport"]['path'].startswith('%') and len(item["transport"]['path'])<5)]
-
+    # 过滤 outbounds 错误的path
+    data["outbounds"] = [
+        item for item in data["outbounds"]
+        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and  re.match(r'%..', item["transport"].get('path')))
+    ]
+    
     # 合并这两个列表，获取需要保留的 tag 集合
     required_tags = []
     for outbound in data.get("outbounds", []):  # 提供默认值以防止缺失
