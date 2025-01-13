@@ -2,6 +2,11 @@ import json
 import re
 import sys
 
+def is_url_encoding_valid(encoded_str):
+    # 正则表达式匹配 URL 编码格式
+    pattern = re.compile(r"^(%[0-9A-Fa-f]{2}|[^%])*$")
+    return bool(pattern.match(encoded_str))
+
 # 读取JSON文件
 def read_json(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -82,7 +87,7 @@ def one_by_one(data):
     # 过滤 outbounds 错误的path
     data["outbounds"] = [
         item for item in data["outbounds"]
-        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and  re.match(r'%..', item["transport"].get('path')))
+        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and is_url_encoding_valid(item["transport"].get('path')))
     ]
     
     # 合并这两个列表，获取需要保留的 tag 集合
