@@ -52,7 +52,7 @@ def split(data,slice_num=500):
         if i == 0:
             filename = input_file
         else:
-            filename = f"{prefix}{i}.json"
+            filename = f"{prefix}_{i}.json"
 
         write_json(filename, new_data)
     
