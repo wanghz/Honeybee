@@ -38,15 +38,16 @@ for json_file in f*.json k*.json; do
                 output=$($program "$json_file" 2>&1)
             else
                 echo "No output. checking $json_file"
-                $second_program "$json_file" "check" 000
-                # 拆分
-                bounds_length=$(jq '.bounds | length' "$json_file")
-                if [ "$bounds_length" -gt 2000 ]; then
-                    $split_program "$json_file" "1000"
-                fi
                 break
             fi
         done
+        # 清理潜在的不合规配置
+        $second_program "$json_file" "check" 000\
+        # 拆分过大的配置
+        outbounds_length=$(jq '.outbounds | length' "$json_file")
+        if [ "$outbounds_length" -gt 2000 ]; then
+            $split_program "$json_file" "1000"
+        fi
     else
         echo "No matching JSON files found"
     fi
