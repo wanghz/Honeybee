@@ -9,6 +9,7 @@ fi
 # 指定要执行的程序
 program="../sing-box-sub/sing-box-1.10.6-linux-amd64/sing-box check -c"
 second_program="python3 ../sing-box-sub/cfg_clean.py"
+split_program="python3 ../sing-bix-sub/large_config_split.py"
 
 # 遍历以 f 和 k 开头的 JSON 文件
 for json_file in f*.json k*.json; do
@@ -38,6 +39,10 @@ for json_file in f*.json k*.json; do
             else
                 echo "No output. checking $json_file"
                 $second_program "$json_file" "check" 000
+                # 拆分
+                bounds_length=$(jq '.bounds | length' "$json_file")
+                if [ "$bounds_length" -gt 2000 ]; then
+                    $split_program "$json_file" "1000"
                 break
             fi
         done
