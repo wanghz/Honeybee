@@ -79,6 +79,11 @@ def one_by_one(data):
     invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
     valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless","hysteria","hysteria2"]
 
+    #去重。 将字典序列化为字符串
+    str_list = [json.dumps(d, sort_keys=True) for d in data["outbounds"]]
+    unique_strs = list(dict.fromkeys(str_list))
+    # 将字符串反序列化为字典
+    data["outbounds"] = [json.loads(s) for s in unique_strs]
     # 删除 method 不对的代理
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method"))]
     data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and  item.get("method") == "ss")]
