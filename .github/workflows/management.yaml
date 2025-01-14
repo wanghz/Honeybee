@@ -15,10 +15,10 @@ jobs:
   management:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # 建议使用明确的版本号
-        with:
-          fetch-depth: 0  # 获取完整历史记录
-          
+      # 1. 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
       - name: list newly updated files
         run: |
           cd /home/runner/work/Honeybee/Honeybee/sub
@@ -32,7 +32,14 @@ jobs:
         run: |
           cd /home/runner/work/Honeybee/Honeybee/sub
           pwd
-          find . -type f \( -name "f*.json" -o -name "k*.json" \) -mtime +5 -exec echo Deleting: {} \; -delete
+          find . -type f \( -name "f*.json" -o -name "k*.json" \) -mtime +5 -exec rm -f {} \;
+        continue-on-error: true
+
+      # 2. 删除匹配 f*_*.json 的文件
+      - name: Delete files matching pattern
+        run: |
+          rm -f ./f*_*.json  # 删除匹配 f*_*.json 的文件
+          rm -f ./k*_*.json  # 删除匹配 f*_*.json 的文件
         continue-on-error: true
 
       - name: Git Setup
