@@ -43,6 +43,7 @@ for json_file in f*.json k*.json; do
                 bounds_length=$(jq '.bounds | length' "$json_file")
                 if [ "$bounds_length" -gt 2000 ]; then
                     $split_program "$json_file" "1000"
+                fi
                 break
             fi
         done
