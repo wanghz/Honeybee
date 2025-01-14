@@ -46,7 +46,7 @@ def split(data,slice_num=500):
         new_data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
         new_data["outbounds"][2]["outbounds"] = [tag for tag in required_tags]
 
-        prefix = ’s' + input_file.split(".")[-2]
+        prefix = 's' + input_file.split(".")[-2]
         
         #output_path = os.path.join(output_dir,f"{prefix}{i + 1}.json")
         if i == 0:
