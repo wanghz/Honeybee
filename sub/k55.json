@@ -1,1114 +1,1245 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
-        ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geosite-geolocation-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
-            }
-        ]
-    },
-    "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
-            }
-        ],
-        "auto_detect_interface": true
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "[VMess] 广东省湛江市 移动",
-                "🇨🇴 [SS] 欧盟 V2CROSS.COM",
-                "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
-                "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
-                "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
-                "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
-                "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
-                "🇨🇴 [SS] 🇪🇺 欧洲 V2CROSS.COM",
-                "🇫🇷 [SS] 🇫🇷 _FR_法国",
-                "🇫🇷 [Trojan] 🇫🇷 法国 巴黎Amazon数据中心",
-                "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
-                "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
-                "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
-                "🇬🇧 [Trojan] 🇬🇧 英国 社会保险安全部",
-                "🇮🇪 [Trojan] 🇮🇪 爱尔兰 都柏林Amazon数据中心",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
-                "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
-                "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
-                "🇳🇱 [VMess] 🇳🇱 荷兰 阿姆斯特丹Choopa数据中心",
-                "🇷🇺 [SS] 🇷🇺 俄罗斯 V2CROSS.COM",
-                "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
-                "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
-                "🇺🇸 [VMess] 🇺🇸 美国 Akamai科技公司CDN网络节点",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
-                "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 13",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络 2",
-                "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
-                "🇺🇸 [SS] 🇺🇸 美国 V2CROSS.COM",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Xerox"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "[VMess] 广东省湛江市 移动",
-                "🇨🇴 [SS] 欧盟 V2CROSS.COM",
-                "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
-                "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
-                "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
-                "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
-                "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
-                "🇨🇴 [SS] 🇪🇺 欧洲 V2CROSS.COM",
-                "🇫🇷 [SS] 🇫🇷 _FR_法国",
-                "🇫🇷 [Trojan] 🇫🇷 法国 巴黎Amazon数据中心",
-                "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
-                "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
-                "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
-                "🇬🇧 [Trojan] 🇬🇧 英国 社会保险安全部",
-                "🇮🇪 [Trojan] 🇮🇪 爱尔兰 都柏林Amazon数据中心",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
-                "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
-                "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
-                "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
-                "🇳🇱 [VMess] 🇳🇱 荷兰 阿姆斯特丹Choopa数据中心",
-                "🇷🇺 [SS] 🇷🇺 俄罗斯 V2CROSS.COM",
-                "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
-                "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
-                "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
-                "🇺🇸 [VMess] 🇺🇸 美国 Akamai科技公司CDN网络节点",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
-                "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
-                "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 13",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络 2",
-                "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
-                "🇺🇸 [SS] 🇺🇸 美国 V2CROSS.COM",
-                "🇺🇸 [Trojan] 🇺🇸 美国 Xerox"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
-            "alter_id": 64,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "120.198.71.219",
-            "server_port": 44614,
-            "tag": "[VMess] 广东省湛江市 移动",
-            "type": "vmess",
-            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
-        },
-        {
-            "method": "chacha20-ietf-poly1305",
-            "password": "1RWwXhwfAB5gAEozU4G2Pg",
-            "server": "45.87.175.192",
-            "server_port": 8080,
-            "tag": "🇨🇴 [SS] 欧盟 V2CROSS.COM",
-            "type": "shadowsocks"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "108.181.10.17",
-            "server_port": 80,
-            "tag": "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "474e8680-701f-11ee-b436-205c6d5f5d78"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "asdKkaskJKfnsa",
-            "server": "84.17.53.163",
-            "server_port": 80,
-            "tag": "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
-            "type": "shadowsocks"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "107.167.182.230",
-            "server_port": 80,
-            "tag": "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
-            "transport": {
-                "path": "/tg@hkaa0",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "efcb7d7c-c582-46f5-eeff-0e553342528d"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "U177NTV9CLY0D3SP",
-            "server": "w72tapyb.slashdevslashnetslashtun.net",
-            "server_port": 17002,
-            "tag": "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
-            "type": "shadowsocks"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "flkf2.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
-            "transport": {
-                "headers": {
-                    "Host": "flkf2.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "method": "chacha20-ietf-poly1305",
-            "password": "f8f7aCzcPKbsF8p3",
-            "server": "147.78.1.27",
-            "server_port": 990,
-            "tag": "🇨🇴 [SS] 🇪🇺 欧洲 V2CROSS.COM",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "asdKkaskJKfnsa",
-            "server": "51.158.54.209",
-            "server_port": 443,
-            "tag": "🇫🇷 [SS] 🇫🇷 _FR_法国",
-            "type": "shadowsocks"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "35.181.182.119",
-            "server_port": 22222,
-            "tag": "🇫🇷 [Trojan] 🇫🇷 法国 巴黎Amazon数据中心",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "mrb2.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
-            "transport": {
-                "headers": {
-                    "Host": "mrb2.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "ld2.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
-            "transport": {
-                "headers": {
-                    "Host": "ld2.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "beyonddbc.sbs",
-            "server_port": 443,
-            "tag": "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "beyonddbc.sbs"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "beyonddbc.sbs"
-                },
-                "path": "/linkws",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "8d90c129-4156-4d6c-9115-24df25f26a02"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "51.44.122.90",
-            "server_port": 22222,
-            "tag": "🇬🇧 [Trojan] 🇬🇧 英国 社会保险安全部",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-directvpn",
-            "server": "52.16.69.127",
-            "server_port": 22222,
-            "tag": "🇮🇪 [Trojan] 🇮🇪 爱尔兰 都柏林Amazon数据中心",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.17.18.26",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "5180444a-4756-43b4-960b-49eb9052e4e8"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.26.8.44",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "5180444a-4756-43b4-960b-49eb9052e4e8"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "mm2.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
-            "transport": {
-                "headers": {
-                    "Host": "mm2.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "mm3.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
-            "transport": {
-                "headers": {
-                    "Host": "mm3.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "202.78.162.5",
-            "server_port": 443,
-            "tag": "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "pendar.onthewifi.com"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "pendar.onthewifi.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "716eded6-2201-4dbd-9d63-1638c9e8e677"
-        },
-        {
-            "alter_id": 64,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "45.199.138.191",
-            "server_port": 30000,
-            "tag": "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": ""
-            },
-            "transport": {
-                "path": "/path/1696251522438",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "95.179.186.161",
-            "server_port": 443,
-            "tag": "🇳🇱 [VMess] 🇳🇱 荷兰 阿姆斯特丹Choopa数据中心",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc"
-                },
-                "path": "/WgCmp8pxRWBtLTlTL",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "dfbbc8de-8a4f-407d-8069-6de38d83c4e1"
-        },
-        {
-            "method": "chacha20-ietf-poly1305",
-            "password": "36ZCHeabUSfKjfQEvJ4HDV",
-            "server": "185.242.86.156",
-            "server_port": 54170,
-            "tag": "🇷🇺 [SS] 🇷🇺 俄罗斯 V2CROSS.COM",
-            "type": "shadowsocks"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "195.58.49.50",
-            "server_port": 17926,
-            "tag": "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "016c0e7b-506e-4ced-ad74-0722e41bf52e"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "jd3.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
-            "transport": {
-                "headers": {
-                    "Host": "jd3.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "206.168.190.219",
-            "server_port": 2082,
-            "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
-            "transport": {
-                "path": "/vmws",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "e31ca750-71f7-11ee-b920-1239d0255272"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "wnd2.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
-            "transport": {
-                "headers": {
-                    "Host": "wnd2.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 64,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "45.199.138.186",
-            "server_port": 30000,
-            "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": ""
-            },
-            "transport": {
-                "path": "/path/1696682720138",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4ec0ae62-de09-4029-904a-0313d4628ecf"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "wnd3.shabijichang.com",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
-            "transport": {
-                "headers": {
-                    "Host": "wnd3.shabijichang.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.21.75.246",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c458695d-6908-45c3-9512-e0c46418454c"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "172.233.160.249",
-            "server_port": 443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 Akamai科技公司CDN网络节点",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "jahfkjha.cfd"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "jahfkjha.cfd"
-                },
-                "path": "/linkws",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "950db6aa-4926-4616-816e-ec0312dcb87b"
-        },
-        {
-            "password": "telegram-id-directvpn",
-            "server": "3.96.96.113",
-            "server_port": 22222,
-            "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.19.48.236",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
-            "transport": {
-                "headers": {
-                    "Host": "chunchuan.kejixiaoqi666.store"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "e6543319-0574-42ac-b778-1c4325d626f5"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "s2.cn-db.top",
-            "server_port": 8880,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
-            "transport": {
-                "headers": {
-                    "Host": "100-165-40-54.s2.cn-db.top"
-                },
-                "path": "/dabai.in104.24.231.155",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "s5.db-link01.top",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
-            "transport": {
-                "headers": {
-                    "Host": "100-16-20-50.s5.db-link01.top"
-                },
-                "path": "/dabai.in104.20.1.186",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "portland.899994.xyz",
-            "server_port": 8443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "portland.899994.xyz"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "portland.899994.xyz"
-                },
-                "path": "/index",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "a0605527-28e4-449c-80ee-5642cc16a8af"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "se.899994.xyz",
-            "server_port": 443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "se.899994.xyz"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "se.899994.xyz"
-                },
-                "path": "/index",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "a0605527-28e4-449c-80ee-5642cc16a8af"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "br.899994.xyz",
-            "server_port": 443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "br.899994.xyz"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "br.899994.xyz"
-                },
-                "path": "/index",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "a0605527-28e4-449c-80ee-5642cc16a8af"
-        },
-        {
-            "password": "DC%26%26buj17.%23donz*",
-            "server": "172.66.44.71",
-            "server_port": 2096,
-            "tag": "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "sUE-SUpPorT.PAges.dEV"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "sUE-SUpPorT.PAges.dEV"
-                },
-                "path": "/trf9s8jSBeX8npfF6G/MTYyLjE1OC4yMDEuODI=",
-                "type": "ws"
-            },
-            "type": "trojan"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "s1.datasheetserver.com",
-            "server_port": 443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "s1.datasheetserver.com"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "s1.datasheetserver.com"
-                },
-                "path": "/datasheet",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "051e3f0c-c139-4c7c-9559-41222b72ca20"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "server31.beheshtbaneh.com",
-            "server_port": 8880,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
-            "transport": {
-                "headers": {
-                    "Host": "server31.beheshtbaneh.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4154143c-bbba-47a4-9f79-c2ed087cbcc9"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.21.82.183",
-            "server_port": 8880,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
-            "transport": {
-                "headers": {
-                    "Host": "server26.beheshtbaneh.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "5a7021e0-26b4-45d6-b175-fe551601ca97"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.16.155.10",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
-            "transport": {
-                "headers": {
-                    "Host": "100-49-141-209.s1.db-link02.top"
-                },
-                "path": "/dabai.in104.17.169.115",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "shs.xiaoqi666.xyz",
-            "server_port": 2086,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
-            "transport": {
-                "headers": {
-                    "Host": "shs.xiaoqi666.xyz"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "3fd7b958-2161-46e1-b6fc-bd6bb2165312"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "s2.db-link01.top",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
-            "transport": {
-                "headers": {
-                    "Host": "100-55-60-174.s2.db-link01.top"
-                },
-                "path": "/dabai.in172.67.60.154",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "172.67.204.84",
-            "server_port": 80,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 13",
-            "transport": {
-                "headers": {
-                    "Host": "dry-disk-dfc0.hq0sr5ebxpj60vbz.workers.dev"
-                },
-                "path": "/ausgt02.bestforxray.buzz/linkws",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "c1fd780a-3408-4f48-a932-5832a28ce9f6"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "63.177.179.174",
-            "server_port": 22222,
-            "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-directvpn",
-            "server": "63.177.20.40",
-            "server_port": 22222,
-            "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络 2",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "3h-poland1.09vpn.com",
-            "server_port": 8443,
-            "tag": "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "3h-poland1.09vpn.com"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "3h-poland1.09vpn.com"
-                },
-                "path": "/vmess/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "a4850481-9b95-430f-9b2d-192d2410b4f4"
-        },
-        {
-            "method": "chacha20-ietf-poly1305",
-            "password": "EOk/bIj8XER6b0kjVQxuM/iLMTE7P8h/PT/RCI2Z2wg=",
-            "server": "45.150.32.46",
-            "server_port": 37904,
-            "tag": "🇺🇸 [SS] 🇺🇸 美国 V2CROSS.COM",
-            "type": "shadowsocks"
-        },
-        {
-            "password": "telegram-id-directvpn",
-            "server": "13.61.130.234",
-            "server_port": 22222,
-            "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Xerox",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        }
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "google"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "rule_set": "geoip-cn"
+          }
+        ],
+        "server": "local"
+      }
+    ]
+  },
+  "route": {
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
+      }
     ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "process_name": [
+          "xray.exe",
+          "hysteria.exe",
+          "tuic.exe",
+          "tuic-client.exe",
+          "juicity.exe",
+          "juicity-client.exe"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "quic"
+        ],
+        "outbound": "block"
+      },
+      {
+        "geosite": [
+          "geolocation-!cn"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "geosite": [
+              "cn"
+            ]
+          },
+          {
+            "geoip": [
+              "cn"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geosite": [
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geoip": [
+          "cn",
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "top81.org",
+          "wxno.com",
+          "blockaway.net"
+        ],
+        "outbound": "proxy"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇦 [SS] 乌克兰 V2CROSS.COM",
+        "🇺🇦 [SS] 乌克兰 V2CROSS.COM 2",
+        "🇨🇴 [SS] 欧盟 V2CROSS.COM",
+        "[Trojan] 湖北省 移动(全省通用)",
+        "[Trojan] 湖北省 移动(全省通用) 2",
+        "🇦🇺 [Trojan] 🇦🇺 澳大利亚 V2CROSS.COM",
+        "🇧🇷 [Trojan] 🇧🇷 巴西圣保罗 CloudFlare节点",
+        "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
+        "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
+        "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
+        "🇨🇳 [VMess] 🇨🇳 广东省广州市 移动",
+        "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
+        "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信 2",
+        "🇨🇳 [VMess] 🇨🇳 江苏省南京市 移动",
+        "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
+        "🇫🇷 [SS] 🇫🇷 _FR_法国",
+        "🇫🇷 [VMess] 🇫🇷 法国 法国计算机科学大学",
+        "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
+        "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
+        "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
+        "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM 2",
+        "🇭🇰 [SS] 🇭🇰 香港 LeaseWeb HKG10数据中心",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
+        "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
+        "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM 2",
+        "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心",
+        "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心 2",
+        "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
+        "🇨🇴 [SS] 🇵🇱 波兰 V2CROSS.COM",
+        "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
+        "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM 2",
+        "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
+        "🇸🇪 [Trojan] 🇸🇪 瑞典 斯德哥尔摩Amazon数据中心",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器 2",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon数据中心",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
+        "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
+        "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
+        "🇺🇸 [Trojan] 🇺🇸 美国 V2CROSS.COM",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Xerox"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇦 [SS] 乌克兰 V2CROSS.COM",
+        "🇺🇦 [SS] 乌克兰 V2CROSS.COM 2",
+        "🇨🇴 [SS] 欧盟 V2CROSS.COM",
+        "[Trojan] 湖北省 移动(全省通用)",
+        "[Trojan] 湖北省 移动(全省通用) 2",
+        "🇦🇺 [Trojan] 🇦🇺 澳大利亚 V2CROSS.COM",
+        "🇧🇷 [Trojan] 🇧🇷 巴西圣保罗 CloudFlare节点",
+        "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
+        "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
+        "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
+        "🇨🇳 [VMess] 🇨🇳 广东省广州市 移动",
+        "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
+        "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信 2",
+        "🇨🇳 [VMess] 🇨🇳 江苏省南京市 移动",
+        "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
+        "🇫🇷 [SS] 🇫🇷 _FR_法国",
+        "🇫🇷 [VMess] 🇫🇷 法国 法国计算机科学大学",
+        "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
+        "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
+        "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
+        "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM 2",
+        "🇭🇰 [SS] 🇭🇰 香港 LeaseWeb HKG10数据中心",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
+        "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
+        "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
+        "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM 2",
+        "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心",
+        "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心 2",
+        "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
+        "🇨🇴 [SS] 🇵🇱 波兰 V2CROSS.COM",
+        "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
+        "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM 2",
+        "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
+        "🇸🇪 [Trojan] 🇸🇪 瑞典 斯德哥尔摩Amazon数据中心",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
+        "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器 2",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Amazon数据中心",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
+        "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
+        "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
+        "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
+        "🇺🇸 [Trojan] 🇺🇸 美国 V2CROSS.COM",
+        "🇺🇸 [Trojan] 🇺🇸 美国 Xerox"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "tag": "🇺🇦 [SS] 乌克兰 V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "185.234.64.35",
+      "server_port": 8388,
+      "method": "chacha20-ietf-poly1305",
+      "password": "ZWRiM2Ix"
+    },
+    {
+      "tag": "🇺🇦 [SS] 乌克兰 V2CROSS.COM 2",
+      "type": "shadowsocks",
+      "server": "188.191.147.127",
+      "server_port": 31348,
+      "method": "chacha20-ietf-poly1305",
+      "password": "6IVOuzMfH5ROpgwtRTcNJKYJvYe9FDVaU7wAYYh8PRLxxZs6"
+    },
+    {
+      "tag": "🇨🇴 [SS] 欧盟 V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "45.87.175.192",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "QCXDxuDlTTMD7jtgHUjIoj"
+    },
+    {
+      "tag": "[Trojan] 湖北省 移动(全省通用)",
+      "type": "trojan",
+      "server": "us1.pptv-tv.store",
+      "server_port": 17741,
+      "password": "c443be95-725d-4da3-a60f-d35af5bfbff8",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "data.52daishu.life"
+      }
+    },
+    {
+      "tag": "[Trojan] 湖北省 移动(全省通用) 2",
+      "type": "trojan",
+      "server": "tw1.pptv-tv.store",
+      "server_port": 17786,
+      "password": "c443be95-725d-4da3-a60f-d35af5bfbff8",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "data.52daishu.life"
+      }
+    },
+    {
+      "tag": "🇦🇺 [Trojan] 🇦🇺 澳大利亚 V2CROSS.COM",
+      "type": "trojan",
+      "server": "160.30.21.105",
+      "server_port": 443,
+      "password": "94d219c9-1afc-4d42-b090-8b3794764380",
+      "tls": {
+        "enabled": true,
+        "insecure": true
+      }
+    },
+    {
+      "tag": "🇧🇷 [Trojan] 🇧🇷 巴西圣保罗 CloudFlare节点",
+      "type": "trojan",
+      "server": "188.114.97.3",
+      "server_port": 2096,
+      "password": "DC%26%26buj17.%23donz*",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "sue-sUPPort.pagES.deV"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/trF2w2vMrWuABAwxQb/MTYyLjE1OC4yMDEuODI=",
+        "headers": {
+          "Host": "sue-sUPPort.pagES.deV"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇦 [VMess] 🇨🇦 _CA_加拿大",
+      "type": "vmess",
+      "server": "108.181.10.17",
+      "server_port": 80,
+      "uuid": "474e8680-701f-11ee-b436-205c6d5f5d78",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇭 [SS] 🇨🇭 _CH_瑞士",
+      "type": "shadowsocks",
+      "server": "84.17.53.163",
+      "server_port": 80,
+      "method": "aes-256-cfb",
+      "password": "asdKkaskJKfnsa"
+    },
+    {
+      "tag": "🇹🇼 [VMess] 🇨🇳 _TW_台湾->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "107.167.182.230",
+      "server_port": 80,
+      "uuid": "efcb7d7c-c582-46f5-eeff-0e553342528d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/tg@hkaa0"
+      }
+    },
+    {
+      "tag": "🇨🇳 [VMess] 🇨🇳 广东省广州市 移动",
+      "type": "vmess",
+      "server": "183.236.51.23",
+      "server_port": 53002,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信",
+      "type": "shadowsocks",
+      "server": "qh62onjn.slashdevslashnetslashtun.net",
+      "server_port": 18009,
+      "method": "aes-256-gcm",
+      "password": "62TRHAZ070VS0QX3"
+    },
+    {
+      "tag": "🇨🇳 [SS] 🇨🇳 广东省广州市荔湾区 /天河区电信 2",
+      "type": "shadowsocks",
+      "server": "qh62onjn.slashdevslashnetslashtun.net",
+      "server_port": 18003,
+      "method": "aes-256-gcm",
+      "password": "9OAJ48AFCGC9UHFK"
+    },
+    {
+      "tag": "🇨🇳 [VMess] 🇨🇳 江苏省南京市 移动",
+      "type": "vmess",
+      "server": "yoyo.cmyiphone.top",
+      "server_port": 49301,
+      "uuid": "061d42d5-4e6a-4661-be04-80dcfb15b08f",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇩🇪 _US_美国->🇩🇪_DE_德国",
+      "type": "vmess",
+      "server": "flkf2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "flkf2.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇫🇷 [SS] 🇫🇷 _FR_法国",
+      "type": "shadowsocks",
+      "server": "51.158.54.209",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "asdKkaskJKfnsa"
+    },
+    {
+      "tag": "🇫🇷 [VMess] 🇫🇷 法国 法国计算机科学大学",
+      "type": "vmess",
+      "server": "163.5.159.231",
+      "server_port": 443,
+      "uuid": "e537f2f5-2a0c-4f59-92c9-832ca6433bf3",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "irvideo.cfd"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "irvideo.cfd"
+        },
+        "path": "/linkws"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_1",
+      "type": "vmess",
+      "server": "mrb2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mrb2.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇬🇧 _US_美国->🇬🇧_GB_英国_2",
+      "type": "vmess",
+      "server": "ld2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ld2.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "5.39.254.196",
+      "server_port": 23985,
+      "uuid": "398ce84e-4849-4e5f-9b1a-a56fbe233b81",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇬🇧 [VMess] 🇬🇧 英国 V2CROSS.COM 2",
+      "type": "vmess",
+      "server": "beyonddbc.sbs",
+      "server_port": 443,
+      "uuid": "8d90c129-4156-4d6c-9115-24df25f26a02",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "beyonddbc.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "beyonddbc.sbs"
+        },
+        "path": "/linkws"
+      }
+    },
+    {
+      "tag": "🇭🇰 [SS] 🇭🇰 香港 LeaseWeb HKG10数据中心",
+      "type": "shadowsocks",
+      "server": "203.23.128.79",
+      "server_port": 51348,
+      "method": "chacha20-ietf-poly1305",
+      "password": "dt31KYYCCAUBwu09QwG9flPBIuP9jA6VXnjN8StKTkgc45ny"
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_1",
+      "type": "vmess",
+      "server": "104.17.18.26",
+      "server_port": 80,
+      "uuid": "5180444a-4756-43b4-960b-49eb9052e4e8",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_2",
+      "type": "vmess",
+      "server": "104.26.8.44",
+      "server_port": 80,
+      "uuid": "5180444a-4756-43b4-960b-49eb9052e4e8",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_3",
+      "type": "vmess",
+      "server": "mm2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mm2.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇮🇳 _US_美国->🇮🇳_IN_印度_4",
+      "type": "vmess",
+      "server": "mm3.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mm3.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM",
+      "type": "vmess",
+      "server": "202.78.162.5",
+      "server_port": 443,
+      "uuid": "716eded6-2201-4dbd-9d63-1638c9e8e677",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "pendar.onthewifi.com"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "pendar.onthewifi.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇮🇳 [VMess] 🇮🇳 印度 V2CROSS.COM 2",
+      "type": "vmess",
+      "server": "202.78.162.5",
+      "server_port": 443,
+      "uuid": "2ff97c6d-8557-42a4-b43f-19c77c5959ea",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "irsoft.sytes.net"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "irsoft.sytes.net"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心",
+      "type": "trojan",
+      "server": "uk01.trojanyyds.xyz",
+      "server_port": 443,
+      "password": "243eab52-9ac1-405c-887c-eb112c0985b8",
+      "tls": {
+        "enabled": true,
+        "insecure": true
+      }
+    },
+    {
+      "tag": "🇯🇵 [Trojan] 🇯🇵 日本 东京Amazon数据中心 2",
+      "type": "trojan",
+      "server": "sg01.trojanyyds.xyz",
+      "server_port": 443,
+      "password": "243eab52-9ac1-405c-887c-eb112c0985b8",
+      "tls": {
+        "enabled": true,
+        "insecure": true
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇳🇱 _US_美国->🇳🇱_NL_荷兰",
+      "type": "vmess",
+      "server": "45.199.138.191",
+      "server_port": 30000,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/path/1696251522438"
+      }
+    },
+    {
+      "tag": "🇨🇴 [SS] 🇵🇱 波兰 V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "193.243.147.128",
+      "server_port": 40368,
+      "method": "aes-256-gcm",
+      "password": "7BcLdsO1WweoGD0X"
+    },
+    {
+      "tag": "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM",
+      "type": "vmess",
+      "server": "195.58.49.42",
+      "server_port": 17926,
+      "uuid": "4618b46a-ba67-4cd1-a32a-1974f0691cfe",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇷🇺 [VMess] 🇷🇺 俄罗斯 V2CROSS.COM 2",
+      "type": "vmess",
+      "server": "195.58.49.50",
+      "server_port": 17926,
+      "uuid": "9927c6d3-74fd-4c74-9ad4-6e0ff3ff6910",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇸🇦 _US_美国->🇸🇦_SA_沙特阿拉伯",
+      "type": "vmess",
+      "server": "jd3.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "jd3.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇸🇪 [Trojan] 🇸🇪 瑞典 斯德哥尔摩Amazon数据中心",
+      "type": "trojan",
+      "server": "13.49.252.114",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_1",
+      "type": "vmess",
+      "server": "206.168.190.219",
+      "server_port": 2082,
+      "uuid": "e31ca750-71f7-11ee-b920-1239d0255272",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/vmws"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_2",
+      "type": "vmess",
+      "server": "wnd2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "wnd2.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_3",
+      "type": "vmess",
+      "server": "45.199.138.186",
+      "server_port": 30000,
+      "uuid": "4ec0ae62-de09-4029-904a-0313d4628ecf",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/path/1696682720138"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_4",
+      "type": "vmess",
+      "server": "wnd3.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "wnd3.shabijichang.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 _US_美国_5",
+      "type": "vmess",
+      "server": "104.21.75.246",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器",
+      "type": "trojan",
+      "server": "3.148.32.54",
+      "server_port": 22222,
+      "password": "telegram-id-directvpn",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Amazon EC2服务器 2",
+      "type": "trojan",
+      "server": "3.147.249.75",
+      "server_port": 22222,
+      "password": "telegram-id-directvpn",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Amazon数据中心",
+      "type": "trojan",
+      "server": "13.40.238.100",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点",
+      "type": "vmess",
+      "server": "s4.db-link02.top",
+      "server_port": 8080,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-80-77-140.s4.db-link02.top"
+        },
+        "path": "/dabai.in104.19.103.96"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 2",
+      "type": "vmess",
+      "server": "s5.db-link02.top",
+      "server_port": 2095,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-26-239-98.s5.db-link02.top"
+        },
+        "path": "/dabai.in172.67.11.171"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 3",
+      "type": "vmess",
+      "server": "Reza.ns.cloudflare.com",
+      "server_port": 2087,
+      "uuid": "2a3263e2-891c-4446-b474-a8c63acb6e25",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "Reza.ns.cloudflare.com"
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 4",
+      "type": "vmess",
+      "server": "phoenix.899994.xyz",
+      "server_port": 8443,
+      "uuid": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "phoenix.899994.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "phoenix.899994.xyz"
+        },
+        "path": "/index"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 5",
+      "type": "vmess",
+      "server": "104.16.155.10",
+      "server_port": 2095,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-209-47-141.s2.db-link02.top"
+        },
+        "path": "/dabai.in104.20.27.115"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 6",
+      "type": "vmess",
+      "server": "us.cowvpn.org",
+      "server_port": 443,
+      "uuid": "11a805f2-41a7-4cd8-8406-0470c3cde0d3",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "us2cf.cowvpn.org"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "us2cf.cowvpn.org"
+        },
+        "path": "/cctv13/vmess_us1"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 7",
+      "type": "vmess",
+      "server": "s1.db-link01.top",
+      "server_port": 2082,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-32-21-187.s1.db-link01.top"
+        },
+        "path": "/dabai.in104.25.184.216"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 8",
+      "type": "vmess",
+      "server": "se.899994.xyz",
+      "server_port": 443,
+      "uuid": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "se.899994.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "se.899994.xyz"
+        },
+        "path": "/index"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 9",
+      "type": "vmess",
+      "server": "s2.db-link01.top",
+      "server_port": 2086,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-154-72-114.s2.db-link01.top"
+        },
+        "path": "/dabai.in172.67.68.139"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 10",
+      "type": "vmess",
+      "server": "s2.cn-db.top",
+      "server_port": 2086,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-28-190-253.s2.cn-db.top"
+        },
+        "path": "/dabai.in104.18.128.173"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 11",
+      "type": "vmess",
+      "server": "server31.beheshtbaneh.com",
+      "server_port": 8880,
+      "uuid": "4154143c-bbba-47a4-9f79-c2ed087cbcc9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "server31.beheshtbaneh.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 CloudFlare节点 12",
+      "type": "vmess",
+      "server": "s5.cn-db.top",
+      "server_port": 80,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-116-186-216.s5.cn-db.top"
+        },
+        "path": "/dabai.in104.25.66.1"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 CloudFlare节点",
+      "type": "trojan",
+      "server": "104.17.147.22",
+      "server_port": 2096,
+      "password": "DC%26%26buj17.%23donz*",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "Sue-suppoRT.pAgeS.dEV"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/trjFapI0BLfN3cT9v4/MTYyLjE1OC4yMDEuODI=",
+        "headers": {
+          "Host": "Sue-suppoRT.pAgeS.dEV"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Sprint网络",
+      "type": "trojan",
+      "server": "63.177.20.40",
+      "server_port": 22222,
+      "password": "telegram-id-directvpn",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 [VMess] 🇺🇸 美国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "3h-poland1.09vpn.com",
+      "server_port": 8443,
+      "uuid": "a4850481-9b95-430f-9b2d-192d2410b4f4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "3h-poland1.09vpn.com"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "3h-poland1.09vpn.com"
+        },
+        "path": "/vmess/"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 V2CROSS.COM",
+      "type": "trojan",
+      "server": "150.230.139.203",
+      "server_port": 17728,
+      "password": "c443be95-725d-4da3-a60f-d35af5bfbff8",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "data.52daishu.life"
+      }
+    },
+    {
+      "tag": "🇺🇸 [Trojan] 🇺🇸 美国 Xerox",
+      "type": "trojan",
+      "server": "13.61.193.126",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
