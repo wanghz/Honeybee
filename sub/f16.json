@@ -1,400 +1,651 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
-        ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geosite-geolocation-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
-            }
-        ]
-    },
-    "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
-            }
-        ],
-        "auto_detect_interface": true
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇺🇸 US-23.157.40.87-5894",
-                "🇪🇸 ES-5.188.181.201-1175",
-                "🇺🇸 US-23.251.121.242-0387",
-                "🇰🇷 KR-3.38.116.18-1215",
-                "🇧🇪 BE-192.71.249.78-5605",
-                "🇭🇰 HK-112.213.102.228-1206",
-                "🇪🇸 ES-5.188.181.201-5460",
-                "🇪🇸 ES-5.188.181.201-0538",
-                "🇺🇸 US-23.157.40.87-5499",
-                "🇺🇸 US-23.157.40.87-5498",
-                "🇺🇸 US-23.157.40.87-1272",
-                "🇺🇸 US-69.50.93.86-6141",
-                "🇺🇸 US-69.50.92.72-5796",
-                "🇺🇸 US-23.157.40.87-5492",
-                "🇪🇸 ES-5.188.181.201-5468",
-                "🇺🇸 US-23.157.40.87-6250",
-                "🇺🇸 US-23.150.152.56-6076",
-                "🇺🇸 US-23.150.152.56-6081"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇺🇸 US-23.157.40.87-5894",
-                "🇪🇸 ES-5.188.181.201-1175",
-                "🇺🇸 US-23.251.121.242-0387",
-                "🇰🇷 KR-3.38.116.18-1215",
-                "🇧🇪 BE-192.71.249.78-5605",
-                "🇭🇰 HK-112.213.102.228-1206",
-                "🇪🇸 ES-5.188.181.201-5460",
-                "🇪🇸 ES-5.188.181.201-0538",
-                "🇺🇸 US-23.157.40.87-5499",
-                "🇺🇸 US-23.157.40.87-5498",
-                "🇺🇸 US-23.157.40.87-1272",
-                "🇺🇸 US-69.50.93.86-6141",
-                "🇺🇸 US-69.50.92.72-5796",
-                "🇺🇸 US-23.157.40.87-5492",
-                "🇪🇸 ES-5.188.181.201-5468",
-                "🇺🇸 US-23.157.40.87-6250",
-                "🇺🇸 US-23.150.152.56-6076",
-                "🇺🇸 US-23.150.152.56-6081"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "kDWvXYZoTBcGkC4",
-            "server": "23.157.40.87",
-            "server_port": 8881,
-            "tag": "🇺🇸 US-23.157.40.87-5894",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "GA9KzeEgvfxNrgmM",
-            "server": "5.188.181.201",
-            "server_port": 9019,
-            "tag": "🇪🇸 ES-5.188.181.201-1175",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "rc4-md5",
-            "password": "14fFPrbezE3HDZzsMOr6",
-            "server": "23.251.121.242",
-            "server_port": 8080,
-            "tag": "🇺🇸 US-23.251.121.242-0387",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "amazonskr05",
-            "server": "3.38.116.18",
-            "server_port": 443,
-            "tag": "🇰🇷 KR-3.38.116.18-1215",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "f8f7aCzcPKbsF8p3",
-            "server": "192.71.249.78",
-            "server_port": 989,
-            "tag": "🇧🇪 BE-192.71.249.78-5605",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "qwerREWQ@@",
-            "server": "112.213.102.228",
-            "server_port": 4231,
-            "tag": "🇭🇰 HK-112.213.102.228-1206",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "XPtzA9sCug3SPR4c",
-            "server": "5.188.181.201",
-            "server_port": 9025,
-            "tag": "🇪🇸 ES-5.188.181.201-5460",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "a3GFYt36Sm82Vys9",
-            "server": "5.188.181.201",
-            "server_port": 9000,
-            "tag": "🇪🇸 ES-5.188.181.201-0538",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "kDWvXYZoTBcGkC4",
-            "server": "23.157.40.87",
-            "server_port": 8882,
-            "tag": "🇺🇸 US-23.157.40.87-5499",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "Y6R9pAtvxxzmGC",
-            "server": "23.157.40.87",
-            "server_port": 9090,
-            "tag": "🇺🇸 US-23.157.40.87-5498",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "Y6R9pAtvxxzmGC",
-            "server": "23.157.40.87",
-            "server_port": 3389,
-            "tag": "🇺🇸 US-23.157.40.87-1272",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "Y6R9pAtvxxzmGC",
-            "server": "69.50.93.86",
-            "server_port": 8888,
-            "tag": "🇺🇸 US-69.50.93.86-6141",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "kDWvXYZoTBcGkC4",
-            "server": "69.50.92.72",
-            "server_port": 8882,
-            "tag": "🇺🇸 US-69.50.92.72-5796",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "KixLvKzwjekG00rm",
-            "server": "23.157.40.87",
-            "server_port": 5500,
-            "tag": "🇺🇸 US-23.157.40.87-5492",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "EXN3S3eQpjE7EJu8",
-            "server": "5.188.181.201",
-            "server_port": 9027,
-            "tag": "🇪🇸 ES-5.188.181.201-5468",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "PCnnH6SQSnfoS27",
-            "server": "23.157.40.87",
-            "server_port": 8090,
-            "tag": "🇺🇸 US-23.157.40.87-6250",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "FoOiGlkAA9yPEGP",
-            "server": "23.150.152.56",
-            "server_port": 7306,
-            "tag": "🇺🇸 US-23.150.152.56-6076",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "KixLvKzwjekG00rm",
-            "server": "23.150.152.56",
-            "server_port": 8000,
-            "tag": "🇺🇸 US-23.150.152.56-6081",
-            "type": "shadowsocks"
-        }
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "google"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "rule_set": "geoip-cn"
+          }
+        ],
+        "server": "local"
+      }
+    ]
+  },
+  "route": {
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
+      }
     ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "process_name": [
+          "xray.exe",
+          "hysteria.exe",
+          "tuic.exe",
+          "tuic-client.exe",
+          "juicity.exe",
+          "juicity-client.exe"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "quic"
+        ],
+        "outbound": "block"
+      },
+      {
+        "geosite": [
+          "geolocation-!cn"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "geosite": [
+              "cn"
+            ]
+          },
+          {
+            "geoip": [
+              "cn"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geosite": [
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geoip": [
+          "cn",
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "top81.org",
+          "wxno.com",
+          "blockaway.net"
+        ],
+        "outbound": "proxy"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇱🇹 LT-192.36.61.59-1114",
+        "🇬🇧 GB-169.150.210.233-0408",
+        "🇳🇱 NL-5.35.47.122-0432",
+        "🇨🇭 CH-156.146.62.162-0424",
+        "🇳🇴 NO-51.13.182.236-0435",
+        "🇬🇧 GB-212.102.53.81-0398",
+        "🇬🇧 GB-3.9.237.249-5638",
+        "🇨🇭 CH-156.146.62.161-0446",
+        "🇳🇴 NO-51.13.182.231-0443",
+        "🇨🇭 CH-156.146.62.164-0430",
+        "🇱🇹 LT-192.36.61.59-0431",
+        "🇨🇭 CH-84.17.53.160-0394",
+        "🇬🇧 GB-141.98.101.178-0482",
+        "🇬🇧 GB-141.98.101.179-0448",
+        "🇨🇭 CH-156.146.62.163-0429",
+        "🇸🇬 SG-68.183.227.4-0475",
+        "🇸🇬 SG-68.183.227.236-0478",
+        "🇬🇧 GB-141.98.101.182-0458",
+        "🇸🇬 SG-128.199.172.224-0479",
+        "🇬🇧 GB-141.98.101.180-0454",
+        "🇸🇪 SE-46.246.98.155-0441",
+        "🇳🇱 NL-89.23.103.125-0534",
+        "🇸🇬 SG-68.183.227.45-0476",
+        "🇱🇻 LV-46.183.217.232-0480",
+        "🇫🇷 FR-45.158.171.146-0390",
+        "🇫🇷 FR-195.154.185.174-0420",
+        "🇸🇬 SG-178.128.22.251-0872",
+        "🇩🇪 DE-193.108.119.230-0495",
+        "🇪🇪 EE-147.45.60.33-1110",
+        "🇺🇸 US-137.175.113.215-5962",
+        "🇰🇷 KR-3.36.116.141-0474",
+        "🇭🇰 HK-141.98.234.93-1214",
+        "🇷🇺 RU-45.151.62.54-1250",
+        "🇸🇬 SG-47.128.77.107-2317",
+        "🇸🇬 SG-54.254.210.89-0483",
+        "🇸🇬 SG-13.213.51.39-1253",
+        "🇸🇬 SG-47.128.247.150-0487",
+        "🇵🇱 PL-45.144.48.63-1247",
+        "🇵🇱 PL-45.144.48.63-0531",
+        "🇸🇬 SG-103.106.229.219-0481",
+        "🇹🇼 TW-111.243.80.230-5947",
+        "🇰🇿 KZ-213.156.137.67-0468",
+        "🇩🇪 DE-80.92.204.106-1180"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇱🇹 LT-192.36.61.59-1114",
+        "🇬🇧 GB-169.150.210.233-0408",
+        "🇳🇱 NL-5.35.47.122-0432",
+        "🇨🇭 CH-156.146.62.162-0424",
+        "🇳🇴 NO-51.13.182.236-0435",
+        "🇬🇧 GB-212.102.53.81-0398",
+        "🇬🇧 GB-3.9.237.249-5638",
+        "🇨🇭 CH-156.146.62.161-0446",
+        "🇳🇴 NO-51.13.182.231-0443",
+        "🇨🇭 CH-156.146.62.164-0430",
+        "🇱🇹 LT-192.36.61.59-0431",
+        "🇨🇭 CH-84.17.53.160-0394",
+        "🇬🇧 GB-141.98.101.178-0482",
+        "🇬🇧 GB-141.98.101.179-0448",
+        "🇨🇭 CH-156.146.62.163-0429",
+        "🇸🇬 SG-68.183.227.4-0475",
+        "🇸🇬 SG-68.183.227.236-0478",
+        "🇬🇧 GB-141.98.101.182-0458",
+        "🇸🇬 SG-128.199.172.224-0479",
+        "🇬🇧 GB-141.98.101.180-0454",
+        "🇸🇪 SE-46.246.98.155-0441",
+        "🇳🇱 NL-89.23.103.125-0534",
+        "🇸🇬 SG-68.183.227.45-0476",
+        "🇱🇻 LV-46.183.217.232-0480",
+        "🇫🇷 FR-45.158.171.146-0390",
+        "🇫🇷 FR-195.154.185.174-0420",
+        "🇸🇬 SG-178.128.22.251-0872",
+        "🇩🇪 DE-193.108.119.230-0495",
+        "🇪🇪 EE-147.45.60.33-1110",
+        "🇺🇸 US-137.175.113.215-5962",
+        "🇰🇷 KR-3.36.116.141-0474",
+        "🇭🇰 HK-141.98.234.93-1214",
+        "🇷🇺 RU-45.151.62.54-1250",
+        "🇸🇬 SG-47.128.77.107-2317",
+        "🇸🇬 SG-54.254.210.89-0483",
+        "🇸🇬 SG-13.213.51.39-1253",
+        "🇸🇬 SG-47.128.247.150-0487",
+        "🇵🇱 PL-45.144.48.63-1247",
+        "🇵🇱 PL-45.144.48.63-0531",
+        "🇸🇬 SG-103.106.229.219-0481",
+        "🇹🇼 TW-111.243.80.230-5947",
+        "🇰🇿 KZ-213.156.137.67-0468",
+        "🇩🇪 DE-80.92.204.106-1180"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "tag": "🇱🇹 LT-192.36.61.59-1114",
+      "type": "shadowsocks",
+      "server": "192.36.61.59",
+      "server_port": 990,
+      "method": "chacha20-ietf-poly1305",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇬🇧 GB-169.150.210.233-0408",
+      "type": "shadowsocks",
+      "server": "169.150.210.233",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇳🇱 NL-5.35.47.122-0432",
+      "type": "shadowsocks",
+      "server": "5.35.47.122",
+      "server_port": 45635,
+      "method": "chacha20-ietf-poly1305",
+      "password": "CLphyEMQT8nbG8EImX0A2D"
+    },
+    {
+      "tag": "🇨🇭 CH-156.146.62.162-0424",
+      "type": "shadowsocks",
+      "server": "156.146.62.162",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇳🇴 NO-51.13.182.236-0435",
+      "type": "shadowsocks",
+      "server": "51.13.182.236",
+      "server_port": 6870,
+      "method": "chacha20-ietf-poly1305",
+      "password": "M7x1mGNOwhPiRB9jSxZJNy"
+    },
+    {
+      "tag": "🇬🇧 GB-212.102.53.81-0398",
+      "type": "shadowsocks",
+      "server": "212.102.53.81",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇬🇧 GB-3.9.237.249-5638",
+      "type": "shadowsocks",
+      "server": "series-a2.samanehha.co",
+      "server_port": 443,
+      "method": "chacha20-ietf-poly1305",
+      "password": "W74XFALLLuw6m5IA"
+    },
+    {
+      "tag": "🇨🇭 CH-156.146.62.161-0446",
+      "type": "shadowsocks",
+      "server": "156.146.62.161",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇳🇴 NO-51.13.182.231-0443",
+      "type": "shadowsocks",
+      "server": "51.13.182.231",
+      "server_port": 3089,
+      "method": "chacha20-ietf-poly1305",
+      "password": "J0lgxy4mb52CIJ8UUcEgts"
+    },
+    {
+      "tag": "🇨🇭 CH-156.146.62.164-0430",
+      "type": "shadowsocks",
+      "server": "156.146.62.164",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇱🇹 LT-192.36.61.59-0431",
+      "type": "shadowsocks",
+      "server": "192.36.61.59",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇨🇭 CH-84.17.53.160-0394",
+      "type": "shadowsocks",
+      "server": "84.17.53.160",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇬🇧 GB-141.98.101.178-0482",
+      "type": "shadowsocks",
+      "server": "141.98.101.178",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇬🇧 GB-141.98.101.179-0448",
+      "type": "shadowsocks",
+      "server": "141.98.101.179",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇨🇭 CH-156.146.62.163-0429",
+      "type": "shadowsocks",
+      "server": "156.146.62.163",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇸🇬 SG-68.183.227.4-0475",
+      "type": "shadowsocks",
+      "server": "68.183.227.4",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇸🇬 SG-68.183.227.236-0478",
+      "type": "shadowsocks",
+      "server": "68.183.227.236",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇬🇧 GB-141.98.101.182-0458",
+      "type": "shadowsocks",
+      "server": "141.98.101.182",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇸🇬 SG-128.199.172.224-0479",
+      "type": "shadowsocks",
+      "server": "128.199.172.224",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇬🇧 GB-141.98.101.180-0454",
+      "type": "shadowsocks",
+      "server": "141.98.101.180",
+      "server_port": 443,
+      "method": "aes-128-gcm",
+      "password": "shadowsocks"
+    },
+    {
+      "tag": "🇸🇪 SE-46.246.98.155-0441",
+      "type": "shadowsocks",
+      "server": "46.246.98.155",
+      "server_port": 44013,
+      "method": "chacha20-ietf-poly1305",
+      "password": "UDcjYQ6Z6AIWxViZpqyOmO"
+    },
+    {
+      "tag": "🇳🇱 NL-89.23.103.125-0534",
+      "type": "shadowsocks",
+      "server": "89.23.103.125",
+      "server_port": 42090,
+      "method": "chacha20-ietf-poly1305",
+      "password": "uQS5ntVqC00sSKkeNzUiD3"
+    },
+    {
+      "tag": "🇸🇬 SG-68.183.227.45-0476",
+      "type": "shadowsocks",
+      "server": "68.183.227.45",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇱🇻 LV-46.183.217.232-0480",
+      "type": "shadowsocks",
+      "server": "46.183.217.232",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇫🇷 FR-45.158.171.146-0390",
+      "type": "shadowsocks",
+      "server": "45.158.171.146",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "QCXDxuDlTTMD7jtgHUjIoj"
+    },
+    {
+      "tag": "🇫🇷 FR-195.154.185.174-0420",
+      "type": "shadowsocks",
+      "server": "195.154.185.174",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇸🇬 SG-178.128.22.251-0872",
+      "type": "shadowsocks",
+      "server": "178.128.22.251",
+      "server_port": 20368,
+      "method": "chacha20-ietf-poly1305",
+      "password": "VtbYaCM627xdQr8vjJE7Po"
+    },
+    {
+      "tag": "🇩🇪 DE-193.108.119.230-0495",
+      "type": "shadowsocks",
+      "server": "193.108.119.230",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇪🇪 EE-147.45.60.33-1110",
+      "type": "shadowsocks",
+      "server": "147.45.60.33",
+      "server_port": 16356,
+      "method": "chacha20-ietf-poly1305",
+      "password": "LqlPI19oqnunGNSLMvdXyB"
+    },
+    {
+      "tag": "🇺🇸 US-137.175.113.215-5962",
+      "type": "shadowsocks",
+      "server": "137.175.113.215",
+      "server_port": 8388,
+      "method": "chacha20-ietf",
+      "password": "asd123456"
+    },
+    {
+      "tag": "🇰🇷 KR-3.36.116.141-0474",
+      "type": "shadowsocks",
+      "server": "3.36.116.141",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "amazonskr05"
+    },
+    {
+      "tag": "🇭🇰 HK-141.98.234.93-1214",
+      "type": "shadowsocks",
+      "server": "141.98.234.93",
+      "server_port": 20012,
+      "method": "chacha20-ietf-poly1305",
+      "password": "WfmxKX2FBJRU0Ie9VLIYDL"
+    },
+    {
+      "tag": "🇷🇺 RU-45.151.62.54-1250",
+      "type": "shadowsocks",
+      "server": "45.151.62.54",
+      "server_port": 28825,
+      "method": "chacha20-ietf-poly1305",
+      "password": "0zyDRZ1XmNXaaCAN7KEA8a"
+    },
+    {
+      "tag": "🇸🇬 SG-47.128.77.107-2317",
+      "type": "shadowsocks",
+      "server": "47.128.77.107",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "amazonskr05"
+    },
+    {
+      "tag": "🇸🇬 SG-54.254.210.89-0483",
+      "type": "shadowsocks",
+      "server": "54.254.210.89",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "amazonskr05"
+    },
+    {
+      "tag": "🇸🇬 SG-13.213.51.39-1253",
+      "type": "shadowsocks",
+      "server": "13.213.51.39",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "amazonskr05"
+    },
+    {
+      "tag": "🇸🇬 SG-47.128.247.150-0487",
+      "type": "shadowsocks",
+      "server": "47.128.247.150",
+      "server_port": 443,
+      "method": "aes-256-cfb",
+      "password": "amazonskr05"
+    },
+    {
+      "tag": "🇵🇱 PL-45.144.48.63-1247",
+      "type": "shadowsocks",
+      "server": "war.ssvpnapp.win",
+      "server_port": 57456,
+      "method": "chacha20-ietf-poly1305",
+      "password": "d3837224ed465f00"
+    },
+    {
+      "tag": "🇵🇱 PL-45.144.48.63-0531",
+      "type": "shadowsocks",
+      "server": "45.144.48.63",
+      "server_port": 57456,
+      "method": "chacha20-ietf-poly1305",
+      "password": "d3837224ed465f00"
+    },
+    {
+      "tag": "🇸🇬 SG-103.106.229.219-0481",
+      "type": "shadowsocks",
+      "server": "103.106.229.219",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇹🇼 TW-111.243.80.230-5947",
+      "type": "shadowsocks",
+      "server": "tw1.ydso.xyz",
+      "server_port": 30443,
+      "method": "chacha20-ietf-poly1305",
+      "password": "ae19b38a-a89f-4934-9b97-82cbd816ca33"
+    },
+    {
+      "tag": "🇰🇿 KZ-213.156.137.67-0468",
+      "type": "shadowsocks",
+      "server": "213.156.137.67",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇩🇪 DE-80.92.204.106-1180",
+      "type": "shadowsocks",
+      "server": "80.92.204.106",
+      "server_port": 9006,
+      "method": "aes-256-cfb",
+      "password": "FAdUvMJUq5vDgKEq"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
