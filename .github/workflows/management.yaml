@@ -22,11 +22,38 @@ jobs:
       - name: remove outdated files
         run: |
           cd /home/runner/work/Honeybee/Honeybee/sub
-          pwd
-          chmod u+w *.json
-          find . -type f \( -name "f*.json" -o -name "k*.json" -o -iname "s*.*" \) -mtime +2 -print;   
-          find . -type f \( -name "f*.json" -o -name "k*.json" -o -iname "s*.*" \) -mtime +2 -delete;   
-          git add -u
+          # 设置时间计算基准（UTC 时间）
+          cutoff=$(date -u -d "2 days ago" +%s)
+          
+          # 查找所有目标文件（兼容大小写）
+          find . -type \( \
+              -iname "f*.json" \
+              -o -iname "k*.json" \
+              -o -iname "s*.*" \
+          \) -print0 | while IFS= read -r -d $'\0' file; do
+              
+              # 获取相对路径（去掉 ./ 前缀）
+              rel_file="${file#./}"
+              
+              # 处理已跟踪文件（基于 Git 提交时间）
+              if git ls-files --error-unmatch -- "$rel_file" >/dev/null 2>&1; then
+                  # 获取最后一次提交时间戳（UTC）
+                  timestamp=$(git log -1 --format=%ct -- "$rel_file")
+                  if [ -n "$timestamp" ] && [ $timestamp -lt $cutoff ]; then
+                      echo "🗑️ 删除已跟踪文件: $rel_file"
+                      rm -v "$rel_file"
+                  fi
+                  
+              # 处理未跟踪文件（基于文件系统时间） 
+              else
+                  # 获取文件修改时间（转换为 UTC）
+                  file_mtime=$(date -u -r "$rel_file" +%s)
+                  if [ $file_mtime -lt $cutoff ]; then
+                      echo "🗑️ 删除未跟踪文件: $rel_file"
+                      rm -v "$rel_file"
+                  fi
+              fi
+          done
         continue-on-error: true
         
       - name: list newly updated files
