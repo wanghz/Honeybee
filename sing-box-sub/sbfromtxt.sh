@@ -6,26 +6,11 @@ all_files=(
         "htonly.yml"
 )
 
-# 获取 sub/ 目录下过去60分钟提交的 split* 文件（安全处理含空格/特殊字符）
-# 获取 sub/ 目录下过去60分钟提交的 split* 文件，并提取纯文件名
-while IFS= read -r -d $'\0' filepath; do
-    # 提取文件名（去除路径）
-    filename=$(basename "$filepath")
-    # 再次过滤确保符合 split* 模式（防止路径干扰）
-    if [[ "$filename" == split* ]]; then
-        all_files+=("$filename")
-    fi
-done < <(
-    git -C /home/runner/work/Honeybee/Honeybee log \
-    --since "60 minutes ago" \
-    --name-only \
-    --pretty=format: \
-    --submodule=diff \
-    -- "sub/split*" \
-    | grep -av '^$' \
-    | sort -zu \
-    | sed 's|^sub/||'  # 移除 sub/ 前缀（如果存在）
-)
+# 添加find找到的文件到数组
+while IFS= read -r file; do
+    all_files+=("$file")
+done < <(find /home/runner/work/Honeybee/Honeybee/sub -type f -mmin -60 -name "split*" -printf "%f\n")
+
 
 counter=1
 for file in "${all_files[@]}"; do
