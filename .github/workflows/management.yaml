@@ -15,26 +15,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
+      - name: 获取最近60分钟变更的JSON文件
+        uses: tj-actions/changed-files@v42  # 使用最新版本
+        id: changed-files
+        with:
+          # 时间范围配置
+          since_last_commit: false
+          since: '60 minutes ago'
+          # 文件过滤规则
+          pattern: |
+            **/f*.json
+            **/k*.json
+            **/s*.*
+          exclude_pattern: |
+            **/spl*.json
+          # 输出配置
+          json: true          # 生成JSON格式结果
+          output_file: sub.txt  # 保存到文件（可选）
       - name: list newly updated files
         run: |
           cd ./sub
           pwd
-          echo "Generated at: $(date)" > sub.txt  # 添加时间戳作为内容
-          #find . -type f \( -iname "f*.json" -o -iname "k*.json" -o \( -iname "s*.json" -a ! -iname "spl*.json" \) \) -mmin -60 >> sub.txt
-          git -C /home/runner/work/Honeybee/Honeybee log \
-            --since="1 hour ago" \
-            --date=iso-local \
-            --no-merges \
-            --name-only \
-            --pretty=format: \
-            -z \
-            -- sub/ | \
-            tr '\0' '\n' | \
-            sort -u | \
-            grep -E '/(f[^/]*\.json|k[^/]*\.json|s[^/]*\.json)$' | \
-            grep -vE '(^|/)spl[^/]*\.json$' >> sub.txt
+          echo "Generated at: $(date)" >> sub.txt  # 添加时间戳作为内容
+          #find . -type f \( -iname "f*.json" -o -iname "k*.json" -o \( -iname "s*.json" -a ! -iname "spl*.json" \) \) -mmin -60 >> sub.txtt
           #cat sub.txt
-        continue-on-error: true
+        continue-on-error: true      
+      - name: 处理匹配的文件
+        run: |
+          # 读取Action输出的文件列表
+          echo "匹配的文件：${{ steps.changed-files.outputs.all_changed_files }}"
+          # 进一步操作（例如删除旧文件）
+          while IFS= read -r file; do
+            echo "处理文件: $file"
+            #rm "$file"  # 根据需求执行删除
+          done <<< "${{ steps.changed-files.outputs.all_changed_files }}"        
 
       - name: Git Setup
         run: |
