@@ -16,22 +16,27 @@ jobs:
     steps:
       - uses: actions/checkout@main          
       - name: 获取最近60分钟变更的JSON文件
-        uses: tj-actions/changed-files@v42  # 使用最新版本
+        uses: tj-actions/changed-files@v42
         id: changed-files
         with:
-          # 时间范围配置
           since_last_commit: false
           since: '60 minutes ago'
-          # 文件过滤规则
+          path: sub/  # 关键修复：限定目录
           pattern: |
             **/f*.json
             **/k*.json
             **/s*.*
           exclude_pattern: |
             **/spl*.json
-          # 输出配置
-          json: true          # 生成JSON格式结果
-          output_file: sub.txt  # 保存到文件（可选）
+          json: true
+          output_file: "${{ github.workspace }}/sub.txt"  # 明确绝对路径
+      
+      - name: 验证结果
+        run: |
+          echo "=== sub.txt 内容 ==="
+          cat "${{ github.workspace }}/sub.txt"
+          echo "=== 匹配文件数 ==="
+          jq length "${{ github.workspace }}/sub.txt"
       - name: list newly updated files
         run: |
           cd ./sub
