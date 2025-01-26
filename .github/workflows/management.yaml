@@ -16,28 +16,23 @@ jobs:
     steps:
       - uses: actions/checkout@main          
       - name: 获取最近60分钟变更的JSON文件
+        id: changed-json-files
         uses: tj-actions/changed-files@v42
-        id: changed-files
         with:
-          since: '60 minutes ago'
-          path: sub/  # 关键修复：限定目录
-          pattern: |
-            **/f*.json
-            **/k*.json
-            **/s*.*
-          exclude_pattern: |
-            **/spl*.json
-          json: true
-          output_file: "${{ github.workspace }}/sub/sub.txt"  # 明确绝对路径
-      
-      - name: 验证文件存在性
+          # Avoid using single or double quotes for multiline patterns
+          files: |
+            f*.json
+            k*.json
+
+      - name: List all changed json files 
+        if: steps.changed-json-files.outputs.any_changed == 'true'
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-json-files.outputs.all_changed_files }}
         run: |
-          if [ -f "${{ github.workspace }}/sub/sub.txt" ]; then
-            cat "${{ github.workspace }}/sub/sub.txt"
-          else
-            echo "No changed files detected."
-          fi
-        continue-on-error: true      
+          echo "" > ./sub/sub.txt
+          for file in ${ALL_CHANGED_FILES}; do
+            echo $file >> ./sub/sub.txt
+          done   
       - name: list newly updated files
         run: |
           cd ./sub
