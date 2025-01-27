@@ -25,12 +25,15 @@ jobs:
         id: find-files
         run: |
           current_time=$(date +%s)
-          one_hour_ago=$((current_time - 3600))
+          one_hour_ago=$((current_time - 7200))
           target_dir="sub"
       
           temp_file=$(mktemp)
-          
-          find "$target_dir" -type f -print0 | while IFS= read -r -d '' file; do
+          find "$target_dir" -type f \( \
+            -name "f*.json" -o \
+            -name "k*.json" -o \
+            -name "sk*.json" \
+          \) -print0 | while IFS= read -r -d '' file; do
             commit_time=$(git log -1 --format="%ct" -- "$file")
             
             if [ -n "$commit_time" ] && [ "$commit_time" -ge "$one_hour_ago" ]; then
