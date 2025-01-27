@@ -28,9 +28,9 @@ jobs:
           one_hour_ago=$((current_time - 3600))
           target_dir="./sub"  # 替换为你的目标目录
 
-          # 创建临时文件
           temp_file=$(mktemp)
-
+          found_files=0
+      
           # 使用带空字符分隔的安全方式遍历文件
           find "$target_dir" -type f -print0 | while IFS= read -r -d '' file; do
             commit_time=$(git log -1 --format="%ct" -- "$file")
@@ -38,17 +38,18 @@ jobs:
             if [ -n "$commit_time" ] && [ "$commit_time" -ge "$one_hour_ago" ]; then
               echo "$file" >> "$temp_file"
               echo "🟢 最近修改: $file ($(date -d @$commit_time))"
+              found_files=1
             fi
           done
-
+      
           # 处理结果输出
-          if [ -s "$temp_file" ]; then
+          if [ $found_files -eq 1 ]; then
             echo "找到以下最近修改的文件:"
             cat "$temp_file"
             echo "recent_files=$(cat $temp_file | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
           else
             echo "❌ 没有找到最近一小时修改的文件"
-          done
+          fi
 
           rm "$temp_file"
 
