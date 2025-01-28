@@ -1,0 +1,36 @@
+name: Restore Deleted File
+
+on:
+  workflow_dispatch:  # 允许手动触发
+  push:
+    branches: [ main ] # 也可根据需求配置触发条件
+
+jobs:
+  restore-file:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 拉取完整历史记录
+
+      - name: Restore providers.json
+        run: |
+          # 从提交哈希中恢复文件到指定路径
+          git checkout f98e01afcd -- sub/providers.json  # 替换为实际文件路径
+          
+          # 检查文件是否恢复成功
+          if [ -f "sub/providers.json" ]; then
+            echo "文件恢复成功！"
+          else
+            echo "错误：文件未找到！"
+            exit 1
+          fi
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add path/to/providers.json
+          git commit -m "chore: 从提交 f98e01a 恢复 providers.json"
+          git push origin main
