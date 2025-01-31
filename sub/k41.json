@@ -1,561 +1,534 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
-        ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geosite-geolocation-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
-            }
-        ]
-    },
-    "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
-            }
-        ],
-        "auto_detect_interface": true
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇧🇷 disney_netflix_BR",
-                "🇩🇪 DE_02",
-                "🇫🇷 FR_03",
-                "🇫🇷 FR_04",
-                "🇫🇷 FR_05",
-                "🇫🇷 FR_06",
-                "🇬🇧 GB_07",
-                "🇬🇧 GB_08",
-                "🇬🇧 GB_09",
-                "🇬🇧 GB_10",
-                "🇬🇧 GB_11",
-                "🇭🇰 disney_netflix_HK",
-                "🇭🇰 disney_netflix_HK 2",
-                "🇸🇬 disney_SG",
-                "🇮🇪 netflix_IE",
-                "🇮🇪 IE_16",
-                "🇮🇪 IE_17",
-                "🇮🇹 disney_netflix_IT",
-                "🇸🇪 SE_19",
-                "🇺🇸 US_20",
-                "🇺🇸 US_21",
-                "🇺🇸 US_22",
-                "🇮🇹 disney_netflix_IT 2"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇧🇷 disney_netflix_BR",
-                "🇩🇪 DE_02",
-                "🇫🇷 FR_03",
-                "🇫🇷 FR_04",
-                "🇫🇷 FR_05",
-                "🇫🇷 FR_06",
-                "🇬🇧 GB_07",
-                "🇬🇧 GB_08",
-                "🇬🇧 GB_09",
-                "🇬🇧 GB_10",
-                "🇬🇧 GB_11",
-                "🇭🇰 disney_netflix_HK",
-                "🇭🇰 disney_netflix_HK 2",
-                "🇸🇬 disney_SG",
-                "🇮🇪 netflix_IE",
-                "🇮🇪 IE_16",
-                "🇮🇪 IE_17",
-                "🇮🇹 disney_netflix_IT",
-                "🇸🇪 SE_19",
-                "🇺🇸 US_20",
-                "🇺🇸 US_21",
-                "🇺🇸 US_22",
-                "🇮🇹 disney_netflix_IT 2"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
-            "down_mbps": 100,
-            "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
-            "server": "br.huafei888.site",
-            "server_port": 80,
-            "tag": "🇧🇷 disney_netflix_BR",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "3.124.104.87",
-            "server_port": 22222,
-            "tag": "🇩🇪 DE_02",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "down_mbps": 100,
-            "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
-            "server": "51.158.148.53",
-            "server_port": 8080,
-            "tag": "🇫🇷 FR_03",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "15.237.237.239",
-            "server_port": 22222,
-            "tag": "🇫🇷 FR_04",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "15.236.21.166",
-            "server_port": 22222,
-            "tag": "🇫🇷 FR_05",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "13.36.216.49",
-            "server_port": 22222,
-            "tag": "🇫🇷 FR_06",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "method": "rc4-md5",
-            "password": "14fFPrbezE3HDZzsMOr6",
-            "server": "146.70.61.18",
-            "server_port": 8080,
-            "tag": "🇬🇧 GB_07",
-            "type": "shadowsocks"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "18.168.23.242",
-            "server_port": 22222,
-            "tag": "🇬🇧 GB_08",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "18.134.92.192",
-            "server_port": 22222,
-            "tag": "🇬🇧 GB_09",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "13.42.203.83",
-            "server_port": 22222,
-            "tag": "🇬🇧 GB_10",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "3.9.184.231",
-            "server_port": 22222,
-            "tag": "🇬🇧 GB_11",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "down_mbps": 100,
-            "password": "d339c345-6514-4f6b-8c44-30dd29c74b39",
-            "server": "hhhk.naisicloud.xyz",
-            "server_port": 35600,
-            "tag": "🇭🇰 disney_netflix_HK",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "hhhk.naisicloud.xyz"
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        },
-        {
-            "down_mbps": 100,
-            "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
-            "server": "62.72.163.215",
-            "server_port": 80,
-            "tag": "🇭🇰 disney_netflix_HK 2",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        },
-        {
-            "down_mbps": 100,
-            "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
-            "server": "203.23.128.167",
-            "server_port": 80,
-            "tag": "🇸🇬 disney_SG",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "54.216.80.41",
-            "server_port": 22222,
-            "tag": "🇮🇪 netflix_IE",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "34.255.78.209",
-            "server_port": 22222,
-            "tag": "🇮🇪 IE_16",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "54.229.40.249",
-            "server_port": 22222,
-            "tag": "🇮🇪 IE_17",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "tg-fq521free",
-            "server": "45.67.215.95",
-            "server_port": 443,
-            "tag": "🇮🇹 disney_netflix_IT",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "torjan.xn--xhq44j.eu.org"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "torjan.xn--xhq44j.eu.org"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "51.21.66.143",
-            "server_port": 22222,
-            "tag": "🇸🇪 SE_19",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "cdBIDV42DCwnfIN",
-            "server": "167.88.63.21",
-            "server_port": 8118,
-            "tag": "🇺🇸 US_20",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "kDWvXYZoTBcGkC4",
-            "server": "167.88.63.21",
-            "server_port": 8881,
-            "tag": "🇺🇸 US_21",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "Y6R9pAtvxxzmGC",
-            "server": "167.88.63.21",
-            "server_port": 5601,
-            "tag": "🇺🇸 US_22",
-            "type": "shadowsocks"
-        },
-        {
-            "password": "bpb-trojan",
-            "server": "www.vpslook.com",
-            "server_port": 443,
-            "tag": "🇮🇹 disney_netflix_IT 2",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "bpb-hd.aaronchin.xyz"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "bpb-hd.aaronchin.xyz"
-                },
-                "path": "/tr",
-                "type": "ws"
-            },
-            "type": "trojan"
-        }
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "google"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "rule_set": "geoip-cn"
+          }
+        ],
+        "server": "local"
+      }
+    ]
+  },
+  "route": {
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
+      }
     ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "process_name": [
+          "xray.exe",
+          "hysteria.exe",
+          "tuic.exe",
+          "tuic-client.exe",
+          "juicity.exe",
+          "juicity-client.exe"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "quic"
+        ],
+        "outbound": "block"
+      },
+      {
+        "geosite": [
+          "geolocation-!cn"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "geosite": [
+              "cn"
+            ]
+          },
+          {
+            "geoip": [
+              "cn"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geosite": [
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geoip": [
+          "cn",
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "top81.org",
+          "wxno.com",
+          "blockaway.net"
+        ],
+        "outbound": "proxy"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇧🇷 netflix_BR",
+        "🇩🇪 DE_02",
+        "🇭🇰 disney_netflix_HK",
+        "🇫🇷 FR_04",
+        "🇫🇷 FR_05",
+        "🇫🇷 FR_06",
+        "🇬🇧 GB_07",
+        "🇬🇧 GB_08",
+        "🇬🇧 GB_09",
+        "🇸🇬 disney_SG",
+        "🇭🇰 disney_HK",
+        "🇭🇰 disney_HK 2",
+        "🇮🇪 netflix_IE",
+        "🇮🇪 IE_14",
+        "🇮🇹 disney_netflix_IT",
+        "🇸🇪 SE_16",
+        "🇸🇪 SE_17",
+        "🇺🇸 US_18",
+        "🇺🇸 US_19",
+        "🇺🇸 US_20",
+        "🇮🇹 disney_netflix_IT 2"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇧🇷 netflix_BR",
+        "🇩🇪 DE_02",
+        "🇭🇰 disney_netflix_HK",
+        "🇫🇷 FR_04",
+        "🇫🇷 FR_05",
+        "🇫🇷 FR_06",
+        "🇬🇧 GB_07",
+        "🇬🇧 GB_08",
+        "🇬🇧 GB_09",
+        "🇸🇬 disney_SG",
+        "🇭🇰 disney_HK",
+        "🇭🇰 disney_HK 2",
+        "🇮🇪 netflix_IE",
+        "🇮🇪 IE_14",
+        "🇮🇹 disney_netflix_IT",
+        "🇸🇪 SE_16",
+        "🇸🇪 SE_17",
+        "🇺🇸 US_18",
+        "🇺🇸 US_19",
+        "🇺🇸 US_20",
+        "🇮🇹 disney_netflix_IT 2"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "tag": "🇧🇷 netflix_BR",
+      "type": "hysteria2",
+      "server": "br.huafei888.site",
+      "server_port": 80,
+      "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇩🇪 DE_02",
+      "type": "trojan",
+      "server": "3.124.104.87",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇭🇰 disney_netflix_HK",
+      "type": "hysteria2",
+      "server": "51.158.148.53",
+      "server_port": 8080,
+      "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_04",
+      "type": "trojan",
+      "server": "13.36.216.49",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_05",
+      "type": "trojan",
+      "server": "15.236.234.82",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_06",
+      "type": "trojan",
+      "server": "15.237.237.239",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇬🇧 GB_07",
+      "type": "shadowsocks",
+      "server": "146.70.61.18",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇬🇧 GB_08",
+      "type": "trojan",
+      "server": "18.168.23.242",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇬🇧 GB_09",
+      "type": "trojan",
+      "server": "13.42.203.83",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇸🇬 disney_SG",
+      "type": "hysteria2",
+      "server": "203.23.128.167",
+      "server_port": 80,
+      "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 disney_HK",
+      "type": "hysteria2",
+      "server": "62.72.163.215",
+      "server_port": 80,
+      "password": "a0605527-28e4-449c-80ee-5642cc16a8af",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 disney_HK 2",
+      "type": "hysteria2",
+      "server": "hhhk.naisicloud.xyz",
+      "server_port": 35600,
+      "password": "d339c345-6514-4f6b-8c44-30dd29c74b39",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "hhhk.naisicloud.xyz",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇮🇪 netflix_IE",
+      "type": "trojan",
+      "server": "54.216.80.41",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇮🇪 IE_14",
+      "type": "trojan",
+      "server": "34.255.78.209",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇮🇹 disney_netflix_IT",
+      "type": "trojan",
+      "server": "45.67.215.95",
+      "server_port": 443,
+      "password": "tg-fq521free",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "torjan.xn--xhq44j.eu.org"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "torjan.xn--xhq44j.eu.org"
+        }
+      }
+    },
+    {
+      "tag": "🇸🇪 SE_16",
+      "type": "trojan",
+      "server": "51.20.247.76",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇸🇪 SE_17",
+      "type": "trojan",
+      "server": "51.21.66.143",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 US_18",
+      "type": "shadowsocks",
+      "server": "167.88.63.21",
+      "server_port": 8118,
+      "method": "aes-256-gcm",
+      "password": "cdBIDV42DCwnfIN"
+    },
+    {
+      "tag": "🇺🇸 US_19",
+      "type": "shadowsocks",
+      "server": "167.88.63.21",
+      "server_port": 5601,
+      "method": "aes-256-gcm",
+      "password": "Y6R9pAtvxxzmGC"
+    },
+    {
+      "tag": "🇺🇸 US_20",
+      "type": "shadowsocks",
+      "server": "167.88.63.21",
+      "server_port": 8881,
+      "method": "aes-256-gcm",
+      "password": "kDWvXYZoTBcGkC4"
+    },
+    {
+      "tag": "🇮🇹 disney_netflix_IT 2",
+      "type": "trojan",
+      "server": "www.vpslook.com",
+      "server_port": 443,
+      "password": "bpb-trojan",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "bpb-hd.aaronchin.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/tr",
+        "headers": {
+          "Host": "bpb-hd.aaronchin.xyz"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
