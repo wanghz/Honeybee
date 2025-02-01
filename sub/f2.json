@@ -1,390 +1,1154 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
-        ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geosite-geolocation-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
-            }
-        ]
-    },
-    "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
-            }
-        ],
-        "auto_detect_interface": true
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇲🇨 ed82a36c1c544e029532e4abbce6355d_@_MCI-V2ray_Alpha-11",
-                "🇲🇨 d98f4f9e475d4a08992e4dfa411129bb_@_MCI-V2ray_Alpha-13",
-                "🇲🇨 b269ec17361747f6b52d3740c17474d8_@_MCI-V2ray_Alpha-15",
-                "🇲🇨 808fba74296f46b6a567ffcdcebdd2de_@_MCI-V2ray_Alpha-16",
-                "🇲🇨 d7e0763f562f46919f28049dd1686882_@_MCI-V2ray_Alpha-17",
-                "🇲🇨 259759028e53472fb1bb0d9b386f3f8a_@_MCI-V2ray_Alpha-18",
-                "🇲🇨 3916cb197ebe41b8989dc0b430bfba8c_@_MCI-V2ray_Alpha-19",
-                "🇲🇨 26d6421fb881452789bb33df5f1d16d3_@_MCI-V2ray_Alpha-20"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇲🇨 ed82a36c1c544e029532e4abbce6355d_@_MCI-V2ray_Alpha-11",
-                "🇲🇨 d98f4f9e475d4a08992e4dfa411129bb_@_MCI-V2ray_Alpha-13",
-                "🇲🇨 b269ec17361747f6b52d3740c17474d8_@_MCI-V2ray_Alpha-15",
-                "🇲🇨 808fba74296f46b6a567ffcdcebdd2de_@_MCI-V2ray_Alpha-16",
-                "🇲🇨 d7e0763f562f46919f28049dd1686882_@_MCI-V2ray_Alpha-17",
-                "🇲🇨 259759028e53472fb1bb0d9b386f3f8a_@_MCI-V2ray_Alpha-18",
-                "🇲🇨 3916cb197ebe41b8989dc0b430bfba8c_@_MCI-V2ray_Alpha-19",
-                "🇲🇨 26d6421fb881452789bb33df5f1d16d3_@_MCI-V2ray_Alpha-20"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "188.245.251.47",
-            "server_port": 8080,
-            "tag": "🇲🇨 ed82a36c1c544e029532e4abbce6355d_@_MCI-V2ray_Alpha-11",
-            "type": "vless",
-            "uuid": "1c86a177-d7ff-4a5f-8255-cfeb4e051305"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "87.249.49.138",
-            "server_port": 2052,
-            "tag": "🇲🇨 d98f4f9e475d4a08992e4dfa411129bb_@_MCI-V2ray_Alpha-13",
-            "transport": {
-                "service_name": "8880vless",
-                "type": "grpc"
-            },
-            "type": "vless",
-            "uuid": "568ba1ae-3b93-4587-885c-f4185bb2dbac"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "173.245.59.132",
-            "server_port": 2053,
-            "tag": "🇲🇨 b269ec17361747f6b52d3740c17474d8_@_MCI-V2ray_Alpha-15",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "almze.gt-ov.com",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "headers": {
-                    "Host": "almze.gt-ov.com"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "07f0b3e7-81c3-46e8-a6af-32cc02e1feb2"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "172.64.32.154",
-            "server_port": 2087,
-            "tag": "🇲🇨 808fba74296f46b6a567ffcdcebdd2de_@_MCI-V2ray_Alpha-16",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "a17.nnotamel-01.fun",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "service_name": "",
-                "type": "grpc"
-            },
-            "type": "vless",
-            "uuid": "bb29c155-d55e-4c07-8403-0581e384f7a2"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "172.66.46.227",
-            "server_port": 2053,
-            "tag": "🇲🇨 d7e0763f562f46919f28049dd1686882_@_MCI-V2ray_Alpha-17",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "mAHDiseRveR-ac2.pagEs.deV",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "randomized"
-                }
-            },
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "mAHDiseRveR-ac2.pagEs.deV"
-                },
-                "max_early_data": 2560,
-                "path": "/telegram@v2ray_alpha/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "79d40805-c7eb-49cb-bb88-61d18b6c52b2"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "160.153.0.108",
-            "server_port": 2053,
-            "tag": "🇲🇨 259759028e53472fb1bb0d9b386f3f8a_@_MCI-V2ray_Alpha-18",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "MoPrVjRx73.bRiGhTwAyE.OrG",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "service_name": "",
-                "type": "grpc"
-            },
-            "type": "vless",
-            "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "160.153.0.113",
-            "server_port": 2087,
-            "tag": "🇲🇨 3916cb197ebe41b8989dc0b430bfba8c_@_MCI-V2ray_Alpha-19",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "service_name": "",
-                "type": "grpc"
-            },
-            "type": "vless",
-            "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.17.147.22",
-            "server_port": 2053,
-            "tag": "🇲🇨 26d6421fb881452789bb33df5f1d16d3_@_MCI-V2ray_Alpha-20",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "CdCyRiRd73.gOzAlBaLaBiYa-bEbInAm.cOm",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "service_name": "",
-                "type": "grpc"
-            },
-            "type": "vless",
-            "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc"
-        }
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "rule_set": "geosite-geolocation-!cn",
+        "server": "google"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geosite-geolocation-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "rule_set": "geosite-geolocation-!cn",
+            "invert": true
+          },
+          {
+            "rule_set": "geoip-cn"
+          }
+        ],
+        "server": "local"
+      }
+    ]
+  },
+  "route": {
+    "rule_set": [
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geosite-geolocation-!cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
+      },
+      {
+        "type": "remote",
+        "tag": "geoip-cn",
+        "format": "binary",
+        "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
+      }
     ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "process_name": [
+          "xray.exe",
+          "hysteria.exe",
+          "tuic.exe",
+          "tuic-client.exe",
+          "juicity.exe",
+          "juicity-client.exe"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "quic"
+        ],
+        "outbound": "block"
+      },
+      {
+        "geosite": [
+          "geolocation-!cn"
+        ],
+        "outbound": "proxy"
+      },
+      {
+        "type": "logical",
+        "mode": "and",
+        "rules": [
+          {
+            "geosite": [
+              "cn"
+            ]
+          },
+          {
+            "geoip": [
+              "cn"
+            ]
+          }
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geosite": [
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "geoip": [
+          "cn",
+          "private"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "clash.razord.top",
+          "yacd.metacubex.one",
+          "yacd.haishan.me",
+          "d.metacubex.one"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "domain": [
+          "top81.org",
+          "wxno.com",
+          "blockaway.net"
+        ],
+        "outbound": "proxy"
+      }
+    ],
+    "auto_detect_interface": true
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇲🇨 ebc413aaad2b4a8b91fef38d551c2bb4_@_MCI-V2ray_Alpha-21`vless://V2RAXX@speedtest.net:80?path=%2FTelegram%2CV2RAXX%2CTelegram%2C%3Fed%3D2048&security=none&encryption=none&host=V2RAXX.ir&type=ws#@meli_proxyy`",
+        "3c3981c0a8674a129ec009da16e62442_@_@meli_proxyy",
+        "331a9d9553224af4adf9ef22571f1987_@_@meli_proxyy",
+        "73db8f24939f48519a729cf2cc5ece8c_@_@meli_proxyy",
+        "096e1e2747ad4808ab7a37bad48db889_@_@meli_proxyy",
+        "124f2fd8fbd741729850b99096731650_@_@meli_proxyy",
+        "04686b73b2ec4b57aa2283e19051f196_@_@meli_proxyy",
+        "e5111ec595af421aa68e79d4c8cb1409_@_@meli_proxyy",
+        "55a2e17f00024ef2b65c7ece27062ff3_@_@meli_proxyy",
+        "22f4e72f77aa4e17b7b703b9e58ddf47_@_@meli_proxyy",
+        "88db5b97b06a470da94bf2da9652eaa6_@_@meli_proxyy`",
+        "8d3f296209dc41d1b7ba1850911846b4_@_Telegram @VlessConfig 🇬🇧`",
+        "8c61130dbd2a4c96bfb2eab5c527b147_@_@meli_proxyy",
+        "a6f9cd1d3e184f4e8d66b376dbbaa02b_@_@meli_proxyy",
+        "5ff49c74122d457f8af40d6387482993_@_@meli_proxyy",
+        "2ecbfe374f624c6dbaea23cdddcb47c4_@_@meli_proxyy",
+        "d9af061efa584723a8ba9b114d5cf7d6_@_@meli_proxyy",
+        "cd87d1c8017d4927a40f8efa3838a707_@_@meli_proxyy",
+        "be71ccd522c449b1bd3f87f4760fbd97_@_@meli_proxyy",
+        "917e46553f414d83b03a5568f344e71a_@_@meli_proxyy",
+        "66f65a909b494d15a33ea2a2f7389661_@_@meli_proxyy",
+        "af826773172a49ecb86d60f46008f839_@_@meli_proxyy",
+        "a1bab9434f8e4c4685e8ff95586d8a6c_@_@meli_proxyy`",
+        "🇺🇸 d3ee602ca42d403abb152fe01fe734c0_@_🇺🇸[openproxylist.com] vless-US```",
+        "🇩🇪 771de8387d1d475fa4e286ebb0da7828_@_🇩🇪[openproxylist.com] vless-DE```",
+        "50fcaf8abcf941ebb8c669e4cb7e5c92_@_%E2%9A%9C%EF%B8%8FTelegram%3A%20%40IP_CF`",
+        "7587ae4d2bb64eae91f9863b58cc087b_@_Telegram @VlessConfig 🇬🇧`",
+        "5057192582b1407c9c4ed73aa678d440_@_[🇮🇷]t.me/ConfigsHub`",
+        "929b4da5babd4256bb02fc699ff827ce_@_[🇨🇦]t.me/ConfigsHub`",
+        "137caa36542048a5bf48d9b9aade80c2_@_[🇨🇦]t.me/ConfigsHub`",
+        "8e5bb3c8f9dd4f848f47dc77485e18ad_@_[🇨🇦]t.me/ConfigsHub`",
+        "3d1cf360c42d4b7b83062d5375e7f50e_@_[🇨🇦]t.me/ConfigsHub`",
+        "39499ff2d18d4c55bd63e463f0e718ba_@_[🇨🇦]t.me/ConfigsHub`",
+        "62607ec3a5a5496f910099348b0d2054_@_[🇨🇦]t.me/ConfigsHub`",
+        "05a83efa596248439e35140351e908d3_@_[🇨🇦]t.me/ConfigsHub`",
+        "06246c2cfdb543668c915f6b4b49bfa5_@_[🇮🇷]t.me/ConfigsHub`",
+        "2774745b18974f0bb191bb797d29700f_@_[🇮🇷]t.me/ConfigsHub`",
+        "234ee1d4a32d4b8cb6b1826f3488143e_@_@meli_proxyy",
+        "30382c8c15d240df91d4e02e64296bb3_@_@meli_proxyy",
+        "4d92ff5eaea0455bb5d278e11960f4da_@_@meli_proxyy",
+        "964ef62e56634c388d45e46d9faf4d68_@_@meli_proxyy"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇲🇨 ebc413aaad2b4a8b91fef38d551c2bb4_@_MCI-V2ray_Alpha-21`vless://V2RAXX@speedtest.net:80?path=%2FTelegram%2CV2RAXX%2CTelegram%2C%3Fed%3D2048&security=none&encryption=none&host=V2RAXX.ir&type=ws#@meli_proxyy`",
+        "3c3981c0a8674a129ec009da16e62442_@_@meli_proxyy",
+        "331a9d9553224af4adf9ef22571f1987_@_@meli_proxyy",
+        "73db8f24939f48519a729cf2cc5ece8c_@_@meli_proxyy",
+        "096e1e2747ad4808ab7a37bad48db889_@_@meli_proxyy",
+        "124f2fd8fbd741729850b99096731650_@_@meli_proxyy",
+        "04686b73b2ec4b57aa2283e19051f196_@_@meli_proxyy",
+        "e5111ec595af421aa68e79d4c8cb1409_@_@meli_proxyy",
+        "55a2e17f00024ef2b65c7ece27062ff3_@_@meli_proxyy",
+        "22f4e72f77aa4e17b7b703b9e58ddf47_@_@meli_proxyy",
+        "88db5b97b06a470da94bf2da9652eaa6_@_@meli_proxyy`",
+        "8d3f296209dc41d1b7ba1850911846b4_@_Telegram @VlessConfig 🇬🇧`",
+        "8c61130dbd2a4c96bfb2eab5c527b147_@_@meli_proxyy",
+        "a6f9cd1d3e184f4e8d66b376dbbaa02b_@_@meli_proxyy",
+        "5ff49c74122d457f8af40d6387482993_@_@meli_proxyy",
+        "2ecbfe374f624c6dbaea23cdddcb47c4_@_@meli_proxyy",
+        "d9af061efa584723a8ba9b114d5cf7d6_@_@meli_proxyy",
+        "cd87d1c8017d4927a40f8efa3838a707_@_@meli_proxyy",
+        "be71ccd522c449b1bd3f87f4760fbd97_@_@meli_proxyy",
+        "917e46553f414d83b03a5568f344e71a_@_@meli_proxyy",
+        "66f65a909b494d15a33ea2a2f7389661_@_@meli_proxyy",
+        "af826773172a49ecb86d60f46008f839_@_@meli_proxyy",
+        "a1bab9434f8e4c4685e8ff95586d8a6c_@_@meli_proxyy`",
+        "🇺🇸 d3ee602ca42d403abb152fe01fe734c0_@_🇺🇸[openproxylist.com] vless-US```",
+        "🇩🇪 771de8387d1d475fa4e286ebb0da7828_@_🇩🇪[openproxylist.com] vless-DE```",
+        "50fcaf8abcf941ebb8c669e4cb7e5c92_@_%E2%9A%9C%EF%B8%8FTelegram%3A%20%40IP_CF`",
+        "7587ae4d2bb64eae91f9863b58cc087b_@_Telegram @VlessConfig 🇬🇧`",
+        "5057192582b1407c9c4ed73aa678d440_@_[🇮🇷]t.me/ConfigsHub`",
+        "929b4da5babd4256bb02fc699ff827ce_@_[🇨🇦]t.me/ConfigsHub`",
+        "137caa36542048a5bf48d9b9aade80c2_@_[🇨🇦]t.me/ConfigsHub`",
+        "8e5bb3c8f9dd4f848f47dc77485e18ad_@_[🇨🇦]t.me/ConfigsHub`",
+        "3d1cf360c42d4b7b83062d5375e7f50e_@_[🇨🇦]t.me/ConfigsHub`",
+        "39499ff2d18d4c55bd63e463f0e718ba_@_[🇨🇦]t.me/ConfigsHub`",
+        "62607ec3a5a5496f910099348b0d2054_@_[🇨🇦]t.me/ConfigsHub`",
+        "05a83efa596248439e35140351e908d3_@_[🇨🇦]t.me/ConfigsHub`",
+        "06246c2cfdb543668c915f6b4b49bfa5_@_[🇮🇷]t.me/ConfigsHub`",
+        "2774745b18974f0bb191bb797d29700f_@_[🇮🇷]t.me/ConfigsHub`",
+        "234ee1d4a32d4b8cb6b1826f3488143e_@_@meli_proxyy",
+        "30382c8c15d240df91d4e02e64296bb3_@_@meli_proxyy",
+        "4d92ff5eaea0455bb5d278e11960f4da_@_@meli_proxyy",
+        "964ef62e56634c388d45e46d9faf4d68_@_@meli_proxyy"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "type": "block",
+      "tag": "block"
+    },
+    {
+      "type": "dns",
+      "tag": "dns-out"
+    },
+    {
+      "tag": "🇲🇨 ebc413aaad2b4a8b91fef38d551c2bb4_@_MCI-V2ray_Alpha-21`vless://V2RAXX@speedtest.net:80?path=%2FTelegram%2CV2RAXX%2CTelegram%2C%3Fed%3D2048&security=none&encryption=none&host=V2RAXX.ir&type=ws#@meli_proxyy`",
+      "type": "vless",
+      "server": "172.67.178.177",
+      "server_port": 2087,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "3c3981c0a8674a129ec009da16e62442_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.66.47.45",
+      "server_port": 2083,
+      "uuid": "51385ef4-f91d-40f0-9acd-10fda0032ac8",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "MaHdiSerVER-3ZO.PAgeS.DeV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram@v2ray_alpha/",
+        "headers": {
+          "Host": "MaHdiSerVER-3ZO.PAgeS.DeV"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "331a9d9553224af4adf9ef22571f1987_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.66.47.132",
+      "server_port": 443,
+      "uuid": "fe6dd9e1-4444-434e-81cc-54d7663dd149",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "MahdiSErVEr-c4a.pAGEs.DEV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram@v2ray_alpha/",
+        "headers": {
+          "Host": "MahdiSErVEr-c4a.pAGEs.DEV"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "73db8f24939f48519a729cf2cc5ece8c_@_@meli_proxyy",
+      "type": "vless",
+      "server": "108.162.192.154",
+      "server_port": 2053,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "MoPrVjRx73.bRiGhTwAyE.OrG",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "096e1e2747ad4808ab7a37bad48db889_@_@meli_proxyy",
+      "type": "vless",
+      "server": "91.107.176.100",
+      "server_port": 443,
+      "uuid": "79999abf-b0a1-42f7-9b00-731b16d89ec7",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "dd12.anisun.ir",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "dd12.anisun.ir"
+        }
+      }
+    },
+    {
+      "tag": "124f2fd8fbd741729850b99096731650_@_@meli_proxyy",
+      "type": "vless",
+      "server": "85.237.211.219",
+      "server_port": 8443,
+      "uuid": "7996d412-0b2a-4533-bba1-f7531861f1ec",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "ul-uae2.09vpn.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vless/",
+        "headers": {
+          "Host": "ul-uae2.09vpn.com"
+        }
+      }
+    },
+    {
+      "tag": "04686b73b2ec4b57aa2283e19051f196_@_@meli_proxyy",
+      "type": "vless",
+      "server": "173.245.59.81",
+      "server_port": 443,
+      "uuid": "f56524df-0f5f-4a49-8507-72d70c43752a",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "s9zk1f.allgums.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/wss",
+        "headers": {
+          "Host": "s9zk1f.allgums.com"
+        }
+      }
+    },
+    {
+      "tag": "e5111ec595af421aa68e79d4c8cb1409_@_@meli_proxyy",
+      "type": "vless",
+      "server": "104.21.32.1",
+      "server_port": 2087,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "HASti.FReeAirlAINEs.cOm",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram@v2ray_alpha/",
+        "headers": {
+          "Host": "HASti.FReeAirlAINEs.cOm"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2048
+      }
+    },
+    {
+      "tag": "55a2e17f00024ef2b65c7ece27062ff3_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.67.178.177",
+      "server_port": 2053,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CdCyRiRd73.gOzAlBaLaBiYa-bEbInAm.cOm",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "22f4e72f77aa4e17b7b703b9e58ddf47_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.67.175.36",
+      "server_port": 2087,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "88db5b97b06a470da94bf2da9652eaa6_@_@meli_proxyy`",
+      "type": "vless",
+      "server": "104.21.89.147",
+      "server_port": 2087,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "8d3f296209dc41d1b7ba1850911846b4_@_Telegram @VlessConfig 🇬🇧`",
+      "type": "vless",
+      "server": "35.178.236.205",
+      "server_port": 22222,
+      "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "telegram-channel-vlessconfig.sohala.uk",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram-channel-vlessconfig-ws",
+        "headers": {
+          "Host": "telegram-channel-vlessconfig.sohala.uk"
+        }
+      }
+    },
+    {
+      "tag": "8c61130dbd2a4c96bfb2eab5c527b147_@_@meli_proxyy",
+      "type": "vless",
+      "server": "85.133.253.183",
+      "server_port": 1410,
+      "uuid": "abb0b05d-4683-42f1-981f-f3537026ac2d",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": ""
+        }
+      }
+    },
+    {
+      "tag": "a6f9cd1d3e184f4e8d66b376dbbaa02b_@_@meli_proxyy",
+      "type": "vless",
+      "server": "104.21.32.1",
+      "server_port": 8443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hAsTi.fREEaiRlAinEs.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram@v2ray_alpha/",
+        "headers": {
+          "Host": "hAsTi.fREEaiRlAinEs.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "5ff49c74122d457f8af40d6387482993_@_@meli_proxyy",
+      "type": "vless",
+      "server": "188.245.251.47",
+      "server_port": 8080,
+      "uuid": "1c86a177-d7ff-4a5f-8255-cfeb4e051305",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "2ecbfe374f624c6dbaea23cdddcb47c4_@_@meli_proxyy",
+      "type": "vless",
+      "server": "87.249.49.138",
+      "server_port": 2052,
+      "uuid": "568ba1ae-3b93-4587-885c-f4185bb2dbac",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "grpc",
+        "service_name": "8880vless"
+      }
+    },
+    {
+      "tag": "d9af061efa584723a8ba9b114d5cf7d6_@_@meli_proxyy",
+      "type": "vless",
+      "server": "173.245.59.132",
+      "server_port": 2053,
+      "uuid": "07f0b3e7-81c3-46e8-a6af-32cc02e1feb2",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "almze.gt-ov.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "almze.gt-ov.com"
+        }
+      }
+    },
+    {
+      "tag": "cd87d1c8017d4927a40f8efa3838a707_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.64.32.154",
+      "server_port": 2087,
+      "uuid": "bb29c155-d55e-4c07-8403-0581e384f7a2",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "a17.nnotamel-01.fun",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "be71ccd522c449b1bd3f87f4760fbd97_@_@meli_proxyy",
+      "type": "vless",
+      "server": "172.66.46.227",
+      "server_port": 2053,
+      "uuid": "79d40805-c7eb-49cb-bb88-61d18b6c52b2",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "mAHDiseRveR-ac2.pagEs.deV",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram@v2ray_alpha/",
+        "headers": {
+          "Host": "mAHDiseRveR-ac2.pagEs.deV"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "917e46553f414d83b03a5568f344e71a_@_@meli_proxyy",
+      "type": "vless",
+      "server": "160.153.0.108",
+      "server_port": 2053,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "MoPrVjRx73.bRiGhTwAyE.OrG",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "66f65a909b494d15a33ea2a2f7389661_@_@meli_proxyy",
+      "type": "vless",
+      "server": "160.153.0.113",
+      "server_port": 2087,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "af826773172a49ecb86d60f46008f839_@_@meli_proxyy",
+      "type": "vless",
+      "server": "104.17.147.22",
+      "server_port": 2053,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CdCyRiRd73.gOzAlBaLaBiYa-bEbInAm.cOm",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "a1bab9434f8e4c4685e8ff95586d8a6c_@_@meli_proxyy`",
+      "type": "vless",
+      "server": "172.67.178.177",
+      "server_port": 2087,
+      "uuid": "96a1b724-68d2-4f4d-ab25-38ecd83577bc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "CiHsFuEf76.nExTvIsIoNaRy.oRg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": ""
+      }
+    },
+    {
+      "tag": "🇺🇸 d3ee602ca42d403abb152fe01fe734c0_@_🇺🇸[openproxylist.com] vless-US```",
+      "type": "vless",
+      "server": "162.159.44.157",
+      "server_port": 443,
+      "uuid": "1b93b49e-296a-4459-b788-14e243bcd086",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "zlq7iy.shieldify.site",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/wss",
+        "headers": {
+          "Host": "zlq7iy.shieldify.site"
+        }
+      }
+    },
+    {
+      "tag": "🇩🇪 771de8387d1d475fa4e286ebb0da7828_@_🇩🇪[openproxylist.com] vless-DE```",
+      "type": "vless",
+      "server": "188.245.251.47",
+      "server_port": 8080,
+      "uuid": "1c86a177-d7ff-4a5f-8255-cfeb4e051305",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "50fcaf8abcf941ebb8c669e4cb7e5c92_@_%E2%9A%9C%EF%B8%8FTelegram%3A%20%40IP_CF`",
+      "type": "vless",
+      "server": "193.39.9.235",
+      "server_port": 8081,
+      "uuid": "5ac03af2-3a0e-45d1-ac30-8583e1ca07ca",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "7587ae4d2bb64eae91f9863b58cc087b_@_Telegram @VlessConfig 🇬🇧`",
+      "type": "vless",
+      "server": "35.176.70.75",
+      "server_port": 22222,
+      "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "telegram-channel-vlessconfig.sohala.uk",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/telegram-channel-vlessconfig-ws",
+        "headers": {
+          "Host": "telegram-channel-vlessconfig.sohala.uk"
+        }
+      }
+    },
+    {
+      "tag": "5057192582b1407c9c4ed73aa678d440_@_[🇮🇷]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "193.39.9.235",
+      "server_port": 8081,
+      "uuid": "5ac03af2-3a0e-45d1-ac30-8583e1ca07ca",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "929b4da5babd4256bb02fc699ff827ce_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "www.speedtest.net",
+      "server_port": 2083,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hAsTi.frEEairLainEs.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/G9WiaAeAdacfio6X",
+        "headers": {
+          "Host": "hAsTi.frEEairLainEs.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "137caa36542048a5bf48d9b9aade80c2_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "104.21.32.1",
+      "server_port": 2087,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "HASti.FReeAirlAINEs.cOm",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/n9VBBKoNzJpkUcnO",
+        "headers": {
+          "Host": "HASti.FReeAirlAINEs.cOm"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2048
+      }
+    },
+    {
+      "tag": "8e5bb3c8f9dd4f848f47dc77485e18ad_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "cdnjs.com",
+      "server_port": 8443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hastI.frEEaIrlAiNes.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/cVwhB4RnkmUyTlvX",
+        "headers": {
+          "Host": "hastI.frEEaIrlAiNes.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "3d1cf360c42d4b7b83062d5375e7f50e_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "104.21.96.1",
+      "server_port": 443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hastI.FrEeAIRLAInEs.CoM",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/9BX39ZVMZoLNZe35",
+        "headers": {
+          "Host": "hastI.FrEeAIRLAInEs.CoM"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "39499ff2d18d4c55bd63e463f0e718ba_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "104.21.96.1",
+      "server_port": 2083,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "HaSti.fReEaiRLAinEs.COM",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/JRQhLvgozN890ROi",
+        "headers": {
+          "Host": "HaSti.fReEaiRLAinEs.COM"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "62607ec3a5a5496f910099348b0d2054_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "104.21.112.1",
+      "server_port": 8443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hAsTI.FreEAIRlaiNES.COM",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/HHckQNclCR9cRpvM",
+        "headers": {
+          "Host": "hAsTI.FreEAIRlaiNES.COM"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "05a83efa596248439e35140351e908d3_@_[🇨🇦]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "104.21.32.1",
+      "server_port": 8443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hAsTi.fREEaiRlAinEs.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/l6hEj025PWDPvl4J",
+        "headers": {
+          "Host": "hAsTi.fREEaiRlAinEs.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "06246c2cfdb543668c915f6b4b49bfa5_@_[🇮🇷]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "193.39.9.235",
+      "server_port": 8081,
+      "uuid": "5ac03af2-3a0e-45d1-ac30-8583e1ca07ca",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "2774745b18974f0bb191bb797d29700f_@_[🇮🇷]t.me/ConfigsHub`",
+      "type": "vless",
+      "server": "193.39.9.235",
+      "server_port": 8081,
+      "uuid": "5ac03af2-3a0e-45d1-ac30-8583e1ca07ca",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "234ee1d4a32d4b8cb6b1826f3488143e_@_@meli_proxyy",
+      "type": "vless",
+      "server": "193.39.9.235",
+      "server_port": 8081,
+      "uuid": "5ac03af2-3a0e-45d1-ac30-8583e1ca07ca",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "30382c8c15d240df91d4e02e64296bb3_@_@meli_proxyy",
+      "type": "vless",
+      "server": "www.speedtest.net",
+      "server_port": 2083,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hAsTi.frEEairLainEs.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/G9WiaAeAdacfio6X",
+        "headers": {
+          "Host": "hAsTi.frEEairLainEs.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "4d92ff5eaea0455bb5d278e11960f4da_@_@meli_proxyy",
+      "type": "vless",
+      "server": "104.21.32.1",
+      "server_port": 2087,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "HASti.FReeAirlAINEs.cOm",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/n9VBBKoNzJpkUcnO",
+        "headers": {
+          "Host": "HASti.FReeAirlAINEs.cOm"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2048
+      }
+    },
+    {
+      "tag": "964ef62e56634c388d45e46d9faf4d68_@_@meli_proxyy",
+      "type": "vless",
+      "server": "cdnjs.com",
+      "server_port": 8443,
+      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "hastI.frEEaIrlAiNes.Com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "randomized"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/cVwhB4RnkmUyTlvX",
+        "headers": {
+          "Host": "hastI.frEEaIrlAiNes.Com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
