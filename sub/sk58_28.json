@@ -21,10 +21,6 @@
                 "server": "local"
             },
             {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
                 "clash_mode": "Direct",
                 "server": "local"
             },
@@ -33,127 +29,60 @@
                 "server": "google"
             },
             {
-                "rule_set": "geosite-geolocation-cn",
+                "rule_set": "geoip-cn",
                 "server": "local"
             },
             {
                 "clash_mode": "Default",
                 "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
             }
         ]
     },
     "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
         "rules": [
             {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "outbound": "direct"
+            },
+            {
+                "action": "sniff"
+            },
+            {
                 "protocol": "dns",
-                "outbound": "dns-out"
+                "action": "hijack-dns"
             },
             {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
+                "rule_set": "geoip-us",
+                "rule_set_ip_cidr_match_source": true,
+                "action": "reject"
             }
         ],
-        "auto_detect_interface": true
+        "rule_set": [
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": ""
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "proxy"
+            },
+            {
+                "tag": "geoip-us",
+                "type": "local",
+                "format": "binary",
+                "path": "d:/tools/sing-box/us.srs"
+            }
+        ]
     },
     "inbounds": [
         {
@@ -179,8 +108,8 @@
         },
         {
             "outbounds": [
-                "🇳🇱 荷兰_020610612",
-                "🇳🇱 荷兰_020610613",
+                "防失效github+SubCrawlerCF中转_020610001",
+                "CF中转_020610002",
                 "🇳🇱 荷兰_020610614",
                 "🇳🇱 荷兰_020610615",
                 "🇳🇱 荷兰_020610616",
@@ -620,8 +549,8 @@
         {
             "interval": "1m",
             "outbounds": [
-                "🇳🇱 荷兰_020610612",
-                "🇳🇱 荷兰_020610613",
+                "防失效github+SubCrawlerCF中转_020610001",
+                "CF中转_020610002",
                 "🇳🇱 荷兰_020610614",
                 "🇳🇱 荷兰_020610615",
                 "🇳🇱 荷兰_020610616",
@@ -1065,56 +994,44 @@
             "type": "direct"
         },
         {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
             "packet_encoding": "xudp",
-            "server": "45.131.211.213",
-            "server_port": 80,
-            "tag": "🇳🇱 荷兰_020610612",
+            "server": "172.66.45.4",
+            "server_port": 443,
+            "tag": "防失效github+SubCrawlerCF中转_020610001",
             "tls": {
                 "enabled": true,
                 "insecure": false,
-                "server_name": "1224.j9q1xuv8.workers.dev"
+                "server_name": "94391e80.uvPN-OrG.PAGes.Dev"
             },
             "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
                 "headers": {
-                    "Host": "1224.j9q1xuv8.workers.dev"
+                    "Host": "94391e80.uvPN-OrG.PAGes.Dev"
                 },
-                "max_early_data": 2048,
-                "path": "telegram @wangcai2 /",
+                "path": "/",
                 "type": "ws"
             },
             "type": "vless",
-            "uuid": "daf24a6d-2f78-4cab-867a-4da0f4c91cff"
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
         },
         {
             "packet_encoding": "xudp",
-            "server": "45.131.208.24",
-            "server_port": 80,
-            "tag": "🇳🇱 荷兰_020610613",
+            "server": "172.64.110.145",
+            "server_port": 443,
+            "tag": "CF中转_020610002",
             "tls": {
                 "enabled": true,
                 "insecure": false,
-                "server_name": "1224.j9q1xuv8.workers.dev"
+                "server_name": "mmdv2.pages.dev"
             },
             "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
                 "headers": {
-                    "Host": "1224.j9q1xuv8.workers.dev"
+                    "Host": "mmdv2.pages.dev"
                 },
-                "max_early_data": 2048,
-                "path": "telegram @wangcai2 /",
+                "path": "/",
                 "type": "ws"
             },
             "type": "vless",
-            "uuid": "daf24a6d-2f78-4cab-867a-4da0f4c91cff"
+            "uuid": "d9eb0df3-3190-4447-86b6-656fe5ff1119"
         },
         {
             "packet_encoding": "xudp",

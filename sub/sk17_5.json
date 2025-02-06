@@ -21,10 +21,6 @@
                 "server": "local"
             },
             {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
                 "clash_mode": "Direct",
                 "server": "local"
             },
@@ -33,127 +29,60 @@
                 "server": "google"
             },
             {
-                "rule_set": "geosite-geolocation-cn",
+                "rule_set": "geoip-cn",
                 "server": "local"
             },
             {
                 "clash_mode": "Default",
                 "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
             }
         ]
     },
     "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
         "rules": [
             {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "outbound": "direct"
+            },
+            {
+                "action": "sniff"
+            },
+            {
                 "protocol": "dns",
-                "outbound": "dns-out"
+                "action": "hijack-dns"
             },
             {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
+                "rule_set": "geoip-us",
+                "rule_set_ip_cidr_match_source": true,
+                "action": "reject"
             }
         ],
-        "auto_detect_interface": true
+        "rule_set": [
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": ""
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "proxy"
+            },
+            {
+                "tag": "geoip-us",
+                "type": "local",
+                "format": "binary",
+                "path": "d:/tools/sing-box/us.srs"
+            }
+        ]
     },
     "inbounds": [
         {
@@ -179,8 +108,8 @@
         },
         {
             "outbounds": [
-                "🏁RELAY-198.41.203.157-9262",
-                "🏁RELAY-198.41.203.157-9264",
+                "🇸🇬 SG-15.235.147.186-0003",
+                "🇻🇳 VN-103.183.118.19-0004",
                 "🏁RELAY-104.18.41.208-9269",
                 "🇺🇸 US-13.248.169.48-9270",
                 "🇺🇸 US-13.248.169.48-9272",
@@ -894,8 +823,8 @@
         {
             "interval": "1m",
             "outbounds": [
-                "🏁RELAY-198.41.203.157-9262",
-                "🏁RELAY-198.41.203.157-9264",
+                "🇸🇬 SG-15.235.147.186-0003",
+                "🇻🇳 VN-103.183.118.19-0004",
                 "🏁RELAY-104.18.41.208-9269",
                 "🇺🇸 US-13.248.169.48-9270",
                 "🇺🇸 US-13.248.169.48-9272",
@@ -1613,46 +1542,35 @@
             "type": "direct"
         },
         {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "15.235.147.186",
+            "server_port": 80,
+            "tag": "🇸🇬 SG-15.235.147.186-0003",
+            "transport": {
+                "path": "/sshkit/Ertusg86/635014638c264/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "6fea1649-425b-4092-bf53-29792152c925"
         },
         {
             "alter_id": 0,
             "packet_encoding": "xudp",
             "security": "auto",
-            "server": "cdn.narutos.top",
-            "server_port": 8880,
-            "tag": "🏁RELAY-198.41.203.157-9262",
+            "server": "103.183.118.19",
+            "server_port": 80,
+            "tag": "🇻🇳 VN-103.183.118.19-0004",
             "transport": {
                 "headers": {
-                    "Host": "cdn.narutos.top"
+                    "Host": "dl.kgvn.garenanow.com"
                 },
-                "path": "/RpT6kZjkw45EenmTcDYWs",
+                "path": "/tandung288.click",
                 "type": "ws"
             },
             "type": "vmess",
-            "uuid": "4b5e4565-322f-4223-a891-78a84f189726"
-        },
-        {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "cdn.narutos.top",
-            "server_port": 8880,
-            "tag": "🏁RELAY-198.41.203.157-9264",
-            "transport": {
-                "headers": {
-                    "Host": "cdn.narutos.top"
-                },
-                "path": "/GdtYWlsLmNvbSJ9LCJjb3V",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "4b5e4565-322f-4223-a891-78a84f189726"
+            "uuid": "8886bc65-e61d-41f3-922a-8f1b25b499bf"
         },
         {
             "alter_id": 0,

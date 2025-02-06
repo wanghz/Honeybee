@@ -21,10 +21,6 @@
                 "server": "local"
             },
             {
-                "rule_set": "geosite-geolocation-!cn",
-                "server": "google"
-            },
-            {
                 "clash_mode": "Direct",
                 "server": "local"
             },
@@ -33,127 +29,60 @@
                 "server": "google"
             },
             {
-                "rule_set": "geosite-geolocation-cn",
+                "rule_set": "geoip-cn",
                 "server": "local"
             },
             {
                 "clash_mode": "Default",
                 "server": "google"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "rule_set": "geosite-geolocation-!cn",
-                        "invert": true
-                    },
-                    {
-                        "rule_set": "geoip-cn"
-                    }
-                ],
-                "server": "local"
             }
         ]
     },
     "route": {
-        "rule_set": [
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geosite-geolocation-!cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-geolocation-!cn.srs"
-            },
-            {
-                "type": "remote",
-                "tag": "geoip-cn",
-                "format": "binary",
-                "url": "http://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"
-            }
-        ],
         "rules": [
             {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "outbound": "direct"
+            },
+            {
+                "action": "sniff"
+            },
+            {
                 "protocol": "dns",
-                "outbound": "dns-out"
+                "action": "hijack-dns"
             },
             {
-                "process_name": [
-                    "xray.exe",
-                    "hysteria.exe",
-                    "tuic.exe",
-                    "tuic-client.exe",
-                    "juicity.exe",
-                    "juicity-client.exe"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "quic"
-                ],
-                "outbound": "block"
-            },
-            {
-                "geosite": [
-                    "geolocation-!cn"
-                ],
-                "outbound": "proxy"
-            },
-            {
-                "type": "logical",
-                "mode": "and",
-                "rules": [
-                    {
-                        "geosite": [
-                            "cn"
-                        ]
-                    },
-                    {
-                        "geoip": [
-                            "cn"
-                        ]
-                    }
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geosite": [
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "geoip": [
-                    "cn",
-                    "private"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "clash.razord.top",
-                    "yacd.metacubex.one",
-                    "yacd.haishan.me",
-                    "d.metacubex.one"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "domain": [
-                    "top81.org",
-                    "wxno.com",
-                    "blockaway.net"
-                ],
-                "outbound": "proxy"
+                "rule_set": "geoip-us",
+                "rule_set_ip_cidr_match_source": true,
+                "action": "reject"
             }
         ],
-        "auto_detect_interface": true
+        "rule_set": [
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": ""
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "proxy"
+            },
+            {
+                "tag": "geoip-us",
+                "type": "local",
+                "format": "binary",
+                "path": "d:/tools/sing-box/us.srs"
+            }
+        ]
     },
     "inbounds": [
         {
@@ -179,8 +108,8 @@
         },
         {
             "outbounds": [
-                "🇺🇸 US 42 → tg@nicevpn123",
-                "🇺🇸 US 420 → tg@nicevpn123",
+                "🇦🇫 AF 1 → tg@nicevpn123",
+                "🇦🇱 AL 1 → tg@nicevpn123",
                 "🇺🇸 US 421 → tg@nicevpn123",
                 "🇺🇸 US 422 → tg@nicevpn123",
                 "🇺🇸 US 423 → tg@nicevpn123",
@@ -829,8 +758,8 @@
         {
             "interval": "1m",
             "outbounds": [
-                "🇺🇸 US 42 → tg@nicevpn123",
-                "🇺🇸 US 420 → tg@nicevpn123",
+                "🇦🇫 AF 1 → tg@nicevpn123",
+                "🇦🇱 AL 1 → tg@nicevpn123",
                 "🇺🇸 US 421 → tg@nicevpn123",
                 "🇺🇸 US 422 → tg@nicevpn123",
                 "🇺🇸 US 423 → tg@nicevpn123",
@@ -1483,34 +1412,20 @@
             "type": "direct"
         },
         {
-            "tag": "block",
-            "type": "block"
-        },
-        {
-            "tag": "dns-out",
-            "type": "dns"
-        },
-        {
-            "method": "aes-256-gcm",
-            "password": "kDWvXYZoTBcGkC4",
-            "server": "38.75.137.105",
-            "server_port": 8881,
-            "tag": "🇺🇸 US 42 → tg@nicevpn123",
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "121.127.46.147",
+            "server_port": 989,
+            "tag": "🇦🇫 AF 1 → tg@nicevpn123",
             "type": "shadowsocks"
         },
         {
-            "alter_id": 0,
-            "packet_encoding": "xudp",
-            "security": "auto",
-            "server": "104.18.15.148",
-            "server_port": 80,
-            "tag": "🇺🇸 US 420 → tg@nicevpn123",
-            "transport": {
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vmess",
-            "uuid": "002cdc9f-63ae-4b3f-8720-3b3f760b487d"
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "31.171.153.181",
+            "server_port": 989,
+            "tag": "🇦🇱 AL 1 → tg@nicevpn123",
+            "type": "shadowsocks"
         },
         {
             "password": "8a6fc43e-b81b-4efc-ae38-4b9de1720ffe",
