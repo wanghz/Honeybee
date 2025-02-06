@@ -42,6 +42,10 @@ echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/m
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/Space-00/V2ray-configs/main/config.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/sub/hysteriabase64">>localurl.txt
+echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/vless">>localurl.txt
+echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/vmess">>localurl.txt
+echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/hysteria">>localurl.txt
+echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/splitted/subscribe">>localurl.txt
 
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
@@ -56,7 +60,7 @@ sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
 sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
 sed -i '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' localurl.txt
 sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
-sed -i '/^https:\/\/raw\.githubusercontent\.com\/zhangkaiitugithub\/passcro\/main\/speednodes\.yaml/d' localurl.txt
+
 # 初始化数组
 urls=()
 # 将文件内容合并到数组中
