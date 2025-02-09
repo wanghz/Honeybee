@@ -7,7 +7,7 @@ if ! command -v ../sing-box-sub/sing-box-1.10.6-linux-amd64/sing-box &>/dev/null
 fi
 
 # 指定要执行的程序
-program="../sing-box-sub/sing-box-1.10.6-linux-amd64/sing-box check -c"
+program="../sing-box-sub/sing-box check -c"
 second_program="python3 ../sing-box-sub/cfg_clean.py"
 split_program="python3 ../sing-box-sub/large_config_split.py"
 
