@@ -29,13 +29,16 @@ for json_file in f*.json k*.json; do
                 echo "File: $json_file"
                 echo "Output: $output"
                 echo "-------------------"
-
-                number=$(echo "$output" | sed -n 's/.*outbounds\?\[\([0-9]*\)\].*/\1/p')
-                echo "Extracted number: $number"
-
-                $second_program "$json_file" "index" "$number"
-
-                output=$($program "$json_file" 2>&1)
+                # 判断 $output 是否包含 "rule-set"
+                if echo "$output" | grep -q "rule-set"; then
+                    echo "Found 'rule-set' in output. Skipping further processing for $json_file."
+                    continue
+                else
+                    number=$(echo "$output" | sed -n 's/.*outbounds\?\[\([0-9]*\)\].*/\1/p')
+                    echo "Extracted number: $number"
+                    $second_program "$json_file" "index" "$number"
+                    output=$($program "$json_file" 2>&1)
+                fi
             else
                 echo "No output. checking $json_file"
                 break
