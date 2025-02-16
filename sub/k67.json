@@ -1,432 +1,558 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "dns-block",
+        "server": "rcode://refused"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      }
+    ]
+  },
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "protocol": [
+          "bittorrent",
+          "quic"
         ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geoip-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "dns-block",
-                "server": "rcode://refused"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            }
-        ]
-    },
-    "route": {
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "protocol": [
-                    "bittorrent",
-                    "quic"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geosite-category-ads-all"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geoip-cn"
-                ],
-                "outbound": "direct"
-            }
-        ],
+        "outbound": "block-out"
+      },
+      {
         "rule_set": [
-            {
-                "tag": "geosite-category-ads-all",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-                "download_detour": "direct"
-            },
-            {
-                "tag": "geoip-cn",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-                "download_detour": "direct"
-            }
-        ]
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+          "geosite-category-ads-all"
+        ],
+        "outbound": "block-out"
+      },
+      {
+        "rule_set": [
+          "geoip-cn"
+        ],
+        "outbound": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇯🇵 日本-1",
-                "🇸🇬 新加坡-1",
-                "🇰🇷 韩国-1",
-                "🇺🇸 美国-2",
-                "🇺🇸 美国-1",
-                "🇺🇸 美国-4",
-                "🇰🇷 韩国-3",
-                "🇰🇷 韩国-2",
-                "🇺🇸 美国-3",
-                "🇺🇸 美国-7",
-                "🇩🇰 丹麦-1",
-                "🇬🇧 英国-1",
-                "🇺🇸 美国-6",
-                "🇺🇸 美国-8",
-                "🇺🇸 美国-5",
-                "🇺🇸 美国-9"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇯🇵 日本-1",
-                "🇸🇬 新加坡-1",
-                "🇰🇷 韩国-1",
-                "🇺🇸 美国-2",
-                "🇺🇸 美国-1",
-                "🇺🇸 美国-4",
-                "🇰🇷 韩国-3",
-                "🇰🇷 韩国-2",
-                "🇺🇸 美国-3",
-                "🇺🇸 美国-7",
-                "🇩🇰 丹麦-1",
-                "🇬🇧 英国-1",
-                "🇺🇸 美国-6",
-                "🇺🇸 美国-8",
-                "🇺🇸 美国-5",
-                "🇺🇸 美国-9"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "amazonskr05",
-            "server": "54.95.50.167",
-            "server_port": 443,
-            "tag": "🇯🇵 日本-1",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "amazonskr05",
-            "server": "52.221.234.117",
-            "server_port": 443,
-            "tag": "🇸🇬 新加坡-1",
-            "type": "shadowsocks"
-        },
-        {
-            "method": "aes-256-cfb",
-            "password": "qwerREWQ@@",
-            "server": "218.38.103.150",
-            "server_port": 28902,
-            "tag": "🇰🇷 韩国-1",
-            "type": "shadowsocks"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.26.14.85",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-2",
-            "tls": {
-                "enabled": true,
-                "insecure": false,
-                "server_name": "a.xn--i-sx6a60i.us.kg.",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "a.xn--i-sx6a60i.us.kg."
-                },
-                "max_early_data": 2560,
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "d342d11e-d424-4583-b36e-524ab1f0afa4"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.26.13.31",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-1",
-            "transport": {
-                "headers": {
-                    "Host": "redw.pooriam.ir"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.26.12.31",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-4",
-            "transport": {
-                "headers": {
-                    "Host": "redw.pooriam.ir"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "221.148.237.239",
-            "server_port": 12487,
-            "tag": "🇰🇷 韩国-3",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "agedr.ambercc.filegear-sg.me"
-            },
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "agedr.ambercc.filegear-sg.me"
-                },
-                "max_early_data": 2560,
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "edadc2f8-50b1-4049-9625-6fd5b4cb130a"
-        },
-        {
-            "password": "Aimer",
-            "server": "211.38.177.17",
-            "server_port": 50000,
-            "tag": "🇰🇷 韩国-2",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "agepw.ambercc.filegear-sg.me"
-            },
-            "transport": {
-                "headers": {
-                    "Host": "agepw.ambercc.filegear-sg.me"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "trojan"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.18.27.94",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-3",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "sedalat.tatexe3807.workers.dev",
-                "utls": {
-                    "enabled": true,
-                    "fingerprint": "chrome"
-                }
-            },
-            "transport": {
-                "headers": {
-                    "Host": "sedalat.tatexe3807.workers.dev"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "61ff8b60-2be0-40a6-94b5-92cca33f1fab"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.16.1.47",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-7",
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "flat-bread-ddb6-ppal03.joriy39169.workers.dev"
-                },
-                "max_early_data": 2560,
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "b550a101-63fe-4862-bfd3-8b87bb4168dd"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "www.csgo.com",
-            "server_port": 443,
-            "tag": "🇩🇰 丹麦-1",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "512306.xyz"
-            },
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "512306.xyz"
-                },
-                "max_early_data": 2980,
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
-        },
-        {
-            "password": "telegram-id-privatevpns",
-            "server": "13.43.63.100",
-            "server_port": 22222,
-            "tag": "🇬🇧 英国-1",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "trojan.burgerip.co.uk"
-            },
-            "type": "trojan"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "66.235.200.30",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-6",
-            "transport": {
-                "headers": {
-                    "Host": "pormang.webhost99.workers.dev"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "e497da22-d020-40fb-a1fa-bc294066a2d2"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "66.235.200.58",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-8",
-            "transport": {
-                "headers": {
-                    "Host": "pormang.webhost99.workers.dev"
-                },
-                "path": "/@AZARBAYJAB1@AZARBAYJAB1@AZARBAYJAB1",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "e497da22-d020-40fb-a1fa-bc294066a2d2"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "104.16.178.238",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-5",
-            "transport": {
-                "early_data_header_name": "Sec-WebSocket-Protocol",
-                "headers": {
-                    "Host": "little-bird-a235-ppal03.fosawaw121.workers.dev"
-                },
-                "max_early_data": 2560,
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "d4eddaf9-a660-4905-b835-cad98677b380"
-        },
-        {
-            "packet_encoding": "xudp",
-            "server": "66.235.200.149",
-            "server_port": 80,
-            "tag": "🇺🇸 美国-9",
-            "transport": {
-                "headers": {
-                    "Host": "pormang.webhost99.workers.dev"
-                },
-                "path": "/",
-                "type": "ws"
-            },
-            "type": "vless",
-            "uuid": "e497da22-d020-40fb-a1fa-bc294066a2d2"
-        }
-    ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rule_set": [
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇫🇷 VMESS-未知>法国-NF解锁法国地区非自制剧-ChatGPT-TikTok-YouTube-1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-204.136.10.115:1866",
+        "🇩🇪 SS-德国-NF解锁澳大利亚自制剧-ChatGPT-TikTok-YouTube-185.177.229.245:1866",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-zmkkyc.whmvmkwuey.store:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.232.171.192:1866",
+        "🇬🇧 SS-英国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-64.176.184.129:1866",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.233.128.126:1866",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-lax2.ibgfw.top:8443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-104.207.155.64:1633",
+        "🇩🇪 SS-直布罗陀-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-95.164.68.37:8388",
+        "🇳🇱 SS-荷兰-NF解锁荷兰自制剧-ChatGPT-TikTok-YouTube-213.109.147.242:62685",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-172.236.122.188:1866",
+        "🇫🇷 SS-伊朗-NF解锁法国地区非自制剧-ChatGPT-YouTube-213.176.66.228:24495",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-uswuxian.pai50288.uk:8443",
+        "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.45.40:2052",
+        "🇸🇪 SS-瑞典-NF解锁瑞典自制剧-ChatGPT-TikTok-YouTube-46.246.98.155:44013",
+        "🇩🇪 SS-德国-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-193.108.119.63:7002",
+        "🇬🇧 SS-英国-NF解锁荷兰地区非自制剧-ChatGPT-TikTok-YouTube-77.239.100.183:65078",
+        "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.46.216:2052",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.14:17004",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-23.185.248.15:17005",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.72:5500",
+        "🇺🇸 SS-美国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-150.241.101.222:25543",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.43:7307",
+        "🇸🇪 VMESS-未知>保加利亚-NF解锁瑞典地区非自制剧-ChatGPT-TikTok-YouTube-esna.twn24.ir:8443",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-mods-destruction-academy-gear.trycloudflare.com:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-23.185.248.11:17001",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-23.185.248.16:17006",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.17:17007",
+        "🇮🇪 SS-爱尔兰-NF解锁爱尔兰自制剧-ChatGPT-TikTok-YouTube-52.169.53.194:6203",
+        "🇺🇸 VMESS-未知>美国-gquyvefk.whmvmkwuey.store:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.143.66.64:5601"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇫🇷 VMESS-未知>法国-NF解锁法国地区非自制剧-ChatGPT-TikTok-YouTube-1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-204.136.10.115:1866",
+        "🇩🇪 SS-德国-NF解锁澳大利亚自制剧-ChatGPT-TikTok-YouTube-185.177.229.245:1866",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-zmkkyc.whmvmkwuey.store:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.232.171.192:1866",
+        "🇬🇧 SS-英国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-64.176.184.129:1866",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.233.128.126:1866",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-lax2.ibgfw.top:8443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-104.207.155.64:1633",
+        "🇩🇪 SS-直布罗陀-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-95.164.68.37:8388",
+        "🇳🇱 SS-荷兰-NF解锁荷兰自制剧-ChatGPT-TikTok-YouTube-213.109.147.242:62685",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-172.236.122.188:1866",
+        "🇫🇷 SS-伊朗-NF解锁法国地区非自制剧-ChatGPT-YouTube-213.176.66.228:24495",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-uswuxian.pai50288.uk:8443",
+        "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.45.40:2052",
+        "🇸🇪 SS-瑞典-NF解锁瑞典自制剧-ChatGPT-TikTok-YouTube-46.246.98.155:44013",
+        "🇩🇪 SS-德国-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-193.108.119.63:7002",
+        "🇬🇧 SS-英国-NF解锁荷兰地区非自制剧-ChatGPT-TikTok-YouTube-77.239.100.183:65078",
+        "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.46.216:2052",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.14:17004",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-23.185.248.15:17005",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.72:5500",
+        "🇺🇸 SS-美国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-150.241.101.222:25543",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.43:7307",
+        "🇸🇪 VMESS-未知>保加利亚-NF解锁瑞典地区非自制剧-ChatGPT-TikTok-YouTube-esna.twn24.ir:8443",
+        "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-mods-destruction-academy-gear.trycloudflare.com:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-23.185.248.11:17001",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-23.185.248.16:17006",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.17:17007",
+        "🇮🇪 SS-爱尔兰-NF解锁爱尔兰自制剧-ChatGPT-TikTok-YouTube-52.169.53.194:6203",
+        "🇺🇸 VMESS-未知>美国-gquyvefk.whmvmkwuey.store:443",
+        "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.143.66.64:5601"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇫🇷 VMESS-未知>法国-NF解锁法国地区非自制剧-ChatGPT-TikTok-YouTube-1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top:443",
+      "type": "vmess",
+      "server": "1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top",
+      "server_port": 443,
+      "uuid": "5f726fe3-d82e-4da5-a711-8af0cbb2b682",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/azumase.ren"
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-204.136.10.115:1866",
+      "type": "shadowsocks",
+      "server": "204.136.10.115",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇩🇪 SS-德国-NF解锁澳大利亚自制剧-ChatGPT-TikTok-YouTube-185.177.229.245:1866",
+      "type": "shadowsocks",
+      "server": "185.177.229.245",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-zmkkyc.whmvmkwuey.store:443",
+      "type": "vmess",
+      "server": "zmkkyc.whmvmkwuey.store",
+      "server_port": 443,
+      "uuid": "1cc59a3a-9625-40f7-b0e6-e233286ae82d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.232.171.192:1866",
+      "type": "shadowsocks",
+      "server": "172.232.171.192",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇬🇧 SS-英国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-64.176.184.129:1866",
+      "type": "shadowsocks",
+      "server": "64.176.184.129",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-172.233.128.126:1866",
+      "type": "shadowsocks",
+      "server": "172.233.128.126",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-lax2.ibgfw.top:8443",
+      "type": "vmess",
+      "server": "lax2.ibgfw.top",
+      "server_port": 8443,
+      "uuid": "e88b85c6-93b4-47f6-b3fb-2c55dcb1289f",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "lax2.ibgfw.top"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/dyajvws"
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-104.207.155.64:1633",
+      "type": "shadowsocks",
+      "server": "104.207.155.64",
+      "server_port": 1633,
+      "method": "chacha20-ietf-poly1305",
+      "password": "o_A7inN1yqeWtOTL"
+    },
+    {
+      "tag": "🇩🇪 SS-直布罗陀-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-95.164.68.37:8388",
+      "type": "shadowsocks",
+      "server": "95.164.68.37",
+      "server_port": 8388,
+      "method": "chacha20-ietf-poly1305",
+      "password": "OTBkYmFk"
+    },
+    {
+      "tag": "🇳🇱 SS-荷兰-NF解锁荷兰自制剧-ChatGPT-TikTok-YouTube-213.109.147.242:62685",
+      "type": "shadowsocks",
+      "server": "213.109.147.242",
+      "server_port": 62685,
+      "method": "chacha20-ietf-poly1305",
+      "password": "VpKABcOpNNA0l5G2AVOmw8"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-172.236.122.188:1866",
+      "type": "shadowsocks",
+      "server": "172.236.122.188",
+      "server_port": 1866,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oXGp1+ihlfKg826H"
+    },
+    {
+      "tag": "🇫🇷 SS-伊朗-NF解锁法国地区非自制剧-ChatGPT-YouTube-213.176.66.228:24495",
+      "type": "shadowsocks",
+      "server": "213.176.66.228",
+      "server_port": 24495,
+      "method": "chacha20-ietf-poly1305",
+      "password": "LmQxtEywXKNue1IjNZWCua"
+    },
+    {
+      "tag": "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-uswuxian.pai50288.uk:8443",
+      "type": "vmess",
+      "server": "uswuxian.pai50288.uk",
+      "server_port": 8443,
+      "uuid": "c313606f-98c2-4d7b-ba74-48b94f61b11d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "uswuxian.pai50288.uk"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.45.40:2052",
+      "type": "vmess",
+      "server": "172.66.45.40",
+      "server_port": 2052,
+      "uuid": "fcc685c0-e718-11ef-b933-205c6d5f5d78",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/ek147r26/@AZARBAYJAB1@AZARBAYJAB1@AZARBAYJAB1",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇸🇪 SS-瑞典-NF解锁瑞典自制剧-ChatGPT-TikTok-YouTube-46.246.98.155:44013",
+      "type": "shadowsocks",
+      "server": "46.246.98.155",
+      "server_port": 44013,
+      "method": "chacha20-ietf-poly1305",
+      "password": "UDcjYQ6Z6AIWxViZpqyOmO"
+    },
+    {
+      "tag": "🇩🇪 SS-德国-NF解锁德国自制剧-ChatGPT-TikTok-YouTube-193.108.119.63:7002",
+      "type": "shadowsocks",
+      "server": "193.108.119.63",
+      "server_port": 7002,
+      "method": "aes-256-gcm",
+      "password": "RexnBgU7EV5ADxG"
+    },
+    {
+      "tag": "🇬🇧 SS-英国-NF解锁荷兰地区非自制剧-ChatGPT-TikTok-YouTube-77.239.100.183:65078",
+      "type": "shadowsocks",
+      "server": "77.239.100.183",
+      "server_port": 65078,
+      "method": "chacha20-ietf-poly1305",
+      "password": "AQMByekkuegA3NbF9PnhTO"
+    },
+    {
+      "tag": "🇫🇷 VMESS-未知>法国-NF解锁法国自制剧-ChatGPT-TikTok-YouTube-172.66.46.216:2052",
+      "type": "vmess",
+      "server": "172.66.46.216",
+      "server_port": 2052,
+      "uuid": "fcc685c0-e718-11ef-b933-205c6d5f5d78",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/ek147r26/@AZARBAYJAB1@AZARBAYJAB1@AZARBAYJAB1",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.14:17004",
+      "type": "shadowsocks",
+      "server": "23.185.248.14",
+      "server_port": 17004,
+      "method": "aes-256-gcm",
+      "password": "IC4APDY4ATHX890I"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-23.185.248.15:17005",
+      "type": "shadowsocks",
+      "server": "23.185.248.15",
+      "server_port": 17005,
+      "method": "aes-256-gcm",
+      "password": "X1GBLWQ3U4ULO6XV"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.72:5500",
+      "type": "shadowsocks",
+      "server": "38.91.107.72",
+      "server_port": 5500,
+      "method": "aes-256-gcm",
+      "password": "KixLvKzwjekG00rm"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁英国自制剧-ChatGPT-TikTok-YouTube-150.241.101.222:25543",
+      "type": "shadowsocks",
+      "server": "150.241.101.222",
+      "server_port": 25543,
+      "method": "chacha20-ietf-poly1305",
+      "password": "8jkT1FGEowzjt93cgZgkBK"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.91.107.43:7307",
+      "type": "shadowsocks",
+      "server": "38.91.107.43",
+      "server_port": 7307,
+      "method": "aes-256-gcm",
+      "password": "FoOiGlkAA9yPEGP"
+    },
+    {
+      "tag": "🇸🇪 VMESS-未知>保加利亚-NF解锁瑞典地区非自制剧-ChatGPT-TikTok-YouTube-esna.twn24.ir:8443",
+      "type": "vmess",
+      "server": "esna.twn24.ir",
+      "server_port": 8443,
+      "uuid": "211e44d7-5a3f-4b0e-ad36-d8136759b77f",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "esna.twn24.ir"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2048
+      }
+    },
+    {
+      "tag": "🇺🇸 VMESS-未知>美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-mods-destruction-academy-gear.trycloudflare.com:443",
+      "type": "vmess",
+      "server": "mods-destruction-academy-gear.trycloudflare.com",
+      "server_port": 443,
+      "uuid": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "mods-destruction-academy-gear.trycloudflare.com"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-23.185.248.11:17001",
+      "type": "shadowsocks",
+      "server": "23.185.248.11",
+      "server_port": 17001,
+      "method": "aes-256-gcm",
+      "password": "Z7ZSQR3OI9JVRA6N"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-YouTube-23.185.248.16:17006",
+      "type": "shadowsocks",
+      "server": "23.185.248.16",
+      "server_port": 17006,
+      "method": "aes-256-gcm",
+      "password": "B0UPGL2IUSB0UV4B"
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-23.185.248.17:17007",
+      "type": "shadowsocks",
+      "server": "23.185.248.17",
+      "server_port": 17007,
+      "method": "aes-256-gcm",
+      "password": "0U17L4LTFDK38Y1J"
+    },
+    {
+      "tag": "🇮🇪 SS-爱尔兰-NF解锁爱尔兰自制剧-ChatGPT-TikTok-YouTube-52.169.53.194:6203",
+      "type": "shadowsocks",
+      "server": "52.169.53.194",
+      "server_port": 6203,
+      "method": "chacha20-ietf-poly1305",
+      "password": "9mhVRDUkWbliSXqUYJLudz"
+    },
+    {
+      "tag": "🇺🇸 VMESS-未知>美国-gquyvefk.whmvmkwuey.store:443",
+      "type": "vmess",
+      "server": "gquyvefk.whmvmkwuey.store",
+      "server_port": 443,
+      "uuid": "1cc59a3a-9625-40f7-b0e6-e233286ae82d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 SS-美国-NF解锁自制剧-ChatGPT-TikTok-YouTube-38.143.66.64:5601",
+      "type": "shadowsocks",
+      "server": "38.143.66.64",
+      "server_port": 5601,
+      "method": "aes-256-gcm",
+      "password": "Y6R9pAtvxxzmGC"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
