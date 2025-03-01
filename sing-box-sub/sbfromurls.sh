@@ -60,6 +60,8 @@ sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
 sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
 sed -i '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' localurl.txt
 sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
+sed -i '/airport/d' localurl.txt
+sed -i '/space-00/d' localurl.txt
 
 # 初始化数组
 urls=()
