@@ -47,8 +47,16 @@ echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collecto
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/hysteria">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/splitted/subscribe">>localurl.txt
 echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/full/5ubscrpt10n-b64.txt">>localurl.txt
-
+echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
+echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
+echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
+echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
+echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/one_file_vpn.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/two_file_vpn.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/three_file_vpn.txt">>localurl.txt
+echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
+echo "https://hideshots.eu/sub.txt">>localurl.txt
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
 sed -i '/Vauth\/node\/main\/Master/d' localurl.txt
