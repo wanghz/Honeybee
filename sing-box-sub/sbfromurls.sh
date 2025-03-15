@@ -6,9 +6,10 @@ snakem982url2="https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/
 local="https://raw.githubusercontent.com/wanghz/Honeybee/refs/heads/main/sing-box-sub/sub_urls.txt"
 
 # 下载文件
-curl -o snakem982url1.txt "$snakem982url1"
-curl -o snakem982url2.txt "$snakem982url2"
-curl -o url3.txt "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs"
+curl "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/nodelist.txt" -o snakem982url1.txt 
+curl "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/proxies.txt" -o snakem982url2.txt 
+curl "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs" -o url3.txt 
+curl "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/working/links.json" -o temp_links.json
 
 curl -o localurl.txt "$local"
 echo "" >> localurl.txt
