@@ -75,7 +75,7 @@ sed -i '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' localurl
 sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
 sed -i '/airport/d' localurl.txt
 sed -i '/space-00/d' localurl.txt
-sed -i "/http://175.178.182.178:12580/clash/proxies/d" localurl.txt
+sed -i '/http:\/\/175\.178\.182\.178:12580/d' localurl.txt
 
 # 初始化数组
 urls=()
