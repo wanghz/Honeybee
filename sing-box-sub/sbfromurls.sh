@@ -78,7 +78,10 @@ sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/h
 sed -i '/airport/d' localurl.txt
 sed -i '/space-00/d' localurl.txt
 sed -i '/http:\/\/175\.178\.182\.178:12580/d' localurl.txt
-
+sed -i '/aiboboxx\/clashfree\/main\/clash\.yml/d' localurl.txt
+sed -i '/anaer\/Sub\/main\/clash\.yaml/d'  localurl.txt
+sed -i '155\.248\.172\.106:12580\/clash\/proxies/d'  localurl.txt
+sed -i 'Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 # 初始化数组
 urls=()
 # 将文件内容合并到数组中
