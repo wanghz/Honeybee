@@ -1,523 +1,522 @@
 {
-  "log": {
-    "level": "info",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "tag": "google",
-        "address": "tls://8.8.8.8"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct"
-      }
-    ],
-    "rules": [
-      {
-        "outbound": "any",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Global",
-        "server": "google"
-      },
-      {
-        "rule_set": "geoip-cn",
-        "server": "local"
-      },
-      {
-        "clash_mode": "dns-block",
-        "server": "rcode://refused"
-      },
-      {
-        "clash_mode": "Default",
-        "server": "google"
-      }
-    ]
-  },
-  "route": {
-    "rules": [
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      },
-      {
-        "domain_suffix": [
-          "deepseek.com",
-          "qwen.ai",
-          "tencent.com",
-          "thinktrader.net"
+    "log": {
+        "level": "info",
+        "timestamp": true
+    },
+    "dns": {
+        "servers": [
+            {
+                "tag": "google",
+                "address": "tls://8.8.8.8"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "protocol": [
-          "bittorrent",
-          "quic"
+        "rules": [
+            {
+                "outbound": "any",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Global",
+                "server": "google"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "server": "local"
+            },
+            {
+                "clash_mode": "dns-block",
+                "server": "rcode://refused"
+            },
+            {
+                "clash_mode": "Default",
+                "server": "google"
+            }
+        ]
+    },
+    "route": {
+        "rules": [
+            {
+                "protocol": "dns",
+                "outbound": "dns-out"
+            },
+            {
+                "domain_suffix": [
+                    "deepseek.com",
+                    "qwen.ai",
+                    "tencent.com",
+                    "thinktrader.net"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "protocol": [
+                    "bittorrent",
+                    "quic"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geosite-category-ads-all"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geoip-cn"
+                ],
+                "outbound": "direct"
+            }
         ],
-        "outbound": "block-out"
-      },
-      {
         "rule_set": [
-          "geosite-category-ads-all"
-        ],
-        "outbound": "block-out"
-      },
-      {
-        "rule_set": [
-          "geoip-cn"
-        ],
-        "outbound": "direct"
-      }
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇨🇳 _CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
-        "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
-        "🇺🇸 _US_美国->🇰🇷_KR_韩国",
-        "🇺🇸 _US_美国",
-        "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
-        "🇺🇸 _US_美国 2",
-        "🇺🇸 _US_美国 3",
-        "🇬🇧 _GB_英国->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
-        "🇺🇸 _US_美国 4",
-        "🇰🇼_KW_科威特",
-        "🇺🇸 _US_美国 5",
-        "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
-        "🇺🇸 _US_美国 6",
-        "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
-        "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
-        "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
-        "🇩🇰 _DK_丹麦",
-        "🇺🇸 _US_美国 7",
-        "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
-        "🇺🇸 _US_美国 8",
-        "🇺🇸 _US_美国 9",
-        "🇮🇸 _IS_冰岛",
-        "🇬🇧 _GB_英国",
-        "🇺🇸 _US_美国 10",
-        "🇺🇸 _US_美国 11",
-        "🇺🇸 _US_美国 12"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇨🇳 _CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
-        "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
-        "🇺🇸 _US_美国->🇰🇷_KR_韩国",
-        "🇺🇸 _US_美国",
-        "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
-        "🇺🇸 _US_美国 2",
-        "🇺🇸 _US_美国 3",
-        "🇬🇧 _GB_英国->🇨🇳_CN_中国",
-        "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
-        "🇺🇸 _US_美国 4",
-        "🇰🇼_KW_科威特",
-        "🇺🇸 _US_美国 5",
-        "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
-        "🇺🇸 _US_美国 6",
-        "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
-        "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
-        "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
-        "🇩🇰 _DK_丹麦",
-        "🇺🇸 _US_美国 7",
-        "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
-        "🇺🇸 _US_美国 8",
-        "🇺🇸 _US_美国 9",
-        "🇮🇸 _IS_冰岛",
-        "🇬🇧 _GB_英国",
-        "🇺🇸 _US_美国 10",
-        "🇺🇸 _US_美国 11",
-        "🇺🇸 _US_美国 12"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇨🇳 _CN_中国",
-      "type": "shadowsocks",
-      "server": "91.148.135.48",
-      "server_port": 20039,
-      "method": "aes-256-gcm",
-      "password": "Z2GB4O1R4RIVDVF2"
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国",
-      "type": "shadowsocks",
-      "server": "206.245.211.18",
-      "server_port": 19008,
-      "method": "aes-256-gcm",
-      "password": "1MD7Y1HE8FFHAB0N"
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
-      "type": "trojan",
-      "server": "product.wireshop.net",
-      "server_port": 443,
-      "password": "gyDw5KSa9D4ReNSYxnI8Z6zO8llAA53CFRKpCjpx6YjRDlwF3aeX3Oa2DCA37BeTzygaI",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "product.wireshop.net"
-      }
-    },
-    {
-      "tag": "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
-      "type": "shadowsocks",
-      "server": "185.213.20.36",
-      "server_port": 20029,
-      "method": "aes-256-gcm",
-      "password": "9F2G2EP8ET1PL6Q5"
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
-      "type": "trojan",
-      "server": "137.184.120.86",
-      "server_port": 443,
-      "password": "6d0a7f2f-c26c-466a-8f90-d6630ba97928",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "829D7BDE-64B9-E759-C661-78BC73E582A0.1c2871ba-6025-61e2-e87f-a5c9e0ac8c1d.9d8f269f96b25232-759cbb36d6548597.kaufen"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇰🇷_KR_韩国",
-      "type": "trojan",
-      "server": "closet.homeofbrave.net",
-      "server_port": 28332,
-      "password": "9FC33glcaEeYYTnOqOS9DOZgBZ5CDazy33SCS2j4Cz36A7AIN88uaKRx5xDyR8pxu3x4D",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "closet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国",
-      "type": "trojan",
-      "server": "soldier.homeofbrave.net",
-      "server_port": 443,
-      "password": "CAlpl3ZOpDFaS9E6Se0plFxu2x3I4eACOcqZSaY3ReS6CjZSCTNKDgEF73TDZ2aB9D3nD",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "soldier.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
-      "type": "shadowsocks",
-      "server": "185.186.77.137",
-      "server_port": 20025,
-      "method": "aes-256-gcm",
-      "password": "NP5SL4R12N0ABTMJ"
-    },
-    {
-      "tag": "🇺🇸 _US_美国 2",
-      "type": "trojan",
-      "server": "154.17.23.111",
-      "server_port": 443,
-      "password": "lp20A3ueODTNy3eS3w8SnAXFB4DzxaOSxcRCpAZ8357aZDF9y6FCzSax3YNOXCCaappxY",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "lander.wireshop.net"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 3",
-      "type": "trojan",
-      "server": "dessert.taiwanesefood.link",
-      "server_port": 443,
-      "password": "SZAaY0CIRDey6OCSpS3Dl3F2nnDTYFqRS8aClceOwAyTwy39XxDz4FYXZO3AxRaEz2SlN",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "dessert.taiwanesefood.link"
-      }
-    },
-    {
-      "tag": "🇬🇧 _GB_英国->🇨🇳_CN_中国",
-      "type": "trojan",
-      "server": "coliseum.coffeekit.net",
-      "server_port": 443,
-      "password": "RDY3RCBe82XylFcyOaa8CKl8Aga0YSSy9ZBFSZYuq3nDjI0OaEwZDn3Ap6pSTaxOxORDe",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "coliseum.coffeekit.net"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
-      "type": "shadowsocks",
-      "server": "206.245.211.25",
-      "server_port": 19015,
-      "method": "aes-256-gcm",
-      "password": "55N09NCXWEH7GQMF"
-    },
-    {
-      "tag": "🇺🇸 _US_美国 4",
-      "type": "shadowsocks",
-      "server": "34.221.169.63",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇰🇼_KW_科威特",
-      "type": "shadowsocks",
-      "server": "163.171.181.49",
-      "server_port": 12317,
-      "method": "chacha20-ietf-poly1305",
-      "password": "877c3b069c335ffc"
-    },
-    {
-      "tag": "🇺🇸 _US_美国 5",
-      "type": "shadowsocks",
-      "server": "34.210.253.95",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
-      "type": "trojan",
-      "server": "154.17.21.41",
-      "server_port": 443,
-      "password": "8cwxYqlSeC4Xw8KOApT3SxCIX69eZ7zBNZDE0Dap3y9AZTFBFlD5a2euA7A3YzR2DpSyI",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bedsheet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 6",
-      "type": "trojan",
-      "server": "154.17.20.103",
-      "server_port": 443,
-      "password": "lBSSFOalI3yXZDOAwADg9a8zTCexE6pjxeX4D3a0FgSSYRqlCyCOYcz83w3aYR3cTZDF8",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "length.wireshop.net"
-      }
-    },
-    {
-      "tag": "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
-      "type": "shadowsocks",
-      "server": "84.17.53.160",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
-      "type": "trojan",
-      "server": "aluminum.wireshop.net",
-      "server_port": 28334,
-      "password": "ZI3OeTA9Clx3AFS78DejwENjaZAa3FSwSluxY3EOClyycDqyzpYD0a6DI2eS28q7X3NpC",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "aluminum.wireshop.net"
-      }
-    },
-    {
-      "tag": "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
-      "type": "trojan",
-      "server": "dilmun.starspace.link",
-      "server_port": 443,
-      "password": "ZS9yA0YxpC6X3aDj88YAy5l3KS4FwCcy3DCDR3F322DOS3BRO7N3nFOxEKxSY6Ky3aXCNSxAEAaNnl4",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "dilmun.starspace.link"
-      }
-    },
-    {
-      "tag": "🇩🇰 _DK_丹麦",
-      "type": "shadowsocks",
-      "server": "185.186.79.53",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇺🇸 _US_美国 7",
-      "type": "vless",
-      "server": "54.214.201.89",
-      "server_port": 80,
-      "uuid": "4d5848af-3baf-4225-8f2b-fc25fc3370bb",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
-      "type": "trojan",
-      "server": "192.3.130.103",
-      "server_port": 443,
-      "password": "576c81b6-4976-4fe3-b1a9-05a9c302e98e",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "us10-01zl.huangshang.filegear-sg.me"
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": "i8oL7PsxV002zYFTmiIeg"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 8",
-      "type": "shadowsocks",
-      "server": "206.245.211.22",
-      "server_port": 19012,
-      "method": "aes-256-gcm",
-      "password": "E8CM3R3BWXQQNYMM"
-    },
-    {
-      "tag": "🇺🇸 _US_美国 9",
-      "type": "shadowsocks",
-      "server": "184.170.241.194",
-      "server_port": 443,
-      "method": "aes-128-cfb",
-      "password": "shadowsocks"
-    },
-    {
-      "tag": "🇮🇸 _IS_冰岛",
-      "type": "shadowsocks",
-      "server": "37.235.49.152",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇬🇧 _GB_英国",
-      "type": "vmess",
-      "server": "5.39.252.72",
-      "server_port": 20016,
-      "uuid": "5240bc9d-5706-48a5-8754-0147b887ec12",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 10",
-      "type": "vless",
-      "server": "151.101.130.228",
-      "server_port": 80,
-      "uuid": "19f7214d-17f5-43d0-ee0f-b17cd5fc0376",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/olem/ws",
-        "headers": {
-          "Host": "foffmelo.com"
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 1024
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 11",
-      "type": "trojan",
-      "server": "lnitak.starspace.link",
-      "server_port": 443,
-      "password": "jnaO0CFYpYExOygqlESRplzewIaKSFpBaqXy3YX4xBC8KK9ja94Y4S8aS7zjq96XSxO7CDu5BCYFCZg",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "lnitak.starspace.link"
-      }
-    },
-    {
-      "tag": "🇺🇸 _US_美国 12",
-      "type": "shadowsocks",
-      "server": "18.236.137.219",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
+        {
+            "outbounds": [
+                "🇨🇳 _CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
+                "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
+                "🇺🇸 _US_美国->🇰🇷_KR_韩国",
+                "🇺🇸 _US_美国",
+                "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
+                "🇺🇸 _US_美国 2",
+                "🇺🇸 _US_美国 3",
+                "🇬🇧 _GB_英国->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
+                "🇺🇸 _US_美国 4",
+                "🇰🇼_KW_科威特",
+                "🇺🇸 _US_美国 5",
+                "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
+                "🇺🇸 _US_美国 6",
+                "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
+                "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
+                "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
+                "🇩🇰 _DK_丹麦",
+                "🇺🇸 _US_美国 7",
+                "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
+                "🇺🇸 _US_美国 8",
+                "🇺🇸 _US_美国 9",
+                "🇮🇸 _IS_冰岛",
+                "🇬🇧 _GB_英国",
+                "🇺🇸 _US_美国 10",
+                "🇺🇸 _US_美国 11",
+                "🇺🇸 _US_美国 12"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇨🇳 _CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
+                "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
+                "🇺🇸 _US_美国->🇰🇷_KR_韩国",
+                "🇺🇸 _US_美国",
+                "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
+                "🇺🇸 _US_美国 2",
+                "🇺🇸 _US_美国 3",
+                "🇬🇧 _GB_英国->🇨🇳_CN_中国",
+                "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
+                "🇺🇸 _US_美国 4",
+                "🇰🇼_KW_科威特",
+                "🇺🇸 _US_美国 5",
+                "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
+                "🇺🇸 _US_美国 6",
+                "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
+                "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
+                "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
+                "🇩🇰 _DK_丹麦",
+                "🇺🇸 _US_美国 7",
+                "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
+                "🇺🇸 _US_美国 8",
+                "🇺🇸 _US_美国 9",
+                "🇮🇸 _IS_冰岛",
+                "🇬🇧 _GB_英国",
+                "🇺🇸 _US_美国 10",
+                "🇺🇸 _US_美国 11",
+                "🇺🇸 _US_美国 12"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "Z2GB4O1R4RIVDVF2",
+            "server": "91.148.135.48",
+            "server_port": 20039,
+            "tag": "🇨🇳 _CN_中国",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "1MD7Y1HE8FFHAB0N",
+            "server": "206.245.211.18",
+            "server_port": 19008,
+            "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "gyDw5KSa9D4ReNSYxnI8Z6zO8llAA53CFRKpCjpx6YjRDlwF3aeX3Oa2DCA37BeTzygaI",
+            "server": "product.wireshop.net",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "product.wireshop.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "9F2G2EP8ET1PL6Q5",
+            "server": "185.213.20.36",
+            "server_port": 20029,
+            "tag": "🇮🇹 _IT_意大利->🇨🇳_CN_中国",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "6d0a7f2f-c26c-466a-8f90-d6630ba97928",
+            "server": "137.184.120.86",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "829D7BDE-64B9-E759-C661-78BC73E582A0.1c2871ba-6025-61e2-e87f-a5c9e0ac8c1d.9d8f269f96b25232-759cbb36d6548597.kaufen"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "9FC33glcaEeYYTnOqOS9DOZgBZ5CDazy33SCS2j4Cz36A7AIN88uaKRx5xDyR8pxu3x4D",
+            "server": "closet.homeofbrave.net",
+            "server_port": 28332,
+            "tag": "🇺🇸 _US_美国->🇰🇷_KR_韩国",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "closet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "CAlpl3ZOpDFaS9E6Se0plFxu2x3I4eACOcqZSaY3ReS6CjZSCTNKDgEF73TDZ2aB9D3nD",
+            "server": "soldier.homeofbrave.net",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "soldier.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "NP5SL4R12N0ABTMJ",
+            "server": "185.186.77.137",
+            "server_port": 20025,
+            "tag": "🇰🇷 🇬🇧_GB_英国->🇰🇷_KR_韩国",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "lp20A3ueODTNy3eS3w8SnAXFB4DzxaOSxcRCpAZ8357aZDF9y6FCzSax3YNOXCCaappxY",
+            "server": "154.17.23.111",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "lander.wireshop.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "SZAaY0CIRDey6OCSpS3Dl3F2nnDTYFqRS8aClceOwAyTwy39XxDz4FYXZO3AxRaEz2SlN",
+            "server": "dessert.taiwanesefood.link",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 3",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "dessert.taiwanesefood.link"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "RDY3RCBe82XylFcyOaa8CKl8Aga0YSSy9ZBFSZYuq3nDjI0OaEwZDn3Ap6pSTaxOxORDe",
+            "server": "coliseum.coffeekit.net",
+            "server_port": 443,
+            "tag": "🇬🇧 _GB_英国->🇨🇳_CN_中国",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "coliseum.coffeekit.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "55N09NCXWEH7GQMF",
+            "server": "206.245.211.25",
+            "server_port": 19015,
+            "tag": "🇺🇸 _US_美国->🇪🇸_ES_西班牙",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "34.221.169.63",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 4",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "877c3b069c335ffc",
+            "server": "163.171.181.49",
+            "server_port": 12317,
+            "tag": "🇰🇼_KW_科威特",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "34.210.253.95",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 5",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "8cwxYqlSeC4Xw8KOApT3SxCIX69eZ7zBNZDE0Dap3y9AZTFBFlD5a2euA7A3YzR2DpSyI",
+            "server": "154.17.21.41",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国->🇰🇷_KR_韩国 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bedsheet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "lBSSFOalI3yXZDOAwADg9a8zTCexE6pjxeX4D3a0FgSSYRqlCyCOYcz83w3aYR3cTZDF8",
+            "server": "154.17.20.103",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 6",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "length.wireshop.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "84.17.53.160",
+            "server_port": 989,
+            "tag": "🇨🇭 _CH_瑞士->🇨🇳_CN_中国",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "ZI3OeTA9Clx3AFS78DejwENjaZAa3FSwSluxY3EOClyycDqyzpYD0a6DI2eS28q7X3NpC",
+            "server": "aluminum.wireshop.net",
+            "server_port": 28334,
+            "tag": "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "aluminum.wireshop.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "ZS9yA0YxpC6X3aDj88YAy5l3KS4FwCcy3DCDR3F322DOS3BRO7N3nFOxEKxSY6Ky3aXCNSxAEAaNnl4",
+            "server": "dilmun.starspace.link",
+            "server_port": 443,
+            "tag": "🇸🇬 🇺🇸_US_美国->🇸🇬_SG_新加坡 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "dilmun.starspace.link"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "185.186.79.53",
+            "server_port": 989,
+            "tag": "🇩🇰 _DK_丹麦",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "54.214.201.89",
+            "server_port": 80,
+            "tag": "🇺🇸 _US_美国 7",
+            "type": "vless",
+            "uuid": "4d5848af-3baf-4225-8f2b-fc25fc3370bb"
+        },
+        {
+            "password": "576c81b6-4976-4fe3-b1a9-05a9c302e98e",
+            "server": "192.3.130.103",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国->🇲🇩_MD_摩尔多瓦",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "us10-01zl.huangshang.filegear-sg.me"
+            },
+            "transport": {
+                "service_name": "i8oL7PsxV002zYFTmiIeg",
+                "type": "grpc"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "E8CM3R3BWXQQNYMM",
+            "server": "206.245.211.22",
+            "server_port": 19012,
+            "tag": "🇺🇸 _US_美国 8",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-128-cfb",
+            "password": "shadowsocks",
+            "server": "184.170.241.194",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 9",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "37.235.49.152",
+            "server_port": 989,
+            "tag": "🇮🇸 _IS_冰岛",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "5.39.252.72",
+            "server_port": 20016,
+            "tag": "🇬🇧 _GB_英国",
+            "transport": {
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "5240bc9d-5706-48a5-8754-0147b887ec12"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.130.228",
+            "server_port": 80,
+            "tag": "🇺🇸 _US_美国 10",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "foffmelo.com"
+                },
+                "max_early_data": 1024,
+                "path": "/olem/ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "19f7214d-17f5-43d0-ee0f-b17cd5fc0376"
+        },
+        {
+            "password": "jnaO0CFYpYExOygqlESRplzewIaKSFpBaqXy3YX4xBC8KK9ja94Y4S8aS7zjq96XSxO7CDu5BCYFCZg",
+            "server": "lnitak.starspace.link",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 11",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "lnitak.starspace.link"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "18.236.137.219",
+            "server_port": 443,
+            "tag": "🇺🇸 _US_美国 12",
+            "type": "shadowsocks"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
