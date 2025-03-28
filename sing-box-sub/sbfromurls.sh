@@ -37,11 +37,9 @@ echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/mai
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/trojan">> localurl.txt
-echo "https://raw.githubusercontent.com/Space-00/V2ray-configs/refs/heads/main/config.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">>localurl.txt
-echo "https://raw.githubusercontent.com/Space-00/V2ray-configs/main/config.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/sub/hysteriabase64">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/vless">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/vmess">>localurl.txt
@@ -61,7 +59,7 @@ echo "https://hideshots.eu/sub.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-2.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
-
+echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
 sed -i '/Vauth\/node\/main\/Master/d' localurl.txt
