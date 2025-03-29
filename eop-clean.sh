@@ -20,7 +20,8 @@ download_and_filter() {
     curl -s "$url" -o "$filename"
     # Filter the file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
-    split -l 300 "$filename" "$output_prefix"
+    first_char=${$filename:0:1}
+    split -l 800 "$filename" "$output_prefix$first_char"
 }
 # Loop through URLs and process each one
 for url in "${urls[@]}"; do
@@ -39,11 +40,6 @@ cp ../editjson.py .
 # cleaning
 # 定义要检查和删除的文件列表
 #rm -rf ./Config%20list*.txt
-rm -rf ./mix.json
-rm -rf ./mixlite.json
-rm -rf ./under1k.yml
-rm -rf ./verified.yaml
-rm -rf ./note.yml
 
 cd ..
 # end
