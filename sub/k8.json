@@ -1,842 +1,841 @@
 {
-  "log": {
-    "level": "info",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "tag": "google",
-        "address": "tls://8.8.8.8"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct"
-      }
-    ],
-    "rules": [
-      {
-        "outbound": "any",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Global",
-        "server": "google"
-      },
-      {
-        "rule_set": "geoip-cn",
-        "server": "local"
-      },
-      {
-        "clash_mode": "dns-block",
-        "server": "rcode://refused"
-      },
-      {
-        "clash_mode": "Default",
-        "server": "google"
-      }
-    ]
-  },
-  "route": {
-    "rules": [
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      },
-      {
-        "domain_suffix": [
-          "deepseek.com",
-          "qwen.ai",
-          "tencent.com",
-          "thinktrader.net"
+    "log": {
+        "level": "info",
+        "timestamp": true
+    },
+    "dns": {
+        "servers": [
+            {
+                "tag": "google",
+                "address": "tls://8.8.8.8"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "protocol": [
-          "bittorrent",
-          "quic"
+        "rules": [
+            {
+                "outbound": "any",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Global",
+                "server": "google"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "server": "local"
+            },
+            {
+                "clash_mode": "dns-block",
+                "server": "rcode://refused"
+            },
+            {
+                "clash_mode": "Default",
+                "server": "google"
+            }
+        ]
+    },
+    "route": {
+        "rules": [
+            {
+                "protocol": "dns",
+                "outbound": "dns-out"
+            },
+            {
+                "domain_suffix": [
+                    "deepseek.com",
+                    "qwen.ai",
+                    "tencent.com",
+                    "thinktrader.net"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "protocol": [
+                    "bittorrent",
+                    "quic"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geosite-category-ads-all"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geoip-cn"
+                ],
+                "outbound": "direct"
+            }
         ],
-        "outbound": "block-out"
-      },
-      {
         "rule_set": [
-          "geosite-category-ads-all"
-        ],
-        "outbound": "block-out"
-      },
-      {
-        "rule_set": [
-          "geoip-cn"
-        ],
-        "outbound": "direct"
-      }
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇷🇺 俄罗斯 V2CROSS.COM",
-        "🇱🇹 立陶宛 V2CROSS.COM",
-        "🇨🇴 阿塞拜疆 V2CROSS.COM",
-        "🇨🇳 广东省广州市+电信",
-        "🇺🇸 美国 CloudFlare节点",
-        "广东省湛江市 移动",
-        "河北省+移动(全省通用)",
-        "🇨🇳 广东省广州市 移动",
-        "🇺🇸 美国+CloudFlare节点",
-        "🇺🇸 美国 CloudFlare节点 2",
-        "🇺🇸 美国 CloudFlare节点 3",
-        "🇨🇴 斯洛文尼亚 V2CROSS.COM",
-        "🇧🇷 巴西圣保罗 CloudFlare节点",
-        "🇨🇳 广东省广州市+移动",
-        "河北省+移动(全省通用) 2",
-        "河北省+移动(全省通用) 3",
-        "🇺🇸 美国+CloudFlare节点 2",
-        "🇺🇸 美国 CloudFlare节点 4",
-        "广东省+移动",
-        "🇺🇸 美国+纽约市DigitalOcean云公司",
-        "河北省+移动(全省通用) 4",
-        "🇺🇸 美国 CloudFlare节点 5",
-        "🇮🇪 爱尔兰+都柏林Amazon数据中心",
-        "🇺🇸 美国 CloudFlare节点 6",
-        "🇺🇸 美国 CloudFlare节点 7",
-        "广东省肇庆市+中移铁通",
-        "广东省+移动 2",
-        "🇨🇴 南非 V2CROSS.COM",
-        "🇨🇳 广东省广州市 移动 2",
-        "🇺🇸 美国+Amazon数据中心",
-        "河北省+移动(全省通用) 5",
-        "🇬🇧 英国 V2CROSS.COM",
-        "🇨🇴 巴西 V2CROSS.COM",
-        "河北省+移动(全省通用) 6",
-        "🇸🇬 新加坡+DigitalOcean数据中心",
-        "🇬🇧 英国 V2CROSS.COM 2",
-        "🇨🇳 广东省广州市+电信 2"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇷🇺 俄罗斯 V2CROSS.COM",
-        "🇱🇹 立陶宛 V2CROSS.COM",
-        "🇨🇴 阿塞拜疆 V2CROSS.COM",
-        "🇨🇳 广东省广州市+电信",
-        "🇺🇸 美国 CloudFlare节点",
-        "广东省湛江市 移动",
-        "河北省+移动(全省通用)",
-        "🇨🇳 广东省广州市 移动",
-        "🇺🇸 美国+CloudFlare节点",
-        "🇺🇸 美国 CloudFlare节点 2",
-        "🇺🇸 美国 CloudFlare节点 3",
-        "🇨🇴 斯洛文尼亚 V2CROSS.COM",
-        "🇧🇷 巴西圣保罗 CloudFlare节点",
-        "🇨🇳 广东省广州市+移动",
-        "河北省+移动(全省通用) 2",
-        "河北省+移动(全省通用) 3",
-        "🇺🇸 美国+CloudFlare节点 2",
-        "🇺🇸 美国 CloudFlare节点 4",
-        "广东省+移动",
-        "🇺🇸 美国+纽约市DigitalOcean云公司",
-        "河北省+移动(全省通用) 4",
-        "🇺🇸 美国 CloudFlare节点 5",
-        "🇮🇪 爱尔兰+都柏林Amazon数据中心",
-        "🇺🇸 美国 CloudFlare节点 6",
-        "🇺🇸 美国 CloudFlare节点 7",
-        "广东省肇庆市+中移铁通",
-        "广东省+移动 2",
-        "🇨🇴 南非 V2CROSS.COM",
-        "🇨🇳 广东省广州市 移动 2",
-        "🇺🇸 美国+Amazon数据中心",
-        "河北省+移动(全省通用) 5",
-        "🇬🇧 英国 V2CROSS.COM",
-        "🇨🇴 巴西 V2CROSS.COM",
-        "河北省+移动(全省通用) 6",
-        "🇸🇬 新加坡+DigitalOcean数据中心",
-        "🇬🇧 英国 V2CROSS.COM 2",
-        "🇨🇳 广东省广州市+电信 2"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇷🇺 俄罗斯 V2CROSS.COM",
-      "type": "vmess",
-      "server": "193.9.49.89",
-      "server_port": 8443,
-      "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax1.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax1.ibgfw.top"
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "path": "/xrenvws"
-      }
-    },
-    {
-      "tag": "🇱🇹 立陶宛 V2CROSS.COM",
-      "type": "vmess",
-      "server": "89.116.46.96",
-      "server_port": 8443,
-      "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax1.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax1.ibgfw.top"
+        {
+            "outbounds": [
+                "🇷🇺 俄罗斯 V2CROSS.COM",
+                "🇱🇹 立陶宛 V2CROSS.COM",
+                "🇨🇴 阿塞拜疆 V2CROSS.COM",
+                "🇨🇳 广东省广州市+电信",
+                "🇺🇸 美国 CloudFlare节点",
+                "广东省湛江市 移动",
+                "河北省+移动(全省通用)",
+                "🇨🇳 广东省广州市 移动",
+                "🇺🇸 美国+CloudFlare节点",
+                "🇺🇸 美国 CloudFlare节点 2",
+                "🇺🇸 美国 CloudFlare节点 3",
+                "🇨🇴 斯洛文尼亚 V2CROSS.COM",
+                "🇧🇷 巴西圣保罗 CloudFlare节点",
+                "🇨🇳 广东省广州市+移动",
+                "河北省+移动(全省通用) 2",
+                "河北省+移动(全省通用) 3",
+                "🇺🇸 美国+CloudFlare节点 2",
+                "🇺🇸 美国 CloudFlare节点 4",
+                "广东省+移动",
+                "🇺🇸 美国+纽约市DigitalOcean云公司",
+                "河北省+移动(全省通用) 4",
+                "🇺🇸 美国 CloudFlare节点 5",
+                "🇮🇪 爱尔兰+都柏林Amazon数据中心",
+                "🇺🇸 美国 CloudFlare节点 6",
+                "🇺🇸 美国 CloudFlare节点 7",
+                "广东省肇庆市+中移铁通",
+                "广东省+移动 2",
+                "🇨🇴 南非 V2CROSS.COM",
+                "🇨🇳 广东省广州市 移动 2",
+                "🇺🇸 美国+Amazon数据中心",
+                "河北省+移动(全省通用) 5",
+                "🇬🇧 英国 V2CROSS.COM",
+                "🇨🇴 巴西 V2CROSS.COM",
+                "河北省+移动(全省通用) 6",
+                "🇸🇬 新加坡+DigitalOcean数据中心",
+                "🇬🇧 英国 V2CROSS.COM 2",
+                "🇨🇳 广东省广州市+电信 2"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
         },
-        "path": "/xrenvws"
-      }
-    },
-    {
-      "tag": "🇨🇴 阿塞拜疆 V2CROSS.COM",
-      "type": "vmess",
-      "server": "5.10.246.166",
-      "server_port": 8443,
-      "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax1.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax1.ibgfw.top"
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇷🇺 俄罗斯 V2CROSS.COM",
+                "🇱🇹 立陶宛 V2CROSS.COM",
+                "🇨🇴 阿塞拜疆 V2CROSS.COM",
+                "🇨🇳 广东省广州市+电信",
+                "🇺🇸 美国 CloudFlare节点",
+                "广东省湛江市 移动",
+                "河北省+移动(全省通用)",
+                "🇨🇳 广东省广州市 移动",
+                "🇺🇸 美国+CloudFlare节点",
+                "🇺🇸 美国 CloudFlare节点 2",
+                "🇺🇸 美国 CloudFlare节点 3",
+                "🇨🇴 斯洛文尼亚 V2CROSS.COM",
+                "🇧🇷 巴西圣保罗 CloudFlare节点",
+                "🇨🇳 广东省广州市+移动",
+                "河北省+移动(全省通用) 2",
+                "河北省+移动(全省通用) 3",
+                "🇺🇸 美国+CloudFlare节点 2",
+                "🇺🇸 美国 CloudFlare节点 4",
+                "广东省+移动",
+                "🇺🇸 美国+纽约市DigitalOcean云公司",
+                "河北省+移动(全省通用) 4",
+                "🇺🇸 美国 CloudFlare节点 5",
+                "🇮🇪 爱尔兰+都柏林Amazon数据中心",
+                "🇺🇸 美国 CloudFlare节点 6",
+                "🇺🇸 美国 CloudFlare节点 7",
+                "广东省肇庆市+中移铁通",
+                "广东省+移动 2",
+                "🇨🇴 南非 V2CROSS.COM",
+                "🇨🇳 广东省广州市 移动 2",
+                "🇺🇸 美国+Amazon数据中心",
+                "河北省+移动(全省通用) 5",
+                "🇬🇧 英国 V2CROSS.COM",
+                "🇨🇴 巴西 V2CROSS.COM",
+                "河北省+移动(全省通用) 6",
+                "🇸🇬 新加坡+DigitalOcean数据中心",
+                "🇬🇧 英国 V2CROSS.COM 2",
+                "🇨🇳 广东省广州市+电信 2"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
         },
-        "path": "/xrenvws"
-      }
-    },
-    {
-      "tag": "🇨🇳 广东省广州市+电信",
-      "type": "trojan",
-      "server": "aafrtpfxr.hkl03i9zjfegelp.5xfsur8v62.gosdk.xyz",
-      "server_port": 10465,
-      "password": "b13c1e89-60af-4462-8932-4acf1d604a19",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点",
-      "type": "vmess",
-      "server": "104.16.120.250",
-      "server_port": 443,
-      "uuid": "bf67437e-6c90-45ca-abc2-c7240a5ce2aa",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "foxlux.fovi.tk"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "foxlux.fovi.tk"
+        {
+            "tag": "direct",
+            "type": "direct"
         },
-        "path": "/eisasqa"
-      }
-    },
-    {
-      "tag": "广东省湛江市 移动",
-      "type": "vmess",
-      "server": "120.198.71.219",
-      "server_port": 51095,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "河北省+移动(全省通用)",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20110,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "10.2gyh5ybsic.xyz"
-      }
-    },
-    {
-      "tag": "🇨🇳 广东省广州市 移动",
-      "type": "vmess",
-      "server": "tk.hzlt.tkddns.xyz",
-      "server_port": 22642,
-      "uuid": "98e96c9f-4bb3-39d4-9a2c-fac04257f7c7",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "tk.hzlt.tkddns.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "zxjp-b.tkong.cc"
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "193.9.49.89",
+            "server_port": 8443,
+            "tag": "🇷🇺 俄罗斯 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax1.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax1.ibgfw.top"
+                },
+                "path": "/xrenvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e"
         },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国+CloudFlare节点",
-      "type": "trojan",
-      "server": "198.41.208.69",
-      "server_port": 8443,
-      "password": "123456",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "top-azx.pages.dev"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/Az1.vpn.33.TOP/",
-        "headers": {
-          "Host": "top-azx.pages.dev"
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "89.116.46.96",
+            "server_port": 8443,
+            "tag": "🇱🇹 立陶宛 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax1.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax1.ibgfw.top"
+                },
+                "path": "/xrenvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "5.10.246.166",
+            "server_port": 8443,
+            "tag": "🇨🇴 阿塞拜疆 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax1.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax1.ibgfw.top"
+                },
+                "path": "/xrenvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e"
+        },
+        {
+            "password": "b13c1e89-60af-4462-8932-4acf1d604a19",
+            "server": "aafrtpfxr.hkl03i9zjfegelp.5xfsur8v62.gosdk.xyz",
+            "server_port": 10465,
+            "tag": "🇨🇳 广东省广州市+电信",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.16.120.250",
+            "server_port": 443,
+            "tag": "🇺🇸 美国 CloudFlare节点",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "foxlux.fovi.tk"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "foxlux.fovi.tk"
+                },
+                "path": "/eisasqa",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "bf67437e-6c90-45ca-abc2-c7240a5ce2aa"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.198.71.219",
+            "server_port": 51095,
+            "tag": "广东省湛江市 移动",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20110,
+            "tag": "河北省+移动(全省通用)",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "10.2gyh5ybsic.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "tk.hzlt.tkddns.xyz",
+            "server_port": 22642,
+            "tag": "🇨🇳 广东省广州市 移动",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "tk.hzlt.tkddns.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "zxjp-b.tkong.cc"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "98e96c9f-4bb3-39d4-9a2c-fac04257f7c7"
+        },
+        {
+            "password": "123456",
+            "server": "198.41.208.69",
+            "server_port": 8443,
+            "tag": "🇺🇸 美国+CloudFlare节点",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "top-azx.pages.dev"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "top-azx.pages.dev"
+                },
+                "path": "/Az1.vpn.33.TOP/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "US7-02.890624.xyZ",
+            "server_port": 443,
+            "tag": "🇺🇸 美国 CloudFlare节点 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "us7-02.890624.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "us7-02.890624.xyz"
+                },
+                "path": "/bua2hMcbA8wMzbGFtV",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "4d04b30c-ef7b-4a07-8f9e-f581ec171f8a"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "ny1dash.890601.pp.ua",
+            "server_port": 2053,
+            "tag": "🇺🇸 美国 CloudFlare节点 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "ny1dash.890601.pp.ua"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "ny1dash.890601.pp.ua"
+                },
+                "path": "/ny1lj",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "05965003-8632-43b2-c9c0-12c1f2abff57"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "92.53.188.185",
+            "server_port": 8443,
+            "tag": "🇨🇴 斯洛文尼亚 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax1.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax1.ibgfw.top"
+                },
+                "path": "/xrenvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "188.114.96.5",
+            "server_port": 443,
+            "tag": "🇧🇷 巴西圣保罗 CloudFlare节点",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "linde06.indiavideo.sbs"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "linde06.indiavideo.sbs"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf"
+        },
+        {
+            "password": "VMhGp5wEIyCDf90T",
+            "server": "gysz0000.dynu.net",
+            "server_port": 38340,
+            "tag": "🇨🇳 广东省广州市+移动",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hk39.work.gd"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20082,
+            "tag": "河北省+移动(全省通用) 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20089,
+            "tag": "河北省+移动(全省通用) 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "9.p5zqtpj2n7.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "vs6f8hvt",
+            "server": "104.26.13.54",
+            "server_port": 443,
+            "tag": "🇺🇸 美国+CloudFlare节点 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.cchappy.eu.org",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "trojan.cchappy.eu.org"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "live.onetwothree123.ir",
+            "server_port": 2053,
+            "tag": "🇺🇸 美国 CloudFlare节点 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": ""
+            },
+            "transport": {
+                "path": "/dJcxUoyK",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "c2fd1d3f-d63b-4f7e-bf32-6017c76869ff"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "183.240.228.139",
+            "server_port": 20020,
+            "tag": "广东省+移动",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "10.elk3b3nwfy.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "6db95bbc-c7a1-4b3f-9346-df71f4d95350",
+            "server": "t10.emovpn.buzz",
+            "server_port": 1378,
+            "tag": "🇺🇸 美国+纽约市DigitalOcean云公司",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.baidu.com"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20105,
+            "tag": "河北省+移动(全省通用) 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "5.2gyh5ybsic.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "172.67.131.17",
+            "server_port": 443,
+            "tag": "🇺🇸 美国 CloudFlare节点 5",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hms19.best-tizi.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "hms19.best-tizi.top"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "62aa5f80-0328-4004-a375-7f5a59df4022"
+        },
+        {
+            "password": "telegram-id-privatevpns",
+            "server": "34.251.132.182",
+            "server_port": 22222,
+            "tag": "🇮🇪 爱尔兰+都柏林Amazon数据中心",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "US7-01.890624.XyZ",
+            "server_port": 443,
+            "tag": "🇺🇸 美国 CloudFlare节点 6",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "us7-01.890624.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "us7-01.890624.xyz"
+                },
+                "path": "/bua2hMcbA8wMzbGFtV",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "4d04b30c-ef7b-4a07-8f9e-f581ec171f8a"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "de01.sh-cloudflare.sbs",
+            "server_port": 2096,
+            "tag": "🇺🇸 美国 CloudFlare节点 7",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "de01.sh-cloudflare.sbs"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "de01.sh-cloudflare.sbs"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "75a0885f-0ca5-42a4-8651-391cf8193154"
+        },
+        {
+            "password": "VMhGp5wEIyCDf90T",
+            "server": "csuzhou01.1cooldns.com",
+            "server_port": 42303,
+            "tag": "广东省肇庆市+中移铁通",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "hk06.run.place"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "183.240.228.139",
+            "server_port": 20019,
+            "tag": "广东省+移动 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "9.elk3b3nwfy.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v79.emovpn.buzz",
+            "server_port": 6201,
+            "tag": "🇨🇴 南非 V2CROSS.COM",
+            "transport": {
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "6db95bbc-c7a1-4b3f-9346-df71f4d95350"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "183.236.51.38",
+            "server_port": 51039,
+            "tag": "🇨🇳 广东省广州市 移动 2",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "password": "telegram-id-privatevpns",
+            "server": "18.193.177.174",
+            "server_port": 22222,
+            "tag": "🇺🇸 美国+Amazon数据中心",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20081,
+            "tag": "河北省+移动(全省通用) 5",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "1.p5zqtpj2n7.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "193.123.81.105",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "beyonddsz.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "beyonddsz.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "9b456c2a-f2c1-45e1-87a9-b7628b04bb24"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "185.159.247.76",
+            "server_port": 8443,
+            "tag": "🇨🇴 巴西 V2CROSS.COM",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax2.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax2.ibgfw.top"
+                },
+                "path": "/dyajvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "e88b85c6-93b4-47f6-b3fb-2c55dcb1289f"
+        },
+        {
+            "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
+            "server": "111.62.241.211",
+            "server_port": 20108,
+            "tag": "河北省+移动(全省通用) 6",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "8.2gyh5ybsic.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "6db95bbc-c7a1-4b3f-9346-df71f4d95350",
+            "server": "t9.emovpn.buzz",
+            "server_port": 2339,
+            "tag": "🇸🇬 新加坡+DigitalOcean数据中心",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "www.baidu.com"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "188.244.122.249",
+            "server_port": 8443,
+            "tag": "🇬🇧 英国 V2CROSS.COM 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "lax1.ibgfw.top"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "lax1.ibgfw.top"
+                },
+                "path": "/xrenvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e"
+        },
+        {
+            "password": "b13c1e89-60af-4462-8932-4acf1d604a19",
+            "server": "aafrtpfxr.vnl01i9zjfegelp.5xfsur8v62.gosdk.xyz",
+            "server_port": 43396,
+            "tag": "🇨🇳 广东省广州市+电信 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+            },
+            "type": "trojan"
         }
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 2",
-      "type": "vmess",
-      "server": "US7-02.890624.xyZ",
-      "server_port": 443,
-      "uuid": "4d04b30c-ef7b-4a07-8f9e-f581ec171f8a",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "us7-02.890624.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "us7-02.890624.xyz"
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
         },
-        "path": "/bua2hMcbA8wMzbGFtV"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 3",
-      "type": "vmess",
-      "server": "ny1dash.890601.pp.ua",
-      "server_port": 2053,
-      "uuid": "05965003-8632-43b2-c9c0-12c1f2abff57",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "ny1dash.890601.pp.ua"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "ny1dash.890601.pp.ua"
-        },
-        "path": "/ny1lj"
-      }
-    },
-    {
-      "tag": "🇨🇴 斯洛文尼亚 V2CROSS.COM",
-      "type": "vmess",
-      "server": "92.53.188.185",
-      "server_port": 8443,
-      "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax1.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax1.ibgfw.top"
-        },
-        "path": "/xrenvws"
-      }
-    },
-    {
-      "tag": "🇧🇷 巴西圣保罗 CloudFlare节点",
-      "type": "vmess",
-      "server": "188.114.96.5",
-      "server_port": 443,
-      "uuid": "edbb1059-1633-4271-b66e-ed4fba47a1bf",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "linde06.indiavideo.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "linde06.indiavideo.sbs"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇨🇳 广东省广州市+移动",
-      "type": "trojan",
-      "server": "gysz0000.dynu.net",
-      "server_port": 38340,
-      "password": "VMhGp5wEIyCDf90T",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hk39.work.gd"
-      }
-    },
-    {
-      "tag": "河北省+移动(全省通用) 2",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20082,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": false
-      }
-    },
-    {
-      "tag": "河北省+移动(全省通用) 3",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20089,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "9.p5zqtpj2n7.xyz"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国+CloudFlare节点 2",
-      "type": "trojan",
-      "server": "104.26.13.54",
-      "server_port": 443,
-      "password": "vs6f8hvt",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.cchappy.eu.org",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
         }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "trojan.cchappy.eu.org"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 4",
-      "type": "vmess",
-      "server": "live.onetwothree123.ir",
-      "server_port": 2053,
-      "uuid": "c2fd1d3f-d63b-4f7e-bf32-6017c76869ff",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": ""
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/dJcxUoyK"
-      }
-    },
-    {
-      "tag": "广东省+移动",
-      "type": "trojan",
-      "server": "183.240.228.139",
-      "server_port": 20020,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "10.elk3b3nwfy.xyz"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国+纽约市DigitalOcean云公司",
-      "type": "trojan",
-      "server": "t10.emovpn.buzz",
-      "server_port": 1378,
-      "password": "6db95bbc-c7a1-4b3f-9346-df71f4d95350",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.baidu.com"
-      }
-    },
-    {
-      "tag": "河北省+移动(全省通用) 4",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20105,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "5.2gyh5ybsic.xyz"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 5",
-      "type": "vmess",
-      "server": "172.67.131.17",
-      "server_port": 443,
-      "uuid": "62aa5f80-0328-4004-a375-7f5a59df4022",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hms19.best-tizi.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "hms19.best-tizi.top"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇮🇪 爱尔兰+都柏林Amazon数据中心",
-      "type": "trojan",
-      "server": "34.251.132.182",
-      "server_port": 22222,
-      "password": "telegram-id-privatevpns",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 6",
-      "type": "vmess",
-      "server": "US7-01.890624.XyZ",
-      "server_port": 443,
-      "uuid": "4d04b30c-ef7b-4a07-8f9e-f581ec171f8a",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "us7-01.890624.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "us7-01.890624.xyz"
-        },
-        "path": "/bua2hMcbA8wMzbGFtV"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 CloudFlare节点 7",
-      "type": "vmess",
-      "server": "de01.sh-cloudflare.sbs",
-      "server_port": 2096,
-      "uuid": "75a0885f-0ca5-42a4-8651-391cf8193154",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "de01.sh-cloudflare.sbs"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "de01.sh-cloudflare.sbs"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "广东省肇庆市+中移铁通",
-      "type": "trojan",
-      "server": "csuzhou01.1cooldns.com",
-      "server_port": 42303,
-      "password": "VMhGp5wEIyCDf90T",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "hk06.run.place"
-      }
-    },
-    {
-      "tag": "广东省+移动 2",
-      "type": "trojan",
-      "server": "183.240.228.139",
-      "server_port": 20019,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "9.elk3b3nwfy.xyz"
-      }
-    },
-    {
-      "tag": "🇨🇴 南非 V2CROSS.COM",
-      "type": "vmess",
-      "server": "v79.emovpn.buzz",
-      "server_port": 6201,
-      "uuid": "6db95bbc-c7a1-4b3f-9346-df71f4d95350",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇨🇳 广东省广州市 移动 2",
-      "type": "vmess",
-      "server": "183.236.51.38",
-      "server_port": 51039,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 美国+Amazon数据中心",
-      "type": "trojan",
-      "server": "18.193.177.174",
-      "server_port": 22222,
-      "password": "telegram-id-privatevpns",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "河北省+移动(全省通用) 5",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20081,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "1.p5zqtpj2n7.xyz"
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 V2CROSS.COM",
-      "type": "vmess",
-      "server": "193.123.81.105",
-      "server_port": 443,
-      "uuid": "9b456c2a-f2c1-45e1-87a9-b7628b04bb24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "beyonddsz.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "beyonddsz.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇨🇴 巴西 V2CROSS.COM",
-      "type": "vmess",
-      "server": "185.159.247.76",
-      "server_port": 8443,
-      "uuid": "e88b85c6-93b4-47f6-b3fb-2c55dcb1289f",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax2.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax2.ibgfw.top"
-        },
-        "path": "/dyajvws"
-      }
-    },
-    {
-      "tag": "河北省+移动(全省通用) 6",
-      "type": "trojan",
-      "server": "111.62.241.211",
-      "server_port": 20108,
-      "password": "13c3cf97-5a4a-434f-880a-aecbd70c15bc",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "8.2gyh5ybsic.xyz"
-      }
-    },
-    {
-      "tag": "🇸🇬 新加坡+DigitalOcean数据中心",
-      "type": "trojan",
-      "server": "t9.emovpn.buzz",
-      "server_port": 2339,
-      "password": "6db95bbc-c7a1-4b3f-9346-df71f4d95350",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.baidu.com"
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 V2CROSS.COM 2",
-      "type": "vmess",
-      "server": "188.244.122.249",
-      "server_port": 8443,
-      "uuid": "191babc5-2aaf-4fe5-a563-f14244aefb4e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "lax1.ibgfw.top"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "lax1.ibgfw.top"
-        },
-        "path": "/xrenvws"
-      }
-    },
-    {
-      "tag": "🇨🇳 广东省广州市+电信 2",
-      "type": "trojan",
-      "server": "aafrtpfxr.vnl01i9zjfegelp.5xfsur8v62.gosdk.xyz",
-      "server_port": 43396,
-      "password": "b13c1e89-60af-4462-8932-4acf1d604a19",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
-      }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
