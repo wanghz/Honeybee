@@ -1,233 +1,632 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "dns-block",
+        "server": "rcode://refused"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      }
+    ]
+  },
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "domain_suffix": [
+          "deepseek.com",
+          "qwen.ai",
+          "tencent.com",
+          "thinktrader.net"
         ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geoip-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "dns-block",
-                "server": "rcode://refused"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            }
-        ]
-    },
-    "route": {
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "domain_suffix": [
-                    "deepseek.com",
-                    "qwen.ai",
-                    "tencent.com",
-                    "thinktrader.net"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "bittorrent",
-                    "quic"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geosite-category-ads-all"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geoip-cn"
-                ],
-                "outbound": "direct"
-            }
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "bittorrent",
+          "quic"
         ],
+        "outbound": "block-out"
+      },
+      {
         "rule_set": [
-            {
-                "tag": "geosite-category-ads-all",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-                "download_detour": "direct"
-            },
-            {
-                "tag": "geoip-cn",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-                "download_detour": "direct"
-            }
-        ]
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+          "geosite-category-ads-all"
+        ],
+        "outbound": "block-out"
+      },
+      {
+        "rule_set": [
+          "geoip-cn"
+        ],
+        "outbound": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇦🇺 Australia-澳大利亚",
-                "🇦🇺 Australia-澳大利亚 2",
-                "🇺🇸 美国+3",
-                "🇺🇸 美国+5",
-                "🇺🇸 美国+6",
-                "🇺🇸 美国+2"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇦🇺 Australia-澳大利亚",
-                "🇦🇺 Australia-澳大利亚 2",
-                "🇺🇸 美国+3",
-                "🇺🇸 美国+5",
-                "🇺🇸 美国+6",
-                "🇺🇸 美国+2"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "password": "cc05b267-2e17-4e73-92f0-2cf603aa5997",
-            "server": "146.56.179.67",
-            "server_port": 40005,
-            "tag": "🇦🇺 Australia-澳大利亚",
-            "tls": {
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "57edfecf-5694-4a34-8072-54a4f0636a62",
-            "server": "146.56.179.67",
-            "server_port": 40005,
-            "tag": "🇦🇺 Australia-澳大利亚 2",
-            "tls": {
-                "enabled": true,
-                "insecure": true
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "414dff55-922a-4dc8-b5d3-b6517942b25a",
-            "server": "east.eeeeeef998.buzz",
-            "server_port": 15003,
-            "tag": "🇺🇸 美国+3",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "data.steamdownload.top"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "414dff55-922a-4dc8-b5d3-b6517942b25a",
-            "server": "east.eeeeeef998.buzz",
-            "server_port": 15005,
-            "tag": "🇺🇸 美国+5",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "data.steamdownload.top"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "414dff55-922a-4dc8-b5d3-b6517942b25a",
-            "server": "east.eeeeeef998.buzz",
-            "server_port": 15006,
-            "tag": "🇺🇸 美国+6",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "data.steamdownload.top"
-            },
-            "type": "trojan"
-        },
-        {
-            "password": "414dff55-922a-4dc8-b5d3-b6517942b25a",
-            "server": "east.eeeeeef998.buzz",
-            "server_port": 15002,
-            "tag": "🇺🇸 美国+2",
-            "tls": {
-                "enabled": true,
-                "insecure": true,
-                "server_name": "data.steamdownload.top"
-            },
-            "type": "trojan"
-        }
-    ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rule_set": [
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇳🇬 @V2rayNG3",
+        "🇳🇬 @V2rayNG3 2",
+        "🇳🇬 @V2rayNG3 3",
+        "@Pashmam_Vpn سرور های بیشتر",
+        "🇳🇬 @V2rayNG3 4",
+        "@GrizzlyVPN",
+        "🇳🇬 @V2rayNG3 5",
+        "🇳🇬 @V2rayNG3 6",
+        "🇳🇬 @V2rayNG3 7",
+        "🇳🇬 @V2rayNG3 8",
+        "🇩🇪 @VPNHubMaRKeT ⚡️",
+        "🇩🇪 @VPNHubMaRKeT ⚡️  @VpnHubMarKeT ⚡️",
+        "@Pashmam_Vpn سرور های بیشتر 2",
+        "🇹🇷 ¹ @VpnHubMarKeT",
+        "🇹🇷 ¹ @VpnHubMarKeT  @VpnHubMarKeT ⚡️",
+        "@V2aryng_vpn",
+        "Channel id: @ShadowProxy66🇺🇸",
+        "@meli_proxyy",
+        "🇳🇬 @V2rayNG3 9",
+        "@V2aryng_vpn 2",
+        "@Pashmam_Vpn سرور های بیشتر 3",
+        "🇳🇬 @V2rayNG3 10",
+        "🇳🇬 @vpnv2rayNGv"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇳🇬 @V2rayNG3",
+        "🇳🇬 @V2rayNG3 2",
+        "🇳🇬 @V2rayNG3 3",
+        "@Pashmam_Vpn سرور های بیشتر",
+        "🇳🇬 @V2rayNG3 4",
+        "@GrizzlyVPN",
+        "🇳🇬 @V2rayNG3 5",
+        "🇳🇬 @V2rayNG3 6",
+        "🇳🇬 @V2rayNG3 7",
+        "🇳🇬 @V2rayNG3 8",
+        "🇩🇪 @VPNHubMaRKeT ⚡️",
+        "🇩🇪 @VPNHubMaRKeT ⚡️  @VpnHubMarKeT ⚡️",
+        "@Pashmam_Vpn سرور های بیشتر 2",
+        "🇹🇷 ¹ @VpnHubMarKeT",
+        "🇹🇷 ¹ @VpnHubMarKeT  @VpnHubMarKeT ⚡️",
+        "@V2aryng_vpn",
+        "Channel id: @ShadowProxy66🇺🇸",
+        "@meli_proxyy",
+        "🇳🇬 @V2rayNG3 9",
+        "@V2aryng_vpn 2",
+        "@Pashmam_Vpn سرور های بیشتر 3",
+        "🇳🇬 @V2rayNG3 10",
+        "🇳🇬 @vpnv2rayNGv"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3",
+      "type": "hysteria2",
+      "server": "192.3.85.237",
+      "server_port": 443,
+      "password": "123456",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "bing.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 2",
+      "type": "hysteria2",
+      "server": "gb.gomeow.online",
+      "server_port": 20309,
+      "password": "15cca331-9e92-449d-93b0-25f82203595f",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "gb.gomeow.online",
+        "insecure": false,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 3",
+      "type": "hysteria2",
+      "server": "109.120.135.123",
+      "server_port": 12122,
+      "password": "22f2c759db51b3d0",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.google.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "de8287cd33b05fa3"
+      }
+    },
+    {
+      "tag": "@Pashmam_Vpn سرور های بیشتر",
+      "type": "hysteria2",
+      "server": "jpzl2.stardad.lol",
+      "server_port": 48512,
+      "password": "2a1a0537-717c-402e-8e4f-7e81369997bd",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "https://bing.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 4",
+      "type": "hysteria2",
+      "server": "s15.serv00.com",
+      "server_port": 7777,
+      "password": "75577117-ABCD-DCBA-AAAA-CC777775577B",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.bing.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "@GrizzlyVPN",
+      "type": "hysteria2",
+      "server": "a.grizzzlyyyy.ir",
+      "server_port": 4443,
+      "password": "78e4c7ea92fed6d40792424990b6e793",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "a.grizzzlyyyy.ir",
+        "insecure": false,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 5",
+      "type": "hysteria2",
+      "server": "all-v4.dgi000.store",
+      "server_port": 443,
+      "password": "",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "all-v4.dgi000.store",
+        "insecure": false,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "@azadi_az_inja_migzare"
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 6",
+      "type": "hysteria2",
+      "server": "p1.punchline.ir",
+      "server_port": 19037,
+      "password": "AtTK3tiEA0",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "bipbip"
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 7",
+      "type": "hysteria2",
+      "server": "p1.punchline.ir",
+      "server_port": 2087,
+      "password": "AtTK3tiEA0",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "bleepbloop"
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 8",
+      "type": "hysteria2",
+      "server": "p1.punchline.ir",
+      "server_port": 44929,
+      "password": "AtTK3tiEA0",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "bluhbluh"
+      }
+    },
+    {
+      "tag": "🇩🇪 @VPNHubMaRKeT ⚡️",
+      "type": "hysteria2",
+      "server": "3.123.253.70",
+      "server_port": 9999,
+      "password": "VPNHubMaRKeT",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "tel:@VPNHubMaRKeT"
+      }
+    },
+    {
+      "tag": "🇩🇪 @VPNHubMaRKeT ⚡️  @VpnHubMarKeT ⚡️",
+      "type": "hysteria2",
+      "server": "3.123.253.70",
+      "server_port": 9999,
+      "password": "VPNHubMaRKeT",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "tel:@VPNHubMaRKeT"
+      }
+    },
+    {
+      "tag": "@Pashmam_Vpn سرور های بیشتر 2",
+      "type": "hysteria2",
+      "server": "150.241.77.182",
+      "server_port": 11122,
+      "password": "c76f08e20fb6368b",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.google.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "64da92df31fc63c1"
+      }
+    },
+    {
+      "tag": "🇹🇷 ¹ @VpnHubMarKeT",
+      "type": "hysteria2",
+      "server": "91.217.119.51",
+      "server_port": 443,
+      "password": "dbe172973c29534833c6fae3d706d9e7",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.google.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "VpnHubMarKeT"
+      }
+    },
+    {
+      "tag": "🇹🇷 ¹ @VpnHubMarKeT  @VpnHubMarKeT ⚡️",
+      "type": "hysteria2",
+      "server": "91.217.119.51",
+      "server_port": 443,
+      "password": "dbe172973c29534833c6fae3d706d9e7",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.google.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "VpnHubMarKeT"
+      }
+    },
+    {
+      "tag": "@V2aryng_vpn",
+      "type": "hysteria2",
+      "server": "108.181.5.133",
+      "server_port": 15544,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "apple.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "Channel id: @ShadowProxy66🇺🇸",
+      "type": "hysteria2",
+      "server": "108.181.5.133",
+      "server_port": 15544,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "apple.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "@meli_proxyy",
+      "type": "hysteria2",
+      "server": "195.154.33.70",
+      "server_port": 59967,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.bing.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 9",
+      "type": "hysteria2",
+      "server": "46.17.41.189",
+      "server_port": 50717,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.bing.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "@V2aryng_vpn 2",
+      "type": "hysteria2",
+      "server": "46.17.41.5",
+      "server_port": 12904,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "apple.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "@Pashmam_Vpn سرور های بیشتر 3",
+      "type": "hysteria2",
+      "server": "br.1010520.xyz",
+      "server_port": 1001,
+      "password": "e1c77eb5-eacd-4afd-8da3-9fd2c1d3b499",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "br.1010520.xyz",
+        "insecure": false,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇳🇬 @V2rayNG3 10",
+      "type": "hysteria2",
+      "server": "62.60.231.189",
+      "server_port": 12123,
+      "password": "f8e40931bbb827df",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.google.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "dbc688df29e582d3"
+      }
+    },
+    {
+      "tag": "🇳🇬 @vpnv2rayNGv",
+      "type": "hysteria2",
+      "server": "82.117.87.183",
+      "server_port": 443,
+      "password": "rZzZr2Za3B",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "ns.cloudflare.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "V2R@yM@teRS1Q2VEe"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
