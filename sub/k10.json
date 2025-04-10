@@ -1,744 +1,743 @@
 {
-  "log": {
-    "level": "info",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "tag": "google",
-        "address": "tls://8.8.8.8"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct"
-      }
-    ],
-    "rules": [
-      {
-        "outbound": "any",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "Global",
-        "server": "google"
-      },
-      {
-        "rule_set": "geoip-cn",
-        "server": "local"
-      },
-      {
-        "clash_mode": "dns-block",
-        "server": "rcode://refused"
-      },
-      {
-        "clash_mode": "Default",
-        "server": "google"
-      }
-    ]
-  },
-  "route": {
-    "rules": [
-      {
-        "protocol": "dns",
-        "outbound": "dns-out"
-      },
-      {
-        "domain_suffix": [
-          "deepseek.com",
-          "qwen.ai",
-          "tencent.com",
-          "thinktrader.net"
+    "log": {
+        "level": "info",
+        "timestamp": true
+    },
+    "dns": {
+        "servers": [
+            {
+                "tag": "google",
+                "address": "tls://8.8.8.8"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "protocol": [
-          "bittorrent",
-          "quic"
+        "rules": [
+            {
+                "outbound": "any",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "Global",
+                "server": "google"
+            },
+            {
+                "rule_set": "geoip-cn",
+                "server": "local"
+            },
+            {
+                "clash_mode": "dns-block",
+                "server": "rcode://refused"
+            },
+            {
+                "clash_mode": "Default",
+                "server": "google"
+            }
+        ]
+    },
+    "route": {
+        "rules": [
+            {
+                "protocol": "dns",
+                "outbound": "dns-out"
+            },
+            {
+                "domain_suffix": [
+                    "deepseek.com",
+                    "qwen.ai",
+                    "tencent.com",
+                    "thinktrader.net"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "protocol": [
+                    "bittorrent",
+                    "quic"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geosite-category-ads-all"
+                ],
+                "outbound": "block-out"
+            },
+            {
+                "rule_set": [
+                    "geoip-cn"
+                ],
+                "outbound": "direct"
+            }
         ],
-        "outbound": "block-out"
-      },
-      {
         "rule_set": [
-          "geosite-category-ads-all"
-        ],
-        "outbound": "block-out"
-      },
-      {
-        "rule_set": [
-          "geoip-cn"
-        ],
-        "outbound": "direct"
-      }
+            {
+                "tag": "geosite-category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "geoip-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "geoip-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "1|🇸🇬5 |  2.1MB/s",
-        "1|🇯🇵1 |  4.3MB/s",
-        "1|🇯🇵2 |  5.3MB/s",
-        "🇭🇰 1|🇭🇰3 |  3.6MB/s",
-        "1|🇺🇸20 |  4.7MB/s",
-        "1|🇸🇬3 |  3.9MB/s",
-        "1|🇸🇬4 |  3.1MB/s",
-        "🇸🇰 1|🌀12-SK |  2.8MB/s",
-        "🇨🇿 1|🌀13-CZ |  5.6MB/s",
-        "1|🇯🇵7 |  2.1MB/s",
-        "12|tg频道:@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
-        "🇭🇰 12,13|香港4|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
-        "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
-        "🇯🇵 12,13|日本2|@ripaojiedian",
-        "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
-        "🇰🇷 12,13|韩国|@ripaojiedian",
-        "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
-        "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
-        "🇺🇸 12,13|美国2|@ripaojiedian",
-        "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
-        "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
-        "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
-        "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
-        "🇧🇷 12,13|巴西|@ripaojiedian",
-        "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
-        "🇭🇰 13|香港6|@ripaojiedian",
-        "🇭🇰 13|香港8|@ripaojiedian",
-        "🇹🇼 13|台湾2|@ripaojiedian",
-        "🇸🇬 13|新加坡|@ripaojiedian",
-        "🇺🇸 13|美国|@ripaojiedian",
-        "14|GB_speednode_0082",
-        "🇭🇰 14|HK_speednode_0084",
-        "🇷🇴 14|RO_speednode_0088",
-        "🇷🇴 14|RO_speednode_0089",
-        "14|SC_speednode_0090",
-        "14|SC_speednode_0091",
-        "14|SC_speednode_0092"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "1|🇸🇬5 |  2.1MB/s",
-        "1|🇯🇵1 |  4.3MB/s",
-        "1|🇯🇵2 |  5.3MB/s",
-        "🇭🇰 1|🇭🇰3 |  3.6MB/s",
-        "1|🇺🇸20 |  4.7MB/s",
-        "1|🇸🇬3 |  3.9MB/s",
-        "1|🇸🇬4 |  3.1MB/s",
-        "🇸🇰 1|🌀12-SK |  2.8MB/s",
-        "🇨🇿 1|🌀13-CZ |  5.6MB/s",
-        "1|🇯🇵7 |  2.1MB/s",
-        "12|tg频道:@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
-        "🇭🇰 12,13|香港4|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
-        "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
-        "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
-        "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
-        "🇯🇵 12,13|日本2|@ripaojiedian",
-        "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
-        "🇰🇷 12,13|韩国|@ripaojiedian",
-        "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
-        "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
-        "🇺🇸 12,13|美国2|@ripaojiedian",
-        "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
-        "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
-        "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
-        "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
-        "🇧🇷 12,13|巴西|@ripaojiedian",
-        "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
-        "🇭🇰 13|香港6|@ripaojiedian",
-        "🇭🇰 13|香港8|@ripaojiedian",
-        "🇹🇼 13|台湾2|@ripaojiedian",
-        "🇸🇬 13|新加坡|@ripaojiedian",
-        "🇺🇸 13|美国|@ripaojiedian",
-        "14|GB_speednode_0082",
-        "🇭🇰 14|HK_speednode_0084",
-        "🇷🇴 14|RO_speednode_0088",
-        "🇷🇴 14|RO_speednode_0089",
-        "14|SC_speednode_0090",
-        "14|SC_speednode_0091",
-        "14|SC_speednode_0092"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "1|🇸🇬5 |  2.1MB/s",
-      "type": "vmess",
-      "server": "fbf248.de15-5483-d16b.sbs",
-      "server_port": 80,
-      "uuid": "2119a8ea-9015-4a2a-bf12-f5eb0425daf7",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "sg02s.de15-5483-d16b.sbs"
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "1|🇯🇵1 |  4.3MB/s",
-      "type": "vmess",
-      "server": "69c584f2-suif40-tee612-2r82.cm5.p5pv.com",
-      "server_port": 17233,
-      "uuid": "03573f46-e944-11eb-a8bf-f23c91cfbbc9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "1|🇯🇵2 |  5.3MB/s",
-      "type": "vmess",
-      "server": "a0a40de3-suk9s0-t7mt0p-1sllg.cm5.p5pv.com",
-      "server_port": 17233,
-      "uuid": "d6e1207c-f41a-11ef-9495-f23c91cfbbc9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 1|🇭🇰3 |  3.6MB/s",
-      "type": "vmess",
-      "server": "212.192.12.154",
-      "server_port": 23008,
-      "uuid": "2dfca8d6-065c-4a6b-8039-d66268751451",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/"
-      }
-    },
-    {
-      "tag": "1|🇺🇸20 |  4.7MB/s",
-      "type": "vmess",
-      "server": "405b7d32-suk9s0-tcmdts-1mmu6.cu.plebai.net",
-      "server_port": 5229,
-      "uuid": "2ee8f830-09e2-11f0-90e2-f23c913c8d2b",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "1|🇸🇬3 |  3.9MB/s",
-      "type": "vmess",
-      "server": "6f316071-suk9s0-swtza9-1q91p.cm5.p5pv.com",
-      "server_port": 17231,
-      "uuid": "c11ff50c-f582-11ee-94df-f23c9164ca5d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "1|🇸🇬4 |  3.1MB/s",
-      "type": "vmess",
-      "server": "03d929ef-suk9s0-tcmdts-1mmu6.cm5.p5pv.com",
-      "server_port": 17231,
-      "uuid": "2ee8f830-09e2-11f0-90e2-f23c913c8d2b",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇸🇰 1|🌀12-SK |  2.8MB/s",
-      "type": "shadowsocks",
-      "server": "156.146.40.194",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇨🇿 1|🌀13-CZ |  5.6MB/s",
-      "type": "vmess",
-      "server": "89.18.56.249",
-      "server_port": 180,
-      "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "1|🇯🇵7 |  2.1MB/s",
-      "type": "vmess",
-      "server": "fa7c2955-suif40-swjyj4-1mish.cm5.p5pv.com",
-      "server_port": 17233,
-      "uuid": "9eeeea88-f37b-11ed-bd3d-f23c9164ca5d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "12|tg频道:@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "52.79.172.127",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "hk02.x.quickcht3.club",
-      "server_port": 52612,
-      "method": "chacha20-ietf-poly1305",
-      "password": "2be0c954-4291-45ea-b47d-ca713180550b"
-    },
-    {
-      "tag": "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "120.234.255.106",
-      "server_port": 26912,
-      "method": "chacha20-ietf-poly1305",
-      "password": "d316fca3-e4ca-4774-8230-24a8fb9f99f6"
-    },
-    {
-      "tag": "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "111.29.57.125",
-      "server_port": 52612,
-      "method": "chacha20-ietf-poly1305",
-      "password": "2be0c954-4291-45ea-b47d-ca713180550b"
-    },
-    {
-      "tag": "🇭🇰 12,13|香港4|@ripaojiedian",
-      "type": "vmess",
-      "server": "v9.heduian.link",
-      "server_port": 30809,
-      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "baidu.com"
+        {
+            "outbounds": [
+                "1|🇸🇬5 |  2.1MB/s",
+                "1|🇯🇵1 |  4.3MB/s",
+                "1|🇯🇵2 |  5.3MB/s",
+                "🇭🇰 1|🇭🇰3 |  3.6MB/s",
+                "1|🇺🇸20 |  4.7MB/s",
+                "1|🇸🇬3 |  3.9MB/s",
+                "1|🇸🇬4 |  3.1MB/s",
+                "🇸🇰 1|🌀12-SK |  2.8MB/s",
+                "🇨🇿 1|🌀13-CZ |  5.6MB/s",
+                "1|🇯🇵7 |  2.1MB/s",
+                "12|tg频道:@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
+                "🇭🇰 12,13|香港4|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
+                "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
+                "🇯🇵 12,13|日本2|@ripaojiedian",
+                "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
+                "🇰🇷 12,13|韩国|@ripaojiedian",
+                "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
+                "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
+                "🇺🇸 12,13|美国2|@ripaojiedian",
+                "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
+                "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
+                "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
+                "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
+                "🇧🇷 12,13|巴西|@ripaojiedian",
+                "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
+                "🇭🇰 13|香港6|@ripaojiedian",
+                "🇭🇰 13|香港8|@ripaojiedian",
+                "🇹🇼 13|台湾2|@ripaojiedian",
+                "🇸🇬 13|新加坡|@ripaojiedian",
+                "🇺🇸 13|美国|@ripaojiedian",
+                "14|GB_speednode_0082",
+                "🇭🇰 14|HK_speednode_0084",
+                "🇷🇴 14|RO_speednode_0088",
+                "🇷🇴 14|RO_speednode_0089",
+                "14|SC_speednode_0090",
+                "14|SC_speednode_0091",
+                "14|SC_speednode_0092"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
         },
-        "path": "/oooo"
-      }
-    },
-    {
-      "tag": "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
-      "type": "vmess",
-      "server": "156494db-sukw00-sw1b1x-4550.d.volczijie.com",
-      "server_port": 4136,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
-      "type": "vmess",
-      "server": "120.234.102.229",
-      "server_port": 31998,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "gy.666666222.shop",
-      "server_port": 47564,
-      "method": "chacha20-ietf-poly1305",
-      "password": "a45fdc60-57c7-4053-b13a-1383b6dd732d"
-    },
-    {
-      "tag": "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
-      "type": "vmess",
-      "server": "hk.zijieyunti.xyz",
-      "server_port": 50040,
-      "uuid": "feb7005d-af1e-45ae-93a7-d782000210c8",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "154.223.20.79",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "cn01.efan8867801.xyz",
-      "server_port": 8766,
-      "method": "rc4-md5",
-      "password": "efanccyun",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=202504031266665-c4zHT87iGG.download.microsoft.com;"
-    },
-    {
-      "tag": "🇯🇵 12,13|日本2|@ripaojiedian",
-      "type": "trojan",
-      "server": "aafrtpfxr.jpl04i9zjfegelp.5xfsur8v62.gosdk.xyz",
-      "server_port": 22269,
-      "password": "573ae74e-5eea-467a-abc1-fdc65b8aa4fa",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
-      }
-    },
-    {
-      "tag": "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "gy.tangu.win",
-      "server_port": 38726,
-      "method": "chacha20-ietf-poly1305",
-      "password": "2cb27b35-25da-458c-9545-dff29bf7b12d"
-    },
-    {
-      "tag": "🇰🇷 12,13|韩国|@ripaojiedian",
-      "type": "vmess",
-      "server": "v28.heduian.link",
-      "server_port": 30828,
-      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "ocbc.com"
+        {
+            "interval": "1m",
+            "outbounds": [
+                "1|🇸🇬5 |  2.1MB/s",
+                "1|🇯🇵1 |  4.3MB/s",
+                "1|🇯🇵2 |  5.3MB/s",
+                "🇭🇰 1|🇭🇰3 |  3.6MB/s",
+                "1|🇺🇸20 |  4.7MB/s",
+                "1|🇸🇬3 |  3.9MB/s",
+                "1|🇸🇬4 |  3.1MB/s",
+                "🇸🇰 1|🌀12-SK |  2.8MB/s",
+                "🇨🇿 1|🌀13-CZ |  5.6MB/s",
+                "1|🇯🇵7 |  2.1MB/s",
+                "12|tg频道:@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
+                "🇭🇰 12,13|香港4|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
+                "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
+                "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
+                "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
+                "🇯🇵 12,13|日本2|@ripaojiedian",
+                "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
+                "🇰🇷 12,13|韩国|@ripaojiedian",
+                "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
+                "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
+                "🇺🇸 12,13|美国2|@ripaojiedian",
+                "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
+                "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
+                "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
+                "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
+                "🇧🇷 12,13|巴西|@ripaojiedian",
+                "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
+                "🇭🇰 13|香港6|@ripaojiedian",
+                "🇭🇰 13|香港8|@ripaojiedian",
+                "🇹🇼 13|台湾2|@ripaojiedian",
+                "🇸🇬 13|新加坡|@ripaojiedian",
+                "🇺🇸 13|美国|@ripaojiedian",
+                "14|GB_speednode_0082",
+                "🇭🇰 14|HK_speednode_0084",
+                "🇷🇴 14|RO_speednode_0088",
+                "🇷🇴 14|RO_speednode_0089",
+                "14|SC_speednode_0090",
+                "14|SC_speednode_0091",
+                "14|SC_speednode_0092"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
         },
-        "path": "/oooo"
-      }
-    },
-    {
-      "tag": "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
-      "type": "vmess",
-      "server": "d131cc2e-sukw00-sw1b1x-4550.c.volczijie.com",
-      "server_port": 3681,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "cn01.efan8867801.xyz",
-      "server_port": 8776,
-      "method": "rc4-md5",
-      "password": "efanccyun",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=202504031266665-c4zHT87iGG.download.microsoft.com;"
-    },
-    {
-      "tag": "🇺🇸 12,13|美国2|@ripaojiedian",
-      "type": "vmess",
-      "server": "v7.heduian.link",
-      "server_port": 30807,
-      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "ocbc.com"
+        {
+            "tag": "direct",
+            "type": "direct"
         },
-        "path": "/oooo"
-      }
-    },
-    {
-      "tag": "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
-      "type": "vmess",
-      "server": "2b1a2730-sukw00-sw1b1x-4550.b.fosant.com",
-      "server_port": 3695,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "52.13.121.24",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "52.78.247.197",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "3.39.252.80",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "amazonskr05"
-    },
-    {
-      "tag": "🇧🇷 12,13|巴西|@ripaojiedian",
-      "type": "vmess",
-      "server": "104.18.1.117",
-      "server_port": 80,
-      "uuid": "22474cc4-22a9-4c74-bae8-43f08a1c6ed4",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "2025041008264146946.s15.chibaba.filegear-sg.me"
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "fbf248.de15-5483-d16b.sbs",
+            "server_port": 80,
+            "tag": "1|🇸🇬5 |  2.1MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "sg02s.de15-5483-d16b.sbs"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2119a8ea-9015-4a2a-bf12-f5eb0425daf7"
         },
-        "path": "/s15.html"
-      }
-    },
-    {
-      "tag": "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
-      "type": "shadowsocks",
-      "server": "206.245.211.12",
-      "server_port": 19002,
-      "method": "aes-256-gcm",
-      "password": "751U3T5PPAVWVMR2"
-    },
-    {
-      "tag": "🇭🇰 13|香港6|@ripaojiedian",
-      "type": "vmess",
-      "server": "156494db-sukw00-sw1b1x-4550.d.volczijie.com",
-      "server_port": 4136,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 13|香港8|@ripaojiedian",
-      "type": "vmess",
-      "server": "120.234.102.229",
-      "server_port": 31998,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇹🇼 13|台湾2|@ripaojiedian",
-      "type": "vmess",
-      "server": "hk.zijieyunti.xyz",
-      "server_port": 50040,
-      "uuid": "feb7005d-af1e-45ae-93a7-d782000210c8",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇸🇬 13|新加坡|@ripaojiedian",
-      "type": "vmess",
-      "server": "d131cc2e-sukw00-sw1b1x-4550.c.volczijie.com",
-      "server_port": 3681,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 13|美国|@ripaojiedian",
-      "type": "vmess",
-      "server": "2b1a2730-sukw00-sw1b1x-4550.b.fosant.com",
-      "server_port": 3695,
-      "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "14|GB_speednode_0082",
-      "type": "trojan",
-      "server": "happy-bluebird.shiner427.skin",
-      "server_port": 443,
-      "password": "74260698218909400",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "happy-bluebird.shiner427.skin"
-      }
-    },
-    {
-      "tag": "🇭🇰 14|HK_speednode_0084",
-      "type": "trojan",
-      "server": "starlink-hkt2.2513142.xyz",
-      "server_port": 28106,
-      "password": "4467ae8518abf1ef321618c0bfb5549c",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.cloudflare.com"
-      }
-    },
-    {
-      "tag": "🇷🇴 14|RO_speednode_0088",
-      "type": "trojan",
-      "server": "electric-mallard.shiner427.skin",
-      "server_port": 443,
-      "password": "74260698218909400",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "electric-mallard.shiner427.skin"
-      }
-    },
-    {
-      "tag": "🇷🇴 14|RO_speednode_0089",
-      "type": "trojan",
-      "server": "109.107.159.122",
-      "server_port": 443,
-      "password": "74260698218909400",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "electric-mallard.shiner427.skin"
-      }
-    },
-    {
-      "tag": "14|SC_speednode_0090",
-      "type": "trojan",
-      "server": "154.83.2.125",
-      "server_port": 2087,
-      "password": "amclubs",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "tran.amclubstest.nyc.mn"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "tran.amclubstest.nyc.mn"
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "69c584f2-suif40-tee612-2r82.cm5.p5pv.com",
+            "server_port": 17233,
+            "tag": "1|🇯🇵1 |  4.3MB/s",
+            "type": "vmess",
+            "uuid": "03573f46-e944-11eb-a8bf-f23c91cfbbc9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "a0a40de3-suk9s0-t7mt0p-1sllg.cm5.p5pv.com",
+            "server_port": 17233,
+            "tag": "1|🇯🇵2 |  5.3MB/s",
+            "type": "vmess",
+            "uuid": "d6e1207c-f41a-11ef-9495-f23c91cfbbc9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "212.192.12.154",
+            "server_port": 23008,
+            "tag": "🇭🇰 1|🇭🇰3 |  3.6MB/s",
+            "transport": {
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2dfca8d6-065c-4a6b-8039-d66268751451"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "405b7d32-suk9s0-tcmdts-1mmu6.cu.plebai.net",
+            "server_port": 5229,
+            "tag": "1|🇺🇸20 |  4.7MB/s",
+            "type": "vmess",
+            "uuid": "2ee8f830-09e2-11f0-90e2-f23c913c8d2b"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "6f316071-suk9s0-swtza9-1q91p.cm5.p5pv.com",
+            "server_port": 17231,
+            "tag": "1|🇸🇬3 |  3.9MB/s",
+            "type": "vmess",
+            "uuid": "c11ff50c-f582-11ee-94df-f23c9164ca5d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "03d929ef-suk9s0-tcmdts-1mmu6.cm5.p5pv.com",
+            "server_port": 17231,
+            "tag": "1|🇸🇬4 |  3.1MB/s",
+            "type": "vmess",
+            "uuid": "2ee8f830-09e2-11f0-90e2-f23c913c8d2b"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "156.146.40.194",
+            "server_port": 989,
+            "tag": "🇸🇰 1|🌀12-SK |  2.8MB/s",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "89.18.56.249",
+            "server_port": 180,
+            "tag": "🇨🇿 1|🌀13-CZ |  5.6MB/s",
+            "type": "vmess",
+            "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "fa7c2955-suif40-swjyj4-1mish.cm5.p5pv.com",
+            "server_port": 17233,
+            "tag": "1|🇯🇵7 |  2.1MB/s",
+            "type": "vmess",
+            "uuid": "9eeeea88-f37b-11ed-bd3d-f23c9164ca5d"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "52.79.172.127",
+            "server_port": 443,
+            "tag": "12|tg频道:@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "2be0c954-4291-45ea-b47d-ca713180550b",
+            "server": "hk02.x.quickcht3.club",
+            "server_port": 52612,
+            "tag": "🇭🇰 12|🇭🇰 香港|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "d316fca3-e4ca-4774-8230-24a8fb9f99f6",
+            "server": "120.234.255.106",
+            "server_port": 26912,
+            "tag": "🇭🇰 12|🇭🇰 香港2|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "2be0c954-4291-45ea-b47d-ca713180550b",
+            "server": "111.29.57.125",
+            "server_port": 52612,
+            "tag": "🇭🇰 12|🇭🇰 香港3|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v9.heduian.link",
+            "server_port": 30809,
+            "tag": "🇭🇰 12,13|香港4|@ripaojiedian",
+            "transport": {
+                "headers": {
+                    "Host": "baidu.com"
+                },
+                "path": "/oooo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "156494db-sukw00-sw1b1x-4550.d.volczijie.com",
+            "server_port": 4136,
+            "tag": "🇭🇰 12|🇭🇰 香港6|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.234.102.229",
+            "server_port": 31998,
+            "tag": "🇭🇰 12|🇭🇰 香港8|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "a45fdc60-57c7-4053-b13a-1383b6dd732d",
+            "server": "gy.666666222.shop",
+            "server_port": 47564,
+            "tag": "🇹🇼 12|🇹🇼 台湾|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "hk.zijieyunti.xyz",
+            "server_port": 50040,
+            "tag": "🇹🇼 12|🇹🇼 台湾2|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "feb7005d-af1e-45ae-93a7-d782000210c8"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "154.223.20.79",
+            "server_port": 989,
+            "tag": "🇹🇼 12|🇹🇼 台湾3|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "efanccyun",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=202504031266665-c4zHT87iGG.download.microsoft.com;",
+            "server": "cn01.efan8867801.xyz",
+            "server_port": 8766,
+            "tag": "🇯🇵 12|🇯🇵 日本|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "573ae74e-5eea-467a-abc1-fdc65b8aa4fa",
+            "server": "aafrtpfxr.jpl04i9zjfegelp.5xfsur8v62.gosdk.xyz",
+            "server_port": 22269,
+            "tag": "🇯🇵 12,13|日本2|@ripaojiedian",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "2cb27b35-25da-458c-9545-dff29bf7b12d",
+            "server": "gy.tangu.win",
+            "server_port": 38726,
+            "tag": "🇯🇵 12|🇯🇵 日本3|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v28.heduian.link",
+            "server_port": 30828,
+            "tag": "🇰🇷 12,13|韩国|@ripaojiedian",
+            "transport": {
+                "headers": {
+                    "Host": "ocbc.com"
+                },
+                "path": "/oooo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "d131cc2e-sukw00-sw1b1x-4550.c.volczijie.com",
+            "server_port": 3681,
+            "tag": "🇸🇬 12|🇸🇬 新加坡|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "efanccyun",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=202504031266665-c4zHT87iGG.download.microsoft.com;",
+            "server": "cn01.efan8867801.xyz",
+            "server_port": 8776,
+            "tag": "🇺🇸 12|🇺🇸 美国|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v7.heduian.link",
+            "server_port": 30807,
+            "tag": "🇺🇸 12,13|美国2|@ripaojiedian",
+            "transport": {
+                "headers": {
+                    "Host": "ocbc.com"
+                },
+                "path": "/oooo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "2b1a2730-sukw00-sw1b1x-4550.b.fosant.com",
+            "server_port": 3695,
+            "tag": "🇺🇸 12|🇺🇸 美国|@ripaojiedian 2",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "52.13.121.24",
+            "server_port": 443,
+            "tag": "🇯🇵 12|🇯🇵 日本特殊|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "52.78.247.197",
+            "server_port": 443,
+            "tag": "🇸🇬 12|🇸🇬 狮城特殊|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "amazonskr05",
+            "server": "3.39.252.80",
+            "server_port": 443,
+            "tag": "🇰🇷 12|🇰🇷 韩国特殊|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.18.1.117",
+            "server_port": 80,
+            "tag": "🇧🇷 12,13|巴西|@ripaojiedian",
+            "transport": {
+                "headers": {
+                    "Host": "2025041008264146946.s15.chibaba.filegear-sg.me"
+                },
+                "path": "/s15.html",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "22474cc4-22a9-4c74-bae8-43f08a1c6ed4"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "751U3T5PPAVWVMR2",
+            "server": "206.245.211.12",
+            "server_port": 19002,
+            "tag": "🇬🇧 12|🇬🇧 英国|@ripaojiedian",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "156494db-sukw00-sw1b1x-4550.d.volczijie.com",
+            "server_port": 4136,
+            "tag": "🇭🇰 13|香港6|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.234.102.229",
+            "server_port": 31998,
+            "tag": "🇭🇰 13|香港8|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "hk.zijieyunti.xyz",
+            "server_port": 50040,
+            "tag": "🇹🇼 13|台湾2|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "feb7005d-af1e-45ae-93a7-d782000210c8"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "d131cc2e-sukw00-sw1b1x-4550.c.volczijie.com",
+            "server_port": 3681,
+            "tag": "🇸🇬 13|新加坡|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "2b1a2730-sukw00-sw1b1x-4550.b.fosant.com",
+            "server_port": 3695,
+            "tag": "🇺🇸 13|美国|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "6286105c-fb6d-11ef-be96-f23c93136cb3"
+        },
+        {
+            "password": "74260698218909400",
+            "server": "happy-bluebird.shiner427.skin",
+            "server_port": 443,
+            "tag": "14|GB_speednode_0082",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "happy-bluebird.shiner427.skin"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "4467ae8518abf1ef321618c0bfb5549c",
+            "server": "starlink-hkt2.2513142.xyz",
+            "server_port": 28106,
+            "tag": "🇭🇰 14|HK_speednode_0084",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.cloudflare.com"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "74260698218909400",
+            "server": "electric-mallard.shiner427.skin",
+            "server_port": 443,
+            "tag": "🇷🇴 14|RO_speednode_0088",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "electric-mallard.shiner427.skin"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "74260698218909400",
+            "server": "109.107.159.122",
+            "server_port": 443,
+            "tag": "🇷🇴 14|RO_speednode_0089",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "electric-mallard.shiner427.skin"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "amclubs",
+            "server": "154.83.2.125",
+            "server_port": 2087,
+            "tag": "14|SC_speednode_0090",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "tran.amclubstest.nyc.mn"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "tran.amclubstest.nyc.mn"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "amclubs",
+            "server": "154.83.2.94",
+            "server_port": 2053,
+            "tag": "14|SC_speednode_0091",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "tran.amclubstest.nyc.mn"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "tran.amclubstest.nyc.mn"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "amclubs",
+            "server": "154.83.2.61",
+            "server_port": 8443,
+            "tag": "14|SC_speednode_0092",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "tran.amclubstest.nyc.mn"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "tran.amclubstest.nyc.mn"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
         }
-      }
-    },
-    {
-      "tag": "14|SC_speednode_0091",
-      "type": "trojan",
-      "server": "154.83.2.94",
-      "server_port": 2053,
-      "password": "amclubs",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "tran.amclubstest.nyc.mn"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "tran.amclubstest.nyc.mn"
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
         }
-      }
-    },
-    {
-      "tag": "14|SC_speednode_0092",
-      "type": "trojan",
-      "server": "154.83.2.61",
-      "server_port": 8443,
-      "password": "amclubs",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "tran.amclubstest.nyc.mn"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "tran.amclubstest.nyc.mn"
-        }
-      }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
