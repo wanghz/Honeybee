@@ -1,0 +1,307 @@
+{
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "dns-block",
+        "server": "rcode://refused"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      }
+    ]
+  },
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "domain_suffix": [
+          "deepseek.com",
+          "qwen.ai",
+          "tencent.com",
+          "thinktrader.net"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "bittorrent",
+          "quic"
+        ],
+        "outbound": "block-out"
+      },
+      {
+        "rule_set": [
+          "geosite-category-ads-all"
+        ],
+        "outbound": "block-out"
+      },
+      {
+        "rule_set": [
+          "geoip-cn"
+        ],
+        "outbound": "direct"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 _US_美国_1",
+        "🇺🇸 _US_美国_2",
+        "🇸🇬 _SG_新加坡->🇺🇸_US_美国",
+        "🇺🇦 🇨🇳_CN_中国->🇺🇦_UA_乌克兰",
+        "🇫🇷 _FR_法国",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+        "🇺🇸 _US_美国->🇮🇳_IN_印度",
+        "🇺🇸 _US_美国_3",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 _US_美国_1",
+        "🇺🇸 _US_美国_2",
+        "🇸🇬 _SG_新加坡->🇺🇸_US_美国",
+        "🇺🇦 🇨🇳_CN_中国->🇺🇦_UA_乌克兰",
+        "🇫🇷 _FR_法国",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+        "🇺🇸 _US_美国->🇮🇳_IN_印度",
+        "🇺🇸 _US_美国_3",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 _US_美国_1",
+      "type": "vmess",
+      "server": "sbl2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国_2",
+      "type": "vmess",
+      "server": "45.58.152.70",
+      "server_port": 30000,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/path/1699193100388"
+      }
+    },
+    {
+      "tag": "🇸🇬 _SG_新加坡->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "8.222.198.105",
+      "server_port": 80,
+      "uuid": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇦 🇨🇳_CN_中国->🇺🇦_UA_乌克兰",
+      "type": "trojan",
+      "server": "other.kunlun-ppg.com",
+      "server_port": 10845,
+      "password": "cb9c8687-b85d-4f43-88a3-4829e3ec27eb",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "alibaba-node.cn"
+      }
+    },
+    {
+      "tag": "🇫🇷 _FR_法国",
+      "type": "trojan",
+      "server": "35.181.201.102",
+      "server_port": 22222,
+      "password": "telegram-id-directvpn",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "trj.rollingnext.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+      "type": "trojan",
+      "server": "other.kunlun-ppg.com",
+      "server_port": 10837,
+      "password": "cb9c8687-b85d-4f43-88a3-4829e3ec27eb",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "alibaba-node.cn"
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+      "type": "trojan",
+      "server": "other.kunlun-ppg.com",
+      "server_port": 10838,
+      "password": "cb9c8687-b85d-4f43-88a3-4829e3ec27eb",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "alibaba-node.cn"
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国->🇮🇳_IN_印度",
+      "type": "vmess",
+      "server": "mm2.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国_3",
+      "type": "vmess",
+      "server": "mm3.shabijichang.com",
+      "server_port": 80,
+      "uuid": "c458695d-6908-45c3-9512-e0c46418454c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3",
+      "type": "trojan",
+      "server": "other.kunlun-ppg.com",
+      "server_port": 10850,
+      "password": "cb9c8687-b85d-4f43-88a3-4829e3ec27eb",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "alibaba-node.cn"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
