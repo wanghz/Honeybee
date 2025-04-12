@@ -57,8 +57,8 @@ echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/m
 echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
 echo "https://hideshots.eu/sub.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
+#echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
+#echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 # 删除一些找不到的或没内容的
 sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
