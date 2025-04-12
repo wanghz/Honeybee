@@ -6,7 +6,7 @@ currentyears=$(date +%Y)
 
 urls=(
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
-  "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
+  #"https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
 )
 
 cd ./sub
