@@ -81,11 +81,13 @@ sed -i '/anaer\/Sub\/main\/clash\.yaml/d'  localurl.txt
 sed -i '155\.248\.172\.106:12580\/clash\/proxies/d'  localurl.txt
 sed -i 'Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 # 初始化数组
+# 初始化数组
 urls=()
-# 将文件内容合并到数组中
+
+# 使用 head 限制只读取前 200 行
 while IFS= read -r line; do
     urls+=("$line")
-done < <(awk '1; ENDFILE {print ""}' localurl.txt)
+done < <(head -n 200 localurl.txt)
 
 counter=1
 for url in "${urls[@]}"; do
