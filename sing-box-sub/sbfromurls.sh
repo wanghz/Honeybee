@@ -61,25 +61,24 @@ echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 # 删除一些找不到的或没内容的
-sed -i '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' localurl.txt
-sed -i '/Vauth\/node\/main\/Master/d' localurl.txt
-sed -i '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' localurl.txt
-sed -i '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' localurl.txt
-sed -i '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' localurl.txt
-sed -i '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' localurl.txt
-sed -i '/banyunxiaoxi\.icu/d' localurl.txt
-sed -i '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' localurl.txt
-#sed -i '/^https:\/\/dpaste\.com\/3FFLNMKCK/d' local.url.txt
-sed -i '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' localurl.txt
-sed -i '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' localurl.txt
-sed -i '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' localurl.txt
-sed -i '/airport/d' localurl.txt
-sed -i '/space-00/d' localurl.txt
-sed -i '/http:\/\/175\.178\.182\.178:12580/d' localurl.txt
-sed -i '/aiboboxx\/clashfree\/main\/clash\.yml/d' localurl.txt
-sed -i '/anaer\/Sub\/main\/clash\.yaml/d'  localurl.txt
-sed -i '155\.248\.172\.106:12580\/clash\/proxies/d'  localurl.txt
-sed -i 'Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
+sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
+       -e '/Vauth\/node\/main\/Master/d' \
+       -e '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' \
+       -e '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' \
+       -e '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' \
+       -e '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' \
+       -e '/banyunxiaoxi\.icu/d' \
+       -e '/^https:\/\/raw\.gitmirror\.com\/Memory2314/d' \
+       -e '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' \
+       -e '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' \
+       -e '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' \
+       -e '/airport/d' \
+       -e '/space-00/d' \
+       -e '/http:\/\/175\.178\.182\.178:12580/d' \
+       -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
+       -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
+       -e '155\.248\.172\.106:12580\/clash\/proxies/d'  \
+       -e 'Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 # 初始化数组
 urls=()
 # 使用 shuf 随机打乱文件行顺序，并选取前 200 行
