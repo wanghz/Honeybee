@@ -221,7 +221,6 @@ def get_parser(node):
 def get_content_from_url(url, n=6):
     UA = ''
     print('处理: \033[31m' + url + '\033[0m')
-    print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
     prefixes = ["vmess://", "vless://", "ss://", "ssr://", "trojan://", "tuic://", "hysteria://", "hysteria2://",
                 "hy2://", "wg://", "wireguard://", "http2://", "socks://", "socks5://"]
     if any(url.startswith(prefix) for prefix in prefixes):
@@ -236,13 +235,11 @@ def get_content_from_url(url, n=6):
     concount = 1
     while concount <= n and not response:
         print('连接出错，正在进行第 ' + str(concount) + ' 次重试，最多重试 ' + str(n) + ' 次...')
-        print('Lỗi kết nối, đang thử lại '+ str(concount) + '/' + str(n) + '...')
         response = tool.getResponse(url)
         concount = concount + 1
         time.sleep(1)
     if not response:
         print('获取错误，跳过此订阅')
-        print('Lỗi khi tải link đăng ký, bỏ qua link đăng ký này')
         print('----------------------------')
         pass
     try:
@@ -253,7 +250,6 @@ def get_content_from_url(url, n=6):
         return ''
     if response_text.isspace():
         print('没有从订阅链接获取到任何内容')
-        print('Không nhận được proxy nào từ link đăng ký')
         return None
     if not response_text:
         response = tool.getResponse(url, custom_user_agent='clashmeta')
@@ -292,7 +288,6 @@ def get_content_from_url(url, n=6):
 
 def get_content_form_file(url):
     print('处理: \033[31m' + url + '\033[0m')
-    print('Đang tải link đăng ký: \033[31m' + url + '\033[0m')
     # encoding = tool.get_encoding(url)
     file_extension = os.path.splitext(url)[1]  # 获取文件的后缀名
     if file_extension.lower() == '.yaml':
@@ -320,10 +315,8 @@ def save_config(path, nodes):
     if os.path.exists(path):
         os.remove(path)
         print(f"已删除文件，并重新保存：\033[33m{path}\033[0m")
-        print(f"File cấu hình đã được lưu vào: \033[33m{path}\033[0m")
     else:
         print(f"文件不存在，正在保存：\033[33m{path}\033[0m")
-        print(f"File không tồn tại, đang lưu tại: \033[33m{path}\033[0m")
     tool.saveFile(path,json.dumps(nodes, indent=2, ensure_ascii=False))
 
 
@@ -461,8 +454,6 @@ def combin_to_config(config, data):
                     t_o.append('Proxy')
                     print('发现 {} 出站下的节点数量为 0 ，会导致sing-box无法运行，请检查config模板是否正确。'.format(
                         po['tag']))
-                    print('Sing-Box không chạy được vì không tìm thấy bất kỳ proxy nào trong outbound của {}. Vui lòng kiểm tra xem mẫu cấu hình có đúng không!!'.format(
-                        po['tag']))
                     # sys.exit()
                 po['outbounds'] = t_o
                 if po.get('filter'):
@@ -502,13 +493,11 @@ def select_config_template(tl):
         uip = int(uip)
         if uip < 1 or uip > len(tl):
             print('输入了错误信息！重新输入')
-            print('Nhập thông tin không chính xác! Vui lòng nhập lại')
             return select_config_template(tl)
         else:
             return uip-1
     except:
         print('输入了错误信息！重新输入')
-        print('Nhập thông tin không chính xác! Vui lòng nhập lại')
         return select_config_template(tl)
 
 
