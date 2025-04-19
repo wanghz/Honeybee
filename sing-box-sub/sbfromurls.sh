@@ -77,8 +77,8 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/http:\/\/175\.178\.182\.178:12580/d' \
        -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
-       -e '155\.248\.172\.106:12580\/clash\/proxies/d'  \
-       -e 'Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
+       -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
+       -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 # 初始化数组
 urls=()
 # 使用 shuf 随机打乱文件行顺序，并选取前 200 行
