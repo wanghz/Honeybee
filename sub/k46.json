@@ -1,246 +1,1582 @@
 {
-    "log": {
-        "level": "info",
-        "timestamp": true
-    },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
+  "log": {
+    "level": "info",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "tag": "google",
+        "address": "tls://8.8.8.8"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct"
+      }
+    ],
+    "rules": [
+      {
+        "outbound": "any",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "Global",
+        "server": "google"
+      },
+      {
+        "rule_set": "geoip-cn",
+        "server": "local"
+      },
+      {
+        "clash_mode": "dns-block",
+        "server": "rcode://refused"
+      },
+      {
+        "clash_mode": "Default",
+        "server": "google"
+      }
+    ]
+  },
+  "route": {
+    "rules": [
+      {
+        "protocol": "dns",
+        "outbound": "dns-out"
+      },
+      {
+        "domain_suffix": [
+          "deepseek.com",
+          "qwen.ai",
+          "tencent.com",
+          "thinktrader.net"
         ],
-        "rules": [
-            {
-                "outbound": "any",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Direct",
-                "server": "local"
-            },
-            {
-                "clash_mode": "Global",
-                "server": "google"
-            },
-            {
-                "rule_set": "geoip-cn",
-                "server": "local"
-            },
-            {
-                "clash_mode": "dns-block",
-                "server": "rcode://refused"
-            },
-            {
-                "clash_mode": "Default",
-                "server": "google"
-            }
-        ]
-    },
-    "route": {
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "domain_suffix": [
-                    "deepseek.com",
-                    "qwen.ai",
-                    "tencent.com",
-                    "thinktrader.net"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "bittorrent",
-                    "quic"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geosite-category-ads-all"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geoip-cn"
-                ],
-                "outbound": "direct"
-            }
+        "outbound": "direct"
+      },
+      {
+        "protocol": [
+          "bittorrent",
+          "quic"
         ],
+        "outbound": "block-out"
+      },
+      {
         "rule_set": [
-            {
-                "tag": "geosite-category-ads-all",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-                "download_detour": "direct"
-            },
-            {
-                "tag": "geoip-cn",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-                "download_detour": "direct"
-            }
-        ]
-    },
-    "inbounds": [
-        {
-            "domain_strategy": "prefer_ipv4",
-            "listen": "127.0.0.1",
-            "listen_port": 7890,
-            "set_system_proxy": true,
-            "sniff": true,
-            "sniff_override_destination": true,
-            "tag": "mixed-in",
-            "type": "mixed",
-            "users": []
-        }
+          "geosite-category-ads-all"
+        ],
+        "outbound": "block-out"
+      },
+      {
+        "rule_set": [
+          "geoip-cn"
+        ],
+        "outbound": "direct"
+      }
     ],
-    "outbounds": [
-        {
-            "outbounds": [
-                "auto",
-                "direct"
-            ],
-            "tag": "proxy",
-            "type": "selector"
-        },
-        {
-            "outbounds": [
-                "🇺🇸 US-hysteria | 6-1",
-                "🇺🇸 US-hysteria | 7-1",
-                "🇷🇺 RU-hysteria | 8-1",
-                "🇷🇺 RU-Hysteria | 1-0",
-                "🇷🇺 RU-Hysteria2 | 0-0"
-            ],
-            "tag": "🌏 !cn",
-            "type": "selector"
-        },
-        {
-            "interval": "1m",
-            "outbounds": [
-                "🇺🇸 US-hysteria | 6-1",
-                "🇺🇸 US-hysteria | 7-1",
-                "🇷🇺 RU-hysteria | 8-1",
-                "🇷🇺 RU-Hysteria | 1-0",
-                "🇷🇺 RU-Hysteria2 | 0-0"
-            ],
-            "tag": "auto",
-            "tolerance": 50,
-            "type": "urltest",
-            "url": "http://www.gstatic.com/generate_204"
-        },
-        {
-            "tag": "direct",
-            "type": "direct"
-        },
-        {
-            "auth_str": "dongtaiwang.com",
-            "down_mbps": 55,
-            "server": "208.87.243.151",
-            "server_port": 17549,
-            "tag": "🇺🇸 US-hysteria | 6-1",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "www.bing.com"
-            },
-            "type": "hysteria",
-            "up_mbps": 11
-        },
-        {
-            "auth_str": "dongtaiwang.com",
-            "down_mbps": 55,
-            "server": "108.181.24.77",
-            "server_port": 11512,
-            "tag": "🇺🇸 US-hysteria | 7-1",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "apple.com"
-            },
-            "type": "hysteria",
-            "up_mbps": 11
-        },
-        {
-            "auth_str": "dongtaiwang.com",
-            "down_mbps": 55,
-            "server": "185.22.155.71",
-            "server_port": 10803,
-            "tag": "🇷🇺 RU-hysteria | 8-1",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "www.bing.com"
-            },
-            "type": "hysteria",
-            "up_mbps": 11
-        },
-        {
-            "auth_str": "dongtaiwang.com",
-            "down_mbps": 100,
-            "server": "46.17.41.174",
-            "server_port": 10469,
-            "tag": "🇷🇺 RU-Hysteria | 1-0",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "apple.com"
-            },
-            "type": "hysteria",
-            "up_mbps": 80
-        },
-        {
-            "down_mbps": 100,
-            "password": "dongtaiwang.com",
-            "server": "hy2.694463.xyz",
-            "server_port": 10011,
-            "tag": "🇷🇺 RU-Hysteria2 | 0-0",
-            "tls": {
-                "alpn": [
-                    "h3"
-                ],
-                "enabled": true,
-                "insecure": true,
-                "server_name": "www.bing.com"
-            },
-            "type": "hysteria2",
-            "up_mbps": 10
-        }
-    ],
-    "experimental": {
-        "cache_file": {
-            "enabled": true
-        },
-        "clash_api": {
-            "external_controller": "0.0.0.0:9090",
-            "external_ui": "metacubexd",
-            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-            "external_ui_download_detour": "proxy",
-            "default_mode": "rule"
-        }
+    "rule_set": [
+      {
+        "tag": "geosite-category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "geoip-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
     }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇭🇰 香港 电讯盈科有限公司",
+        "🇭🇰 香港 电讯盈科有限公司 2",
+        "🇭🇰 香港 电讯盈科有限公司 3",
+        "🇺🇸 美国 RF Engineering",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇺🇸 美国+V2CROSS.COM",
+        "广东省 移动",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 4",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 美国 RF Engineering 2",
+        "🇺🇸 美国 CloudFlare节点 2",
+        "🇨🇳 广东省广州市+电信",
+        "🇭🇰 香港 电讯盈科有限公司 5",
+        "🇺🇸 美国 RF Engineering 3",
+        "广东省汕头市 移动",
+        "🇺🇸 美国 CloudFlare节点 3",
+        "🇭🇰 香港 电讯盈科有限公司 6",
+        "🇺🇸 美国 CloudFlare节点 4",
+        "🇭🇰 香港 电讯盈科有限公司 7",
+        "🇨🇴 阿尔巴尼亚+V2CROSS.COM",
+        "🇨🇴 约旦+V2CROSS.COM",
+        "🇹🇷 土耳其+V2CROSS.COM",
+        "🇨🇴 罗马尼亚+V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 8",
+        "🇭🇰 香港 电讯盈科有限公司 9",
+        "🇭🇰 香港 电讯盈科有限公司 10",
+        "🇩🇪 德国 法兰克福Oracle云计算数据中心",
+        "🇺🇸 美国 CloudFlare节点 5",
+        "🇨🇳 广东省广州市+电信 2",
+        "🇨🇳 广东省广州市 移动",
+        "🇭🇰 香港 电讯盈科有限公司 11",
+        "🇨🇳 广东省广州市+电信 3",
+        "🇭🇰 香港 电讯盈科有限公司 12",
+        "🇭🇰 香港 电讯盈科有限公司 13",
+        "🇸🇪 瑞典+V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 2",
+        "🇺🇸 美国+南卡罗来纳州",
+        "🇭🇰 香港 电讯盈科有限公司 14",
+        "🇭🇰 香港 电讯盈科有限公司 15",
+        "🇨🇳 广东省广州市+电信 4",
+        "🇺🇸 美国 CloudFlare节点 6",
+        "🇭🇰 香港 电讯盈科有限公司 16",
+        "🇭🇰 香港 电讯盈科有限公司 17",
+        "🇬🇧 英国+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 18",
+        "🇭🇰 香港 电讯盈科有限公司 19",
+        "🇺🇸 美国 CloudFlare节点 7",
+        "🇺🇸 美国 RF Engineering 4",
+        "🇨🇴 阿尔巴尼亚+V2CROSS.COM 2",
+        "广东省 移动 2",
+        "🇺🇸 美国 CloudFlare节点 8",
+        "🇭🇰 香港 电讯盈科有限公司 20",
+        "🇺🇸 美国 V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 21",
+        "🇭🇰 香港 电讯盈科有限公司 22",
+        "🇺🇸 美国 CloudFlare节点 9",
+        "🇭🇰 香港 电讯盈科有限公司 23",
+        "🇯🇵 日本+V2CROSS.COM",
+        "🇨🇳 广东省广州市+电信 5",
+        "🇭🇰 香港 电讯盈科有限公司 24",
+        "🇭🇰 香港 电讯盈科有限公司 25",
+        "🇭🇰 香港 电讯盈科有限公司 26",
+        "🇭🇰 香港 电讯盈科有限公司 27",
+        "广东省湛江市 移动",
+        "🇺🇸 美国+V2CROSS.COM 2",
+        "🇺🇸 美国+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 28",
+        "🇨🇴 罗马尼亚+V2CROSS.COM 2",
+        "🇭🇰 香港 电讯盈科有限公司 29",
+        "🇭🇰 香港 电讯盈科有限公司 30",
+        "🇬🇧 英国+V2CROSS.COM 4",
+        "🇨🇳 广东省广州市 移动 2",
+        "🇭🇰 香港 电讯盈科有限公司 31",
+        "🇺🇸 美国+V2CROSS.COM 4",
+        "🇨🇴 罗马尼亚+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 32",
+        "🇭🇰 香港 电讯盈科有限公司 33",
+        "🇷🇺 俄罗斯 V2CROSS.COM",
+        "🇭🇰 香港+特别行政区",
+        "🇨🇳 广东省广州市+电信 6",
+        "🇭🇰 香港 电讯盈科有限公司 34",
+        "🇭🇰 香港 电讯盈科有限公司 35"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇭🇰 香港 电讯盈科有限公司",
+        "🇭🇰 香港 电讯盈科有限公司 2",
+        "🇭🇰 香港 电讯盈科有限公司 3",
+        "🇺🇸 美国 RF Engineering",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇺🇸 美国+V2CROSS.COM",
+        "广东省 移动",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 4",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇺🇸 美国 RF Engineering 2",
+        "🇺🇸 美国 CloudFlare节点 2",
+        "🇨🇳 广东省广州市+电信",
+        "🇭🇰 香港 电讯盈科有限公司 5",
+        "🇺🇸 美国 RF Engineering 3",
+        "广东省汕头市 移动",
+        "🇺🇸 美国 CloudFlare节点 3",
+        "🇭🇰 香港 电讯盈科有限公司 6",
+        "🇺🇸 美国 CloudFlare节点 4",
+        "🇭🇰 香港 电讯盈科有限公司 7",
+        "🇨🇴 阿尔巴尼亚+V2CROSS.COM",
+        "🇨🇴 约旦+V2CROSS.COM",
+        "🇹🇷 土耳其+V2CROSS.COM",
+        "🇨🇴 罗马尼亚+V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 8",
+        "🇭🇰 香港 电讯盈科有限公司 9",
+        "🇭🇰 香港 电讯盈科有限公司 10",
+        "🇩🇪 德国 法兰克福Oracle云计算数据中心",
+        "🇺🇸 美国 CloudFlare节点 5",
+        "🇨🇳 广东省广州市+电信 2",
+        "🇨🇳 广东省广州市 移动",
+        "🇭🇰 香港 电讯盈科有限公司 11",
+        "🇨🇳 广东省广州市+电信 3",
+        "🇭🇰 香港 电讯盈科有限公司 12",
+        "🇭🇰 香港 电讯盈科有限公司 13",
+        "🇸🇪 瑞典+V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 2",
+        "🇺🇸 美国+南卡罗来纳州",
+        "🇭🇰 香港 电讯盈科有限公司 14",
+        "🇭🇰 香港 电讯盈科有限公司 15",
+        "🇨🇳 广东省广州市+电信 4",
+        "🇺🇸 美国 CloudFlare节点 6",
+        "🇭🇰 香港 电讯盈科有限公司 16",
+        "🇭🇰 香港 电讯盈科有限公司 17",
+        "🇬🇧 英国+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 18",
+        "🇭🇰 香港 电讯盈科有限公司 19",
+        "🇺🇸 美国 CloudFlare节点 7",
+        "🇺🇸 美国 RF Engineering 4",
+        "🇨🇴 阿尔巴尼亚+V2CROSS.COM 2",
+        "广东省 移动 2",
+        "🇺🇸 美国 CloudFlare节点 8",
+        "🇭🇰 香港 电讯盈科有限公司 20",
+        "🇺🇸 美国 V2CROSS.COM",
+        "🇭🇰 香港 电讯盈科有限公司 21",
+        "🇭🇰 香港 电讯盈科有限公司 22",
+        "🇺🇸 美国 CloudFlare节点 9",
+        "🇭🇰 香港 电讯盈科有限公司 23",
+        "🇯🇵 日本+V2CROSS.COM",
+        "🇨🇳 广东省广州市+电信 5",
+        "🇭🇰 香港 电讯盈科有限公司 24",
+        "🇭🇰 香港 电讯盈科有限公司 25",
+        "🇭🇰 香港 电讯盈科有限公司 26",
+        "🇭🇰 香港 电讯盈科有限公司 27",
+        "广东省湛江市 移动",
+        "🇺🇸 美国+V2CROSS.COM 2",
+        "🇺🇸 美国+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 28",
+        "🇨🇴 罗马尼亚+V2CROSS.COM 2",
+        "🇭🇰 香港 电讯盈科有限公司 29",
+        "🇭🇰 香港 电讯盈科有限公司 30",
+        "🇬🇧 英国+V2CROSS.COM 4",
+        "🇨🇳 广东省广州市 移动 2",
+        "🇭🇰 香港 电讯盈科有限公司 31",
+        "🇺🇸 美国+V2CROSS.COM 4",
+        "🇨🇴 罗马尼亚+V2CROSS.COM 3",
+        "🇭🇰 香港 电讯盈科有限公司 32",
+        "🇭🇰 香港 电讯盈科有限公司 33",
+        "🇷🇺 俄罗斯 V2CROSS.COM",
+        "🇭🇰 香港+特别行政区",
+        "🇨🇳 广东省广州市+电信 6",
+        "🇭🇰 香港 电讯盈科有限公司 34",
+        "🇭🇰 香港 电讯盈科有限公司 35"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司",
+      "type": "vmess",
+      "server": "7ffad756-sv0xs0-t9lb8r-ptn8.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ca76ebf2-7312-11ea-82ef-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 2",
+      "type": "vmess",
+      "server": "12d6e33d-sv2sg0-t32oyt-1k9hc.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "1c7eef0a-56de-11ee-a993-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 3",
+      "type": "vmess",
+      "server": "08dd2af9-sv6hs0-sw7il4-uzpp.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "bced417c-8328-11ef-b3af-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 RF Engineering",
+      "type": "vmess",
+      "server": "141.193.213.169",
+      "server_port": 2086,
+      "uuid": "19e3cd78-16ca-4158-98b1-0e3d3669fea4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ustoucjjnid18sj6us.lovebaipiao.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点",
+      "type": "trojan",
+      "server": "172.67.212.82",
+      "server_port": 443,
+      "password": "5453ae26-250d-4e79-b4ec-016baf806865",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "alpn": [
+          "http/1.1"
+        ],
+        "server_name": "D05F4aA7-92B1-a659-E3b9-695Dd2870B3c.131.Pp.UA",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/OYzPAeaZdXUq2d6J3gc4aj",
+        "headers": {
+          "Host": "d05f4aa7-92b1-a659-e3b9-695dd2870b3c.131.pp.ua"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM",
+      "type": "trojan",
+      "server": "45.146.232.171",
+      "server_port": 43395,
+      "password": "5d84f3b9-fb95-45ac-8e53-2e396bc19fa1",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "广东省 移动",
+      "type": "vmess",
+      "server": "3e7c7177-sv8cg0-sveyey-44k4.cm.plebai.net",
+      "server_port": 15229,
+      "uuid": "c5eb2c2c-bc1d-11ed-a8bf-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM",
+      "type": "trojan",
+      "server": "mutual-gannet.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "mutual-gannet.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 4",
+      "type": "vmess",
+      "server": "0ddcd278-sv0xs0-sxs5em-1igr4.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "57269f80-e0e8-11ec-bb74-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点",
+      "type": "vmess",
+      "server": "hk2.lrzdx.uk",
+      "server_port": 443,
+      "uuid": "db69d5bc-d36c-4903-f471-74b98c5cefe5",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/register"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 RF Engineering 2",
+      "type": "vmess",
+      "server": "141.193.213.167",
+      "server_port": 2086,
+      "uuid": "19e3cd78-16ca-4158-98b1-0e3d3669fea4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ustoucjjnid18sj6us.lovebaipiao.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 2",
+      "type": "vmess",
+      "server": "mas3.445.pp.ua",
+      "server_port": 2096,
+      "uuid": "2db2bf5b-18ec-4479-dbd7-50e0e08a4f07",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "mass3.852224.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mass3.852224.xyz"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 27002,
+      "password": "fffddde3-e433-47a0-87b7-a21f3ab4a9dc",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 5",
+      "type": "vmess",
+      "server": "2a6fa823-sv6hs0-szeqpq-sbt2.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "b88ebf3a-b6b7-11ea-82ef-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 RF Engineering 3",
+      "type": "vmess",
+      "server": "cdn1.bpcdn.cc",
+      "server_port": 2086,
+      "uuid": "19e3cd78-16ca-4158-98b1-0e3d3669fea4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "sgtxv82wilpfh6a8vm.lovebaipiao.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "广东省汕头市 移动",
+      "type": "vmess",
+      "server": "fb6241fd-svc1s0-svjq5n-1r78y.cm5.p5pv.com",
+      "server_port": 17231,
+      "uuid": "1c618e62-fc90-11ee-944b-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 3",
+      "type": "vmess",
+      "server": "443ip.yangmie.online",
+      "server_port": 443,
+      "uuid": "e9efb55e-7958-4813-9d6f-6e0c421e327c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "shs111.kejixiaoqi666.store"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "shs111.kejixiaoqi666.store"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 6",
+      "type": "vmess",
+      "server": "08897737-sv6hs0-t8tsp0-1szmi.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ba151628-b3a2-11ef-bdb9-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 4",
+      "type": "vmess",
+      "server": "s2.db-link02.top",
+      "server_port": 2052,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-34-100-44.s2.db-link02.top"
+        },
+        "path": "/dabai.in172.64.6.224"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 7",
+      "type": "vmess",
+      "server": "b55d59d3-sv6hs0-tbpu76-1thmd.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "2d8c38cc-fc12-11ef-94aa-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇴 阿尔巴尼亚+V2CROSS.COM",
+      "type": "trojan",
+      "server": "choice-gar.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "choice-gar.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇨🇴 约旦+V2CROSS.COM",
+      "type": "trojan",
+      "server": "109.107.159.202",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "grateful-mako.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇹🇷 土耳其+V2CROSS.COM",
+      "type": "trojan",
+      "server": "modest-firefly.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "modest-firefly.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇨🇴 罗马尼亚+V2CROSS.COM",
+      "type": "trojan",
+      "server": "supreme-loon.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "supreme-loon.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 8",
+      "type": "vmess",
+      "server": "c3ae31b3-sv0xs0-syxyhi-12kzu.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "7b72cc10-0b3f-11ee-a91f-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 9",
+      "type": "vmess",
+      "server": "0cb5b649-sv6hs0-sxx3hh-1m7j8.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "91acf762-a4ea-11ef-b090-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 10",
+      "type": "vmess",
+      "server": "69c75e1e-sv2sg0-t2nncp-130sy.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "963ce6d4-add3-11ee-ad20-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇩🇪 德国 法兰克福Oracle云计算数据中心",
+      "type": "vmess",
+      "server": "132.145.232.171",
+      "server_port": 443,
+      "uuid": "9b456c2a-f2c1-45e1-87a9-b7628b04bb24",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "beyonddsz.cfd"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "beyonddsz.cfd"
+        },
+        "path": "/linkws"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 5",
+      "type": "vmess",
+      "server": "104.21.96.1",
+      "server_port": 2053,
+      "uuid": "2db2bf5b-18ec-4479-dbd7-50e0e08a4f07",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "mass3.890601.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mass3.890601.xyz"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信 2",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 34017,
+      "password": "07381e41-41fb-484d-9dc7-37d5a4b566bd",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市 移动",
+      "type": "vmess",
+      "server": "183.236.51.38",
+      "server_port": 32919,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 11",
+      "type": "vmess",
+      "server": "fa5220e9-sv2sg0-swwhoz-1me9w.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "408e7148-df67-11ed-8e13-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信 3",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 22271,
+      "password": "72367917-ca34-437d-8dfc-12a948ed50a4",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 12",
+      "type": "vmess",
+      "server": "0dee4e4a-sv2sg0-t0c4yu-1qc0q.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "82fc0c0a-bc59-11ee-a737-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 13",
+      "type": "vmess",
+      "server": "108f172e-sv2sg0-svk8tn-l1v4.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "0d6b74f2-01c0-11ee-9014-f23c91369f2d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇸🇪 瑞典+V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "157.180.30.213",
+      "server_port": 56723,
+      "method": "2022-blake3-aes-256-gcm",
+      "password": "GsKow7HDrsKmw5Iow4DDksK+MMKSQh7CjMKBw6UQcsOzw5TDgEfCoCkSNMKyPsKfLcKd:w7U8eMK/w7YmXMOzwop1Yg0bQMOWfUJ7axoNwoQQwrDDs1HCmitnw4fCv8Os"
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 2",
+      "type": "trojan",
+      "server": "handy-sparrow.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "handy-sparrow.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+南卡罗来纳州",
+      "type": "shadowsocks",
+      "server": "169.150.202.174",
+      "server_port": 990,
+      "method": "chacha20-ietf-poly1305",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 14",
+      "type": "vmess",
+      "server": "e9dc3722-sv2sg0-sylfil-1gcq2.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "759bf004-6137-11ec-bd7c-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 15",
+      "type": "vmess",
+      "server": "75a5d1ab-sv2sg0-svr00o-1oxz4.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ac3a8a98-51dc-11ee-a6e8-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信 4",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 42882,
+      "password": "0b8667c7-1208-440d-ac97-302f8c6f3f0c",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "sla.cn.964e995b760.gogodns.xin"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 6",
+      "type": "vmess",
+      "server": "104.21.82.39",
+      "server_port": 80,
+      "uuid": "4be20cf1-6af1-4e87-ae5a-80d6ec30fecd",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "8uiop.191288.xyz"
+        },
+        "path": "/WudQ2hzj2qjH1GhzxRV9PS"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 16",
+      "type": "vmess",
+      "server": "2f692aa9-sv2sg0-svs488-n09f.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "89b0ea8c-806b-11ed-94ba-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 17",
+      "type": "vmess",
+      "server": "dcf99c60-sv0xs0-tasors-1tdqt.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "167db97c-ee01-11ef-b737-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 3",
+      "type": "trojan",
+      "server": "blessed-opossum.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "blessed-opossum.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 18",
+      "type": "vmess",
+      "server": "66500699-sv2sg0-sx8y86-uvgv.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ee67070a-ceb2-11ed-bb7d-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 19",
+      "type": "vmess",
+      "server": "f4499b0b-sv6hs0-taj9mo-1tco3.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "e29de954-ea01-11ef-a271-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 7",
+      "type": "vmess",
+      "server": "1wweerttt.131.pp.ua",
+      "server_port": 443,
+      "uuid": "5453ae26-250d-4e79-b4ec-016baf806865",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "1WWeeRtTt.131.PP.ua"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "1WWeeRtTt.131.PP.ua"
+        },
+        "path": "/h7Rcu0y30lhjdVjJ3gc4aj"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 RF Engineering 4",
+      "type": "vmess",
+      "server": "cdn1.bpcdn.cc",
+      "server_port": 80,
+      "uuid": "19e3cd78-16ca-4158-98b1-0e3d3669fea4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "tk1.bk5jh4t6w.jiesk4pdqcqjo16j.xyz"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇴 阿尔巴尼亚+V2CROSS.COM 2",
+      "type": "trojan",
+      "server": "national-toucan.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "national-toucan.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "广东省 移动 2",
+      "type": "vmess",
+      "server": "10fd33f4-sv4n40-tcq5zn-19qpt.cm.plebai.net",
+      "server_port": 15229,
+      "uuid": "4b9ca118-7fab-11eb-bd3a-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 8",
+      "type": "vmess",
+      "server": "s4.db-link02.top",
+      "server_port": 80,
+      "uuid": "4b36625c-b9d9-3ea6-aed5-86d62c70e16d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "100-21-178-246.s4.db-link02.top"
+        },
+        "path": "/dabai.in104.24.152.253"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 20",
+      "type": "vmess",
+      "server": "92b1e00e-sv0xs0-tb224g-1h0r9.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "9bfd0dde-957e-11ec-a8bf-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "v18.nmcf.me",
+      "server_port": 8000,
+      "uuid": "5f981f88-2152-40c6-8312-7f36dc0e64ad",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "www.bing.com"
+        },
+        "path": "/nmkj"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 21",
+      "type": "vmess",
+      "server": "e4a67c1f-sv6hs0-swjuxd-1qoq3.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "12a6e19e-9207-11ef-b287-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 22",
+      "type": "vmess",
+      "server": "d850e789-sv2sg0-sz2mf2-1ex2n.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "35271a68-a2a6-11ef-87a8-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 9",
+      "type": "vmess",
+      "server": "9uyiopsdfh.iran.pp.ua",
+      "server_port": 443,
+      "uuid": "906ba92f-ef96-4133-8eee-f33202a5a721",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "9uyiopsdfh.iran.pp.ua"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "9uyiopsdfh.iran.pp.ua"
+        },
+        "path": "/DAxJddOdTd5pVam9w"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 23",
+      "type": "vmess",
+      "server": "c53bf275-sv2sg0-svv72o-1e0ty.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ccd9704a-f980-11eb-a0fc-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 日本+V2CROSS.COM",
+      "type": "trojan",
+      "server": "dozo01.flztjc.top",
+      "server_port": 8313,
+      "password": "2c605663-b89a-5734-a9d6-97d4743d72cf",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "hk-13-568.flztjc.net"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信 5",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 44397,
+      "password": "8ebcd7aa-c640-4cd1-941f-91c0989f3813",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 24",
+      "type": "vmess",
+      "server": "d076cd1f-sv2sg0-sxs5em-1igr4.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "57269f80-e0e8-11ec-bb74-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 25",
+      "type": "vmess",
+      "server": "0533ec8d-sv8cg0-sv4i40-4flp.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "313ff356-9c29-da5f-c1e1-66239736dab8",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 26",
+      "type": "vmess",
+      "server": "f8685ff7-sv2sg0-t12kpr-1feo5.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "a423a1b6-390c-11ee-bde0-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 27",
+      "type": "vmess",
+      "server": "ac947530-sv2sg0-t51upj-ochh.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "cf89e064-5c77-11eb-bd3a-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "广东省湛江市 移动",
+      "type": "vmess",
+      "server": "120.198.71.214",
+      "server_port": 32980,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM 2",
+      "type": "trojan",
+      "server": "45.146.232.173",
+      "server_port": 43383,
+      "password": "08571a3f-30fc-4646-929f-050da2fb62d0",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM 3",
+      "type": "trojan",
+      "server": "main-hound.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "main-hound.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 28",
+      "type": "vmess",
+      "server": "532538de-sv0xs0-sylfil-1gcq2.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "759bf004-6137-11ec-bd7c-f23c913c8d2b",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "532538de-sv0xs0-sylfil-1gcq2.hk.p5pv.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇴 罗马尼亚+V2CROSS.COM 2",
+      "type": "trojan",
+      "server": "93.174.164.49",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "concrete-lion.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 29",
+      "type": "vmess",
+      "server": "2eed1a9a-sv0xs0-sv7gs8-1lkbs.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "5a4c13ae-6673-11ee-a149-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "2eed1a9a-sv0xs0-sv7gs8-1lkbs.hk.p5pv.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 30",
+      "type": "vmess",
+      "server": "1b984fce-sv2sg0-t9lb8r-ptn8.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ca76ebf2-7312-11ea-82ef-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 4",
+      "type": "trojan",
+      "server": "workable-puma.dolphin109.quest",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "workable-puma.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市 移动 2",
+      "type": "vmess",
+      "server": "120.232.153.41",
+      "server_port": 46597,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 31",
+      "type": "vmess",
+      "server": "db96132b-sv2sg0-t6nmiv-jptr.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "ef062e5b-d015-11ec-9ff8-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM 4",
+      "type": "trojan",
+      "server": "162.216.231.86",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "main-hound.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇨🇴 罗马尼亚+V2CROSS.COM 3",
+      "type": "trojan",
+      "server": "188.208.110.153",
+      "server_port": 443,
+      "password": "3828095943467868160",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "sought-goat.dolphin109.quest"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 32",
+      "type": "vmess",
+      "server": "6903e0bf-sv0xs0-t3b4w3-ywms.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "bf109e1a-2b99-11ed-bb74-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 33",
+      "type": "vmess",
+      "server": "d3f5e1e2-sv2sg0-t7bo2t-1psmw.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "42bb6d36-97c7-11ee-be7f-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇷🇺 俄罗斯 V2CROSS.COM",
+      "type": "vmess",
+      "server": "195.58.49.84",
+      "server_port": 22021,
+      "uuid": "9221b966-7f2f-4f1b-a80f-fa1d4c8cd834",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港+特别行政区",
+      "type": "shadowsocks",
+      "server": "62.60.231.81",
+      "server_port": 39008,
+      "method": "chacha20-ietf-poly1305",
+      "password": "W7fIo8Gp6TLb1YHZNH1fu5"
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信 6",
+      "type": "trojan",
+      "server": "sla.cn.964e995b760.gogodns.xin",
+      "server_port": 43499,
+      "password": "0092e8f5-d988-4328-b255-4c59956236a0",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "q08m.vgraxiw73s.hasyaf.cn"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 34",
+      "type": "vmess",
+      "server": "7b2f8c5e-sv2sg0-tc61cs-1tja8.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "d2f0bee2-02f1-11f0-8eb0-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 35",
+      "type": "vmess",
+      "server": "74b3f780-sv0xs0-tdb09u-1thl3.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "15d92b4e-fd53-11ef-bea4-f23c91cfbbc9",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "broadcastlv.chat.bilibili.com"
+        },
+        "path": "/"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
 }
