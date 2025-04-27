@@ -1,101 +1,111 @@
 {
   "log": {
-    "level": "warn",
+    "level": "error",
     "timestamp": true
   },
-    "dns": {
-        "servers": [
-            {
-                "tag": "google",
-                "address": "tls://8.8.8.8"
-            },
-            {
-                "tag": "local",
-                "address": "https://223.5.5.5/dns-query",
-                "detour": "direct"
-            }
-        ],       
-        "rules": [
-          {
-              "rule_set": [
-                  "geosite-category-ads-all"
-          ],
-          "action": "reject",
-          "method": "default",
-          "no_drop": false
-          },
-          {
-              "outbound": "any",
-              "server": "local"
-          },
-          {
-              "clash_mode": "Direct",
-              "server": "local"
-          },
-          {
-              "clash_mode": "Global",
-              "server": "google"
-          },
-          {
-              "rule_set": "geoip-cn",
-              "server": "local"
-          },
-          {
-              "clash_mode": "dns-block",
-              "server": "rcode://refused"
-          },
-          {
-              "clash_mode": "Default",
-              "server": "google"
-          }
-        ]
-    },
-    "route": {
-        "rules": [
-            {
-                "protocol": "dns",
-                "outbound": "dns-out"
-            },
-            {
-                "domain_suffix": [
-                    "deepseek.com",
-                    "qwen.ai",
-                    "tencent.com",
-                    "thinktrader.net"
-                ],
-                "outbound": "direct"
-            },
-            {
-                "protocol": [
-                    "bittorrent",
-                    "quic"
-                ],
-                "outbound": "block-out"
-            },
-            {
-                "rule_set": [
-                    "geoip-cn"
-                ],
-                "outbound": "direct"
-            }
-        ],
-        "rule_set": [
-            {
-                "tag": "geosite-category-ads-all",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs",
-                "download_detour": "direct"
-            },
-            {
-                "tag": "geoip-cn",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://ghproxy.net/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs",
-                "download_detour": "direct"
-            }
-        ]
-    },
+  // DNS 配置，通常可以照抄
+  "dns": {
+    "rules": [
+      {
+        "outbound": ["any"],
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "rule_set": ["geosite-cn"],
+        "server": "local"
+      },
+      // 若不需要广告拦截可删除以下规则
+      {
+        "rule_set": ["category-ads-all"],
+        "server": "block"
+      }
+    ],
+    // DNS 服务器配置，包含远端解析、本地解析、拦截
+    "servers": [
+      {
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "tag": "remote"
+      },
+      {
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct",
+        "tag": "local"
+      },
+      {
+        "address": "rcode://success",
+        "tag": "block"
+      }
+    ],
+    // 若远端不支持 IPV6 则需要修改
+    // 可取值：prefer_ipv4、prefer_ipv6、ipv4_only、ipv6_only
+    "strategy": "prefer_ipv6"
+  },
+  // 分流规则，通常可以照抄
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      // DNS 分流策略
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      // 直连模式
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      // 全局模式
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      // 对于地理位置标记的规则
+      {
+        "rule_set": ["geosite-cn"],
+        "outbound": "direct"
+      },
+      // 对于非广域网 IP 的规则
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      // 若不需要广告拦截可删除以下规则
+      {
+        "rule_set": ["category-ads-all"],
+        "action": "reject"
+      }
+    ],
+    // 规则资源集合，通常可以照抄
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        // 以下链接利用了 Fastly CDN，对应的原始链接为 https://github.com/SagerNet/sing-geosite/raw/refs/heads/rule-set/geosite-cn.srs
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
   "inbounds": [
     {
       "domain_strategy": "prefer_ipv4",
