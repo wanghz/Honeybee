@@ -1,332 +1,331 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "outbound": [
-          "any"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            }
         ],
-        "server": "query"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "address_resolver": "toquery",
+                "address_strategy": "prefer_ipv4",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "tag": "toquery"
+            },
+            {
+                "tag": "local",
+                "address": "dhcp://auto",
+                "detour": "direct"
+            },
+            {
+                "address": "rcode://success",
+                "tag": "block"
+            }
+        ],
+        "strategy": "prefer_ipv6"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "server": "local"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "server": "block"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "toquery",
-        "address_strategy": "prefer_ipv4",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "tag": "toquery"
-      },
-      {
-        "tag": "local",
-        "address": "dhcp://auto",
-        "detour": "direct"
-      },
-      {
-        "address": "rcode://success",
-        "tag": "block"
-      }
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "防失效github+SubCrawlerCF中转_042820002",
+                "CF中转_042820011",
+                "CF中转_042820014",
+                "CF中转_042820018",
+                "CF中转_042820020",
+                "未知_042820001",
+                "未知_042820009"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "防失效github+SubCrawlerCF中转_042820002",
+                "CF中转_042820011",
+                "CF中转_042820014",
+                "CF中转_042820018",
+                "CF中转_042820020",
+                "未知_042820001",
+                "未知_042820009"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.32.100",
+            "server_port": 443,
+            "tag": "防失效github+SubCrawlerCF中转_042820002",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "nl2.free2222.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "nl2.free2222.xyz"
+                },
+                "path": "/ray",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "56f88531-8d52-484c-a6be-3a78385d054a"
+        },
+        {
+            "flow": "xtls-rprx-vision",
+            "packet_encoding": "xudp",
+            "server": "104.16.16.255",
+            "server_port": 443,
+            "tag": "CF中转_042820011",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "vincent-jackson2021.ga"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "vincent-jackson2021.ga"
+                },
+                "path": "/The-Great-Awakening_ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.32.10",
+            "server_port": 443,
+            "tag": "CF中转_042820014",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "v2rayge2.free3333.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "v2rayge2.free3333.xyz"
+                },
+                "path": "/ray",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "3ead7294-b782-42e4-968c-f93ce3bfbdd6"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.18.0.50",
+            "server_port": 443,
+            "tag": "CF中转_042820018",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "nl2.free2222.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "nl2.free2222.xyz"
+                },
+                "path": "/ray",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "56f88531-8d52-484c-a6be-3a78385d054a"
+        },
+        {
+            "flow": "xtls-rprx-vision",
+            "packet_encoding": "xudp",
+            "server": "104.17.36.178",
+            "server_port": 443,
+            "tag": "CF中转_042820020",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "vincent-jackson2021.ga"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "vincent-jackson2021.ga"
+                },
+                "path": "/The-Great-Awakening_ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293"
+        },
+        {
+            "flow": "xtls-rprx-vision",
+            "packet_encoding": "xudp",
+            "server": "1.0.0.0",
+            "server_port": 443,
+            "tag": "未知_042820001",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "vincent-jackson2021.ga"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "vincent-jackson2021.ga"
+                },
+                "path": "/The-Great-Awakening_ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "1.1.1.0",
+            "server_port": 443,
+            "tag": "未知_042820009",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "v2rayge2.free3333.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "v2rayge2.free3333.xyz"
+                },
+                "path": "/ray",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "3ead7294-b782-42e4-968c-f93ce3bfbdd6"
+        }
     ],
-    "strategy": "prefer_ipv6"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "防失效github+SubCrawlerCF中转_042820002",
-        "CF中转_042820011",
-        "CF中转_042820014",
-        "CF中转_042820018",
-        "CF中转_042820020",
-        "未知_042820001",
-        "未知_042820009"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "防失效github+SubCrawlerCF中转_042820002",
-        "CF中转_042820011",
-        "CF中转_042820014",
-        "CF中转_042820018",
-        "CF中转_042820020",
-        "未知_042820001",
-        "未知_042820009"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "防失效github+SubCrawlerCF中转_042820002",
-      "type": "vless",
-      "server": "104.17.32.100",
-      "server_port": 443,
-      "uuid": "56f88531-8d52-484c-a6be-3a78385d054a",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "nl2.free2222.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/ray",
-        "headers": {
-          "Host": "nl2.free2222.xyz"
-        }
-      }
-    },
-    {
-      "tag": "CF中转_042820011",
-      "type": "vless",
-      "server": "104.16.16.255",
-      "server_port": 443,
-      "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "vincent-jackson2021.ga"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/The-Great-Awakening_ws",
-        "headers": {
-          "Host": "vincent-jackson2021.ga"
-        }
-      }
-    },
-    {
-      "tag": "CF中转_042820014",
-      "type": "vless",
-      "server": "104.17.32.10",
-      "server_port": 443,
-      "uuid": "3ead7294-b782-42e4-968c-f93ce3bfbdd6",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "v2rayge2.free3333.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/ray",
-        "headers": {
-          "Host": "v2rayge2.free3333.xyz"
-        }
-      }
-    },
-    {
-      "tag": "CF中转_042820018",
-      "type": "vless",
-      "server": "104.18.0.50",
-      "server_port": 443,
-      "uuid": "56f88531-8d52-484c-a6be-3a78385d054a",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "nl2.free2222.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/ray",
-        "headers": {
-          "Host": "nl2.free2222.xyz"
-        }
-      }
-    },
-    {
-      "tag": "CF中转_042820020",
-      "type": "vless",
-      "server": "104.17.36.178",
-      "server_port": 443,
-      "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "vincent-jackson2021.ga"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/The-Great-Awakening_ws",
-        "headers": {
-          "Host": "vincent-jackson2021.ga"
-        }
-      }
-    },
-    {
-      "tag": "未知_042820001",
-      "type": "vless",
-      "server": "1.0.0.0",
-      "server_port": 443,
-      "uuid": "c07fef7d-e8d2-42fe-b977-50e368f18293",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "vincent-jackson2021.ga"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/The-Great-Awakening_ws",
-        "headers": {
-          "Host": "vincent-jackson2021.ga"
-        }
-      }
-    },
-    {
-      "tag": "未知_042820009",
-      "type": "vless",
-      "server": "1.1.1.0",
-      "server_port": 443,
-      "uuid": "3ead7294-b782-42e4-968c-f93ce3bfbdd6",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "v2rayge2.free3333.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/ray",
-        "headers": {
-          "Host": "v2rayge2.free3333.xyz"
-        }
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
