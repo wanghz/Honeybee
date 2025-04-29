@@ -1,689 +1,614 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "outbound": [
-          "any"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            }
         ],
-        "server": "query"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "address_resolver": "toquery",
+                "address_strategy": "prefer_ipv4",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "tag": "toquery"
+            },
+            {
+                "tag": "local",
+                "address": "dhcp://auto",
+                "detour": "direct"
+            },
+            {
+                "address": "rcode://success",
+                "tag": "block"
+            }
+        ],
+        "strategy": "prefer_ipv6"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "server": "local"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "server": "block"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "toquery",
-        "address_strategy": "prefer_ipv4",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "tag": "toquery"
-      },
-      {
-        "tag": "local",
-        "address": "dhcp://auto",
-        "detour": "direct"
-      },
-      {
-        "address": "rcode://success",
-        "tag": "block"
-      }
-    ],
-    "strategy": "prefer_ipv6"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
-        "🇦🇺 澳大利亚 - 墨尔本 - The Constant Company, LLC - 1",
-        "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
-        "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
-        "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
-        "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
-        "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
-        "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
-        "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
-        "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
-        "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
-        "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
-        "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
-        "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
-        "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
-        "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
-        "🇭🇰 泰国 - 曼谷 - Kaopu Cloud HK Limited - 1",
-        "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
-        "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
-        "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
-        "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
-        "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
-        "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
-        "🇮🇳 中国 - 青园 - PEG TECH INC - 11",
-        "🇹🇼 中国 - 台湾 - Akari Networks - 10",
-        "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
-        "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
-        "🇭🇰 中国 - 香港 - Google LLC - 4",
-        "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
-        "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
-        "🇭🇰 中国 - 香港 - SonderCloud Limited - 5"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
-        "🇦🇺 澳大利亚 - 墨尔本 - The Constant Company, LLC - 1",
-        "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
-        "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
-        "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
-        "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
-        "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
-        "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
-        "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
-        "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
-        "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
-        "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
-        "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
-        "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
-        "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
-        "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
-        "🇭🇰 泰国 - 曼谷 - Kaopu Cloud HK Limited - 1",
-        "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
-        "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
-        "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
-        "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
-        "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
-        "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
-        "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
-        "🇮🇳 中国 - 青园 - PEG TECH INC - 11",
-        "🇹🇼 中国 - 台湾 - Akari Networks - 10",
-        "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
-        "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
-        "🇭🇰 中国 - 香港 - Google LLC - 4",
-        "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
-        "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
-        "🇭🇰 中国 - 香港 - SonderCloud Limited - 5"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
-      "type": "shadowsocks",
-      "server": "51.15.23.63",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇦🇺 澳大利亚 - 墨尔本 - The Constant Company, LLC - 1",
-      "type": "vless",
-      "server": "bsuqian01.dynu.net",
-      "server_port": 42426,
-      "uuid": "459b4a80-bd61-4ecd-a26b-e9c1809d9e45",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "gateway.icloud.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY"
-        }
-      }
-    },
-    {
-      "tag": "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
-      "type": "shadowsocks",
-      "server": "51.15.15.82",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
-      "type": "hysteria2",
-      "server": "hy2.694463.xyz",
-      "server_port": 10011,
-      "password": "dongtaiwang.com",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.bing.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
         ]
-      }
     },
-    {
-      "tag": "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
-      "type": "hysteria2",
-      "server": "46.17.41.5",
-      "server_port": 12904,
-      "password": "dongtaiwang.com",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "apple.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
-      "type": "vless",
-      "server": "tgju.org",
-      "server_port": 8080,
-      "uuid": "690ab90e-3f21-422b-8cb1-bc9845c7af1e",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "IO.IhJtq0hklC.ZULAiR.OrG."
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
-      "type": "shadowsocks",
-      "server": "43.131.255.175",
-      "server_port": 3306,
-      "method": "aes-256-cfb",
-      "password": "1601e3c29c8db1a88942cf0cad731bf3"
-    },
-    {
-      "tag": "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
-      "type": "shadowsocks",
-      "server": "p080.panda001.net",
-      "server_port": 36379,
-      "method": "aes-256-cfb",
-      "password": "qwerREWQ@@"
-    },
-    {
-      "tag": "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
-      "type": "shadowsocks",
-      "server": "p221.panda001.net",
-      "server_port": 34669,
-      "method": "aes-256-cfb",
-      "password": "qwerREWQ@@"
-    },
-    {
-      "tag": "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
-      "type": "vmess",
-      "server": "0:0:0:0:0:ffff:9df5:4c61",
-      "server_port": 2095,
-      "uuid": "6ba15edd-efc5-426b-baf7-70b9c6607e26",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "http",
-        "headers": {
-          "Host": [
-            "nl1.bugfreenet.biz.ddns-ip.net"
-          ]
-        },
-        "host": [
-          "nl1.bugfreenet.biz.ddns-ip.net"
-        ],
-        "method": "GET",
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
-      "type": "shadowsocks",
-      "server": "38.107.226.14",
-      "server_port": 2375,
-      "method": "aes-256-gcm",
-      "password": "faBAoD54k87UJG7"
-    },
-    {
-      "tag": "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
-      "type": "shadowsocks",
-      "server": "38.107.226.14",
-      "server_port": 8882,
-      "method": "aes-256-gcm",
-      "password": "kDWvXYZoTBcGkC4"
-    },
-    {
-      "tag": "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
-      "type": "shadowsocks",
-      "server": "38.114.114.108",
-      "server_port": 8091,
-      "method": "aes-256-gcm",
-      "password": "PCnnH6SQSnfoS27"
-    },
-    {
-      "tag": "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
-      "type": "trojan",
-      "server": "161.145.150.26",
-      "server_port": 2087,
-      "password": "Aimer",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "epcca.ambercc.filegear-sg.me"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "epcca.ambercc.filegear-sg.me"
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
         }
-      }
-    },
-    {
-      "tag": "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
-      "type": "vmess",
-      "server": "5d38531f-sum4g0-svq8ok-ebxr.cu.plebai.net",
-      "server_port": 5229,
-      "uuid": "5cfde7fa-ed1b-11ef-b5d9-f23c9164ca5d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
-      "type": "vmess",
-      "server": "120.253.242.194",
-      "server_port": 35244,
-      "uuid": "46a539d2-d3ba-4a6e-aedb-b727d2fc60f8",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "jp4.vip2.g2.moonbase.life"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "jp4.vip2.g2.moonbase.life"
+    ],
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "path": "/home"
-      }
-    },
-    {
-      "tag": "🇭🇰 泰国 - 曼谷 - Kaopu Cloud HK Limited - 1",
-      "type": "vless",
-      "server": "bsuqian01.dynu.net",
-      "server_port": 16955,
-      "uuid": "459b4a80-bd61-4ecd-a26b-e9c1809d9e45",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.yahoo.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "outbounds": [
+                "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
+                "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
+                "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
+                "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
+                "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
+                "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
+                "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
+                "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
+                "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
+                "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
+                "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
+                "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
+                "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
+                "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
+                "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
+                "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
+                "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
+                "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
+                "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
+                "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
+                "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
+                "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
+                "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
+                "🇭🇰 中国 - 香港 - Google LLC - 4",
+                "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
+                "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
+                "🇭🇰 中国 - 香港 - SonderCloud Limited - 5"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
-      "type": "shadowsocks",
-      "server": "console.03.aliyun.aq.kunlunaqs.com",
-      "server_port": 45917,
-      "method": "aes-128-gcm",
-      "password": "f4cd0a554e9d0558c581",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;"
-    },
-    {
-      "tag": "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
-      "type": "shadowsocks",
-      "server": "194.41.59.80",
-      "server_port": 8388,
-      "method": "chacha20-ietf",
-      "password": "asd123456"
-    },
-    {
-      "tag": "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
-      "type": "trojan",
-      "server": "159.54.173.8",
-      "server_port": 443,
-      "password": "Aimer",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "epcca.ambercc.filegear-sg.me"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "epcca.ambercc.filegear-sg.me"
-        }
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
-      "type": "trojan",
-      "server": "uk1.test3.net",
-      "server_port": 443,
-      "password": "127c3420-2133-11f0-b720-1239d0255272",
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
-      "type": "trojan",
-      "server": "51.38.65.155",
-      "server_port": 443,
-      "password": "7cbeb900-1939-11f0-ae81-1239d0255272",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "tgju.org"
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
-      "type": "trojan",
-      "server": "uk1.test3.net",
-      "server_port": 443,
-      "password": "3c94e2e0-2133-11f0-8832-1239d0255272",
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
-      "type": "trojan",
-      "server": "uk1.test3.net",
-      "server_port": 443,
-      "password": "c8b9db60-2132-11f0-880d-1239d0255272",
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
-    },
-    {
-      "tag": "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
-      "type": "vmess",
-      "server": "120.210.205.59",
-      "server_port": 50002,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 64,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
-      "type": "vmess",
-      "server": "112.132.215.12",
-      "server_port": 50002,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 64,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
-      "type": "vmess",
-      "server": "112.132.215.34",
-      "server_port": 50007,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇮🇳 中国 - 青园 - PEG TECH INC - 11",
-      "type": "http",
-      "server": "c2284d70-svhls0-t28b6o-ef48.sj.gotochinatown.net",
-      "server_port": 443,
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      },
-      "username": "cb15123a-084c-11f0-8eab-f23c91cfbbc9",
-      "password": "cb15123a-084c-11f0-8eab-f23c91cfbbc9"
-    },
-    {
-      "tag": "🇹🇼 中国 - 台湾 - Akari Networks - 10",
-      "type": "vless",
-      "server": "shenzhou02.mysynology.net",
-      "server_port": 34313,
-      "uuid": "459b4a80-bd61-4ecd-a26b-e9c1809d9e45",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "gateway.icloud.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
+                "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
+                "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
+                "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
+                "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
+                "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
+                "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
+                "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
+                "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
+                "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
+                "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
+                "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
+                "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
+                "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
+                "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
+                "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
+                "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
+                "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
+                "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
+                "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
+                "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
+                "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
+                "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
+                "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
+                "🇭🇰 中国 - 香港 - Google LLC - 4",
+                "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
+                "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
+                "🇭🇰 中国 - 香港 - SonderCloud Limited - 5"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "qhTzYYIgBzDLNYR79oxftqdo1kzL-1_hGJKfqrOliCY"
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "51.15.23.63",
+            "server_port": 989,
+            "tag": "🇦🇹 奥地利 - 維也納 - Foundation for Applied Privacy - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "51.15.15.82",
+            "server_port": 989,
+            "tag": "🇵🇱 波兰 - 华沙 - 1337 Services GmbH - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "down_mbps": 100,
+            "password": "dongtaiwang.com",
+            "server": "hy2.694463.xyz",
+            "server_port": 10011,
+            "tag": "🇷🇺 俄罗斯 - 莫斯科 - LLC Baxet - 1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.bing.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "dongtaiwang.com",
+            "server": "46.17.41.5",
+            "server_port": 12904,
+            "tag": "🇷🇺 俄罗斯 - 莫斯科 - LLC BAXET - 2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "apple.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "tgju.org",
+            "server_port": 8080,
+            "tag": "🇫🇷 法国 - 巴黎 - Online S.A.S. - 1",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "IO.IhJtq0hklC.ZULAiR.OrG."
+                },
+                "max_early_data": 2048,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "690ab90e-3f21-422b-8cb1-bc9845c7af1e"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "1601e3c29c8db1a88942cf0cad731bf3",
+            "server": "43.131.255.175",
+            "server_port": 3306,
+            "tag": "🇰🇷 韩国 - 首尔特别市 - Shenzhen Tencent Computer Systems Company Limited - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "qwerREWQ@@",
+            "server": "p080.panda001.net",
+            "server_port": 36379,
+            "tag": "🇰🇷 韩国 - Gasan-dong - LG DACOM Corporation - 2",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "qwerREWQ@@",
+            "server": "p221.panda001.net",
+            "server_port": 34669,
+            "tag": "🇰🇷 韩国 - Gwanak-gu - Korea Telecom - 3",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "0:0:0:0:0:ffff:9df5:4c61",
+            "server_port": 2095,
+            "tag": "🇳🇱 荷兰 - 阿姆斯特丹 - DigitalOcean, LLC - 1",
+            "transport": {
+                "headers": {
+                    "Host": [
+                        "nl1.bugfreenet.biz.ddns-ip.net"
+                    ]
+                },
+                "host": [
+                    "nl1.bugfreenet.biz.ddns-ip.net"
+                ],
+                "method": "GET",
+                "path": "/",
+                "type": "http"
+            },
+            "type": "vmess",
+            "uuid": "6ba15edd-efc5-426b-baf7-70b9c6607e26"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "faBAoD54k87UJG7",
+            "server": "38.107.226.14",
+            "server_port": 2375,
+            "tag": "🇺🇸 美国 - 华盛顿特区 - GTHost - 2",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "kDWvXYZoTBcGkC4",
+            "server": "38.107.226.14",
+            "server_port": 8882,
+            "tag": "🇺🇸 美国 - 华盛顿特区 - GTHost - 3",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "PCnnH6SQSnfoS27",
+            "server": "38.114.114.108",
+            "server_port": 8091,
+            "tag": "🇺🇸 美国 - 洛杉矶 - GTHost - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "Aimer",
+            "server": "161.145.150.26",
+            "server_port": 2087,
+            "tag": "🇺🇸 美国 - 聖荷西 - Cloudflare, Inc. - 5",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "epcca.ambercc.filegear-sg.me"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "epcca.ambercc.filegear-sg.me"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "5d38531f-sum4g0-svq8ok-ebxr.cu.plebai.net",
+            "server_port": 5229,
+            "tag": "🇺🇸 美国 - 芝加哥 - Sharktech - 4",
+            "type": "vmess",
+            "uuid": "5cfde7fa-ed1b-11ef-b5d9-f23c9164ca5d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.253.242.194",
+            "server_port": 35244,
+            "tag": "🇯🇵 日本 - 东京 - Akamai Technologies - 1",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jp4.vip2.g2.moonbase.life"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "jp4.vip2.g2.moonbase.life"
+                },
+                "path": "/home",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "46a539d2-d3ba-4a6e-aedb-b727d2fc60f8"
+        },
+        {
+            "method": "aes-128-gcm",
+            "password": "f4cd0a554e9d0558c581",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;",
+            "server": "console.03.aliyun.aq.kunlunaqs.com",
+            "server_port": 45917,
+            "tag": "🇸🇬 新加坡 - 新加坡 - DigitalOcean, LLC - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf",
+            "password": "asd123456",
+            "server": "194.41.59.80",
+            "server_port": 8388,
+            "tag": "🇮🇹 意大利 - 罗马市 - SonderCloud Limited - 1",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "Aimer",
+            "server": "159.54.173.8",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 - 豪恩斯洛 - Cloudflare, Inc. - 5",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "epcca.ambercc.filegear-sg.me"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "epcca.ambercc.filegear-sg.me"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "127c3420-2133-11f0-b720-1239d0255272",
+            "server": "uk1.test3.net",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 1",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "7cbeb900-1939-11f0-ae81-1239d0255272",
+            "server": "51.38.65.155",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "tgju.org"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "3c94e2e0-2133-11f0-8832-1239d0255272",
+            "server": "uk1.test3.net",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "c8b9db60-2132-11f0-880d-1239d0255272",
+            "server": "uk1.test3.net",
+            "server_port": 443,
+            "tag": "🇬🇧 英国 - 伦敦 - OVH SAS - 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 64,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.210.205.59",
+            "server_port": 50002,
+            "tag": "🇨🇳 中国 - 广州市 - China Mobile communications corporation - 3",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "alter_id": 64,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "112.132.215.12",
+            "server_port": 50002,
+            "tag": "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 1",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "112.132.215.34",
+            "server_port": 50007,
+            "tag": "🇮🇳 中国 - 合肥 - China Unicom CHINA169 Anhui Province Network - 2",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "password": "cb15123a-084c-11f0-8eab-f23c91cfbbc9",
+            "server": "c2284d70-svhls0-t28b6o-ef48.sj.gotochinatown.net",
+            "server_port": 443,
+            "tag": "🇮🇳 中国 - 青园 - PEG TECH INC - 11",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "http",
+            "username": "cb15123a-084c-11f0-8eab-f23c91cfbbc9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "120.232.153.40",
+            "server_port": 59082,
+            "tag": "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "down_mbps": 100,
+            "password": "82febca6-8856-41fe-84df-c8bda0b72c7b",
+            "server": "tw3.akebi.cc",
+            "server_port": 2021,
+            "tag": "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "hk03.akebi.cc"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "35.220.230.251",
+            "server_port": 30251,
+            "tag": "🇭🇰 中国 - 香港 - Google LLC - 4",
+            "type": "vmess",
+            "uuid": "86c9c119-c46d-45a9-82a6-75a886e5e795"
+        },
+        {
+            "method": "aes-128-gcm",
+            "password": "777bc05be0dd624959fb",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;",
+            "server": "console.03.aliyun.aq.kunlunaqs.com",
+            "server_port": 45905,
+            "tag": "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "7243745919d6de49a5db",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;",
+            "server": "console.02.aliyun.aq.kunlunaqs.com",
+            "server_port": 45578,
+            "tag": "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf",
+            "password": "asd123456",
+            "server": "154.197.26.120",
+            "server_port": 8388,
+            "tag": "🇭🇰 中国 - 香港 - SonderCloud Limited - 5",
+            "type": "shadowsocks"
         }
-      }
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - CTG Server Ltd. - 9",
-      "type": "vmess",
-      "server": "120.232.153.40",
-      "server_port": 59082,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - Global Connectivity Solutions LLP - 8",
-      "type": "hysteria2",
-      "server": "tw3.akebi.cc",
-      "server_port": 2021,
-      "password": "82febca6-8856-41fe-84df-c8bda0b72c7b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "hk03.akebi.cc",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - Google LLC - 4",
-      "type": "vmess",
-      "server": "35.220.230.251",
-      "server_port": 30251,
-      "uuid": "86c9c119-c46d-45a9-82a6-75a886e5e795",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - Hong Kong Telecommunications (HKT) Limited Mass Internet - 6",
-      "type": "shadowsocks",
-      "server": "console.03.aliyun.aq.kunlunaqs.com",
-      "server_port": 45905,
-      "method": "aes-128-gcm",
-      "password": "777bc05be0dd624959fb",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;"
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - Polonetwork Limited - 7",
-      "type": "shadowsocks",
-      "server": "console.02.aliyun.aq.kunlunaqs.com",
-      "server_port": 45578,
-      "method": "chacha20-ietf-poly1305",
-      "password": "7243745919d6de49a5db",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=215996dd9f1c3db1e54b.microsoft.com;"
-    },
-    {
-      "tag": "🇭🇰 中国 - 香港 - SonderCloud Limited - 5",
-      "type": "shadowsocks",
-      "server": "154.197.26.120",
-      "server_port": 8388,
-      "method": "chacha20-ietf",
-      "password": "asd123456"
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
