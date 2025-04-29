@@ -84,7 +84,7 @@ urls=()
 # 使用 shuf 随机打乱文件行顺序，并选取前 200 行
 while IFS= read -r line; do
     urls+=("$line")
-done < <(shuf localurl.txt | head -n 68)
+done < <(shuf localurl.txt | tail -n 88)
 
 counter=1
 for url in "${urls[@]}"; do
