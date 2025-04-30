@@ -1,0 +1,389 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "address_resolver": "toquery",
+        "address_strategy": "prefer_ipv4",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct",
+        "tag": "toquery"
+      },
+      {
+        "tag": "local",
+        "address": "dhcp://auto",
+        "detour": "direct"
+      },
+      {
+        "address": "rcode://success",
+        "tag": "block"
+      }
+    ],
+    "strategy": "prefer_ipv6"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "auto",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !cn",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇨🇾 netflix_CY",
+        "netflix_ES",
+        "🇫🇷 netflix_FR",
+        "netflix_GB",
+        "🇬🇧 GB_05",
+        "netflix_GB 2",
+        "🇱🇹 LT_07",
+        "🇱🇹 LT_08",
+        "🇱🇹 LT_09",
+        "🇱🇹 netflix_LT",
+        "🇲🇽 netflix_MX",
+        "🇱🇹 netflix_LT 2",
+        "🇱🇹 netflix_LT 3",
+        "🇱🇹 netflix_LT 4",
+        "🇱🇹 netflix_LT 5",
+        "🇱🇹 netflix_LT 6",
+        "🇸🇪 SE_17",
+        "🇸🇪 SE_18",
+        "🇺🇸 US_19"
+      ]
+    },
+    {
+      "tag": "auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇨🇾 netflix_CY",
+        "netflix_ES",
+        "🇫🇷 netflix_FR",
+        "netflix_GB",
+        "🇬🇧 GB_05",
+        "netflix_GB 2",
+        "🇱🇹 LT_07",
+        "🇱🇹 LT_08",
+        "🇱🇹 LT_09",
+        "🇱🇹 netflix_LT",
+        "🇲🇽 netflix_MX",
+        "🇱🇹 netflix_LT 2",
+        "🇱🇹 netflix_LT 3",
+        "🇱🇹 netflix_LT 4",
+        "🇱🇹 netflix_LT 5",
+        "🇱🇹 netflix_LT 6",
+        "🇸🇪 SE_17",
+        "🇸🇪 SE_18",
+        "🇺🇸 US_19"
+      ],
+      "url": "http://www.gstatic.com/generate_204",
+      "interval": "1m",
+      "tolerance": 50
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇨🇾 netflix_CY",
+      "type": "shadowsocks",
+      "server": "134.255.210.49",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "netflix_ES",
+      "type": "trojan",
+      "server": "141.227.128.69",
+      "server_port": 1935,
+      "password": "utF6JLQd2x",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "x1es-ovh.devefun.net"
+      }
+    },
+    {
+      "tag": "🇫🇷 netflix_FR",
+      "type": "trojan",
+      "server": "35.180.15.24",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "netflix_GB",
+      "type": "shadowsocks",
+      "server": "146.70.61.18",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇬🇧 GB_05",
+      "type": "trojan",
+      "server": "18.175.98.26",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "netflix_GB 2",
+      "type": "trojan",
+      "server": "35.179.189.29",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇱🇹 LT_07",
+      "type": "shadowsocks",
+      "server": "45.87.175.69",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oZIoA69Q8yhcQV8ka3Pa3A"
+    },
+    {
+      "tag": "🇱🇹 LT_08",
+      "type": "shadowsocks",
+      "server": "45.87.175.157",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "1RWwXhwfAB5gAEozU4G2Pg"
+    },
+    {
+      "tag": "🇱🇹 LT_09",
+      "type": "shadowsocks",
+      "server": "45.87.175.65",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oZIoA69Q8yhcQV8ka3Pa3A"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT",
+      "type": "shadowsocks",
+      "server": "185.237.185.160",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇲🇽 netflix_MX",
+      "type": "shadowsocks",
+      "server": "147.78.1.27",
+      "server_port": 990,
+      "method": "chacha20-ietf-poly1305",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT 2",
+      "type": "shadowsocks",
+      "server": "217.30.10.18",
+      "server_port": 9003,
+      "method": "aes-256-cfb",
+      "password": "JdmRK9gMEqFgs8nP"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT 3",
+      "type": "shadowsocks",
+      "server": "217.30.10.18",
+      "server_port": 9033,
+      "method": "aes-256-cfb",
+      "password": "UTJA57ypk2XKQpnm"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT 4",
+      "type": "shadowsocks",
+      "server": "217.30.10.18",
+      "server_port": 9059,
+      "method": "aes-256-cfb",
+      "password": "9XwYyZsK8SNzQDtY"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT 5",
+      "type": "shadowsocks",
+      "server": "217.30.10.18",
+      "server_port": 9037,
+      "method": "aes-256-cfb",
+      "password": "TN2YqghxeFDKZfLU"
+    },
+    {
+      "tag": "🇱🇹 netflix_LT 6",
+      "type": "shadowsocks",
+      "server": "217.30.10.18",
+      "server_port": 9026,
+      "method": "aes-256-cfb",
+      "password": "QWDDvVE9npNurQfA"
+    },
+    {
+      "tag": "🇸🇪 SE_17",
+      "type": "trojan",
+      "server": "51.21.59.141",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇸🇪 SE_18",
+      "type": "trojan",
+      "server": "51.21.207.157",
+      "server_port": 22222,
+      "password": "telegram-id-privatevpns",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "🇺🇸 US_19",
+      "type": "shadowsocks",
+      "server": "45.158.171.60",
+      "server_port": 8080,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oZIoA69Q8yhcQV8ka3Pa3A"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
