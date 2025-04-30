@@ -1,355 +1,168 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "outbound": [
-          "any"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            }
         ],
-        "server": "query"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "address_resolver": "toquery",
+                "address_strategy": "prefer_ipv4",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "tag": "toquery"
+            },
+            {
+                "tag": "local",
+                "address": "dhcp://auto",
+                "detour": "direct"
+            },
+            {
+                "address": "rcode://success",
+                "tag": "block"
+            }
+        ],
+        "strategy": "prefer_ipv6"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "server": "local"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "server": "block"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "toquery",
-        "address_strategy": "prefer_ipv4",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "tag": "toquery"
-      },
-      {
-        "tag": "local",
-        "address": "dhcp://auto",
-        "detour": "direct"
-      },
-      {
-        "address": "rcode://success",
-        "tag": "block"
-      }
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "outbounds": [],
+            "tag": "direct",
+            "type": "direct"
+        }
     ],
-    "strategy": "prefer_ipv6"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks",
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks 2",
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks 3",
-        "🇹🇼 Taiwan|Github搜索TrojanLinks",
-        "🇹🇼 Taiwan|Github搜索TrojanLinks 2",
-        "Tokyo|Github搜索TrojanLinks",
-        "Tokyo|Github搜索TrojanLinks 2",
-        "Seattle|Github搜索TrojanLinks",
-        "Los Angeles|Github搜索TrojanLinks",
-        "🇹🇭 Thailand|Github搜索TrojanLinks",
-        "🇹🇷 Turkey|Github搜索TrojanLinks",
-        "Frankfurt|Github搜索TrojanLinks",
-        "🇳🇱 Netherlands|Github搜索TrojanLinks",
-        "Zurich|Github搜索TrojanLinks",
-        "London|Github搜索TrojanLinks"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks",
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks 2",
-        "🇭🇰 Hong Kong|Github搜索TrojanLinks 3",
-        "🇹🇼 Taiwan|Github搜索TrojanLinks",
-        "🇹🇼 Taiwan|Github搜索TrojanLinks 2",
-        "Tokyo|Github搜索TrojanLinks",
-        "Tokyo|Github搜索TrojanLinks 2",
-        "Seattle|Github搜索TrojanLinks",
-        "Los Angeles|Github搜索TrojanLinks",
-        "🇹🇭 Thailand|Github搜索TrojanLinks",
-        "🇹🇷 Turkey|Github搜索TrojanLinks",
-        "Frankfurt|Github搜索TrojanLinks",
-        "🇳🇱 Netherlands|Github搜索TrojanLinks",
-        "Zurich|Github搜索TrojanLinks",
-        "London|Github搜索TrojanLinks"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇭🇰 Hong Kong|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "47.243.45.101",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "a-wym4ovY4Yw",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=h4.podds.store;"
-    },
-    {
-      "tag": "🇭🇰 Hong Kong|Github搜索TrojanLinks 2",
-      "type": "shadowsocks",
-      "server": "104.16.186.61",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "a-wym4ovY4Yw",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=h3.dspp.store;"
-    },
-    {
-      "tag": "🇭🇰 Hong Kong|Github搜索TrojanLinks 3",
-      "type": "shadowsocks",
-      "server": "172.67.124.123",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "a-wym4ovY4Yw",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=any.ktsfd.shop;"
-    },
-    {
-      "tag": "🇹🇼 Taiwan|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "61.224.72.195",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "oiwym4ovI4Yb",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=t1.kddns.xyz;"
-    },
-    {
-      "tag": "🇹🇼 Taiwan|Github搜索TrojanLinks 2",
-      "type": "shadowsocks",
-      "server": "104.16.88.23",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "oiwym4ovI4Yb",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=t2.kddns.xyz;"
-    },
-    {
-      "tag": "Tokyo|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "172.67.192.10",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "g12sQi#ss#&1",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=j1.pplo.online;"
-    },
-    {
-      "tag": "Tokyo|Github搜索TrojanLinks 2",
-      "type": "shadowsocks",
-      "server": "172.67.192.20",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "g12sQi#ss#&1",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=j3.pplo.online;"
-    },
-    {
-      "tag": "Seattle|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "172.67.10.123",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "83XvX4Vo%*3a",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=u1.kddns.xyz;"
-    },
-    {
-      "tag": "Los Angeles|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "172.67.12.88",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "83XvX4Vo%*3a",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=sommd.site;"
-    },
-    {
-      "tag": "🇹🇭 Thailand|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.100.23",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "v9443iEa9gWv",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v1.fjdd.shop;"
-    },
-    {
-      "tag": "🇹🇷 Turkey|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.96.139",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "9m^d3iEa9gWv",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v2.fjdd.shop;"
-    },
-    {
-      "tag": "Frankfurt|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.96.41",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "SwPfc22G83_s",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v3.fjdd.shop;"
-    },
-    {
-      "tag": "🇳🇱 Netherlands|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.196.41",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "1D2oh8$s3bBp",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v4.fjdd.shop;"
-    },
-    {
-      "tag": "Zurich|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.88.141",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "9B2oh8^s_bBp",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v5.fjdd.shop;"
-    },
-    {
-      "tag": "London|Github搜索TrojanLinks",
-      "type": "shadowsocks",
-      "server": "104.16.77.52",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "5M7xnl^v9SLL",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=;host=v6.fjdd.shop;"
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
