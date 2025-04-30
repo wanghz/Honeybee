@@ -1,317 +1,290 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "outbound": [
-          "any"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            }
         ],
-        "server": "query"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "address_resolver": "toquery",
+                "address_strategy": "prefer_ipv4",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "tag": "toquery"
+            },
+            {
+                "tag": "local",
+                "address": "dhcp://auto",
+                "detour": "direct"
+            },
+            {
+                "address": "rcode://success",
+                "tag": "block"
+            }
+        ],
+        "strategy": "prefer_ipv6"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "server": "local"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "server": "block"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "address_resolver": "toquery",
-        "address_strategy": "prefer_ipv4",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "tag": "toquery"
-      },
-      {
-        "tag": "local",
-        "address": "dhcp://auto",
-        "detour": "direct"
-      },
-      {
-        "address": "rcode://success",
-        "tag": "block"
-      }
-    ],
-    "strategy": "prefer_ipv6"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
     },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
-        "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
-        "Free 110 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@172.67.161.104:443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 111 (@Outline_Vpn)vless://c7d543af-1023-4b96-a698-187c190d3f4c@104.22.56.77:443?path=/47.89.39.186-39251&security=tls&encryption=none&host=nautica.foolvpn.me&type=ws&sni=nautica.foolvpn.me#Free 112 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.17.148.22:8443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 113 (@Outline_Vpn)vless://df0680ca-e43c-498d-ed86-8e196eedd012@638804378561968196.ahvaz-shleprx-aaaj.info:8880?mode=gun&security=none&encryption=none&type=grpc#Free 114 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.26.4.157:2083?security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=chrome&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 115 (@Outline_Vpn)",
-        "🇳🇬 @V2rayNG3",
-        "🇳🇬 @V2rayNG3 2",
-        "🇳🇬 @V2rayNG3 3",
-        "🇳🇬 @V2rayNG3 4",
-        "🇳🇬 @V2rayNG3 5",
-        "🇳🇬 @V2rayNG3 6",
-        "🇳🇬 @V2rayNG3 7"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
-        "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
-        "Free 110 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@172.67.161.104:443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 111 (@Outline_Vpn)vless://c7d543af-1023-4b96-a698-187c190d3f4c@104.22.56.77:443?path=/47.89.39.186-39251&security=tls&encryption=none&host=nautica.foolvpn.me&type=ws&sni=nautica.foolvpn.me#Free 112 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.17.148.22:8443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 113 (@Outline_Vpn)vless://df0680ca-e43c-498d-ed86-8e196eedd012@638804378561968196.ahvaz-shleprx-aaaj.info:8880?mode=gun&security=none&encryption=none&type=grpc#Free 114 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.26.4.157:2083?security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=chrome&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 115 (@Outline_Vpn)",
-        "🇳🇬 @V2rayNG3",
-        "🇳🇬 @V2rayNG3 2",
-        "🇳🇬 @V2rayNG3 3",
-        "🇳🇬 @V2rayNG3 4",
-        "🇳🇬 @V2rayNG3 5",
-        "🇳🇬 @V2rayNG3 6",
-        "🇳🇬 @V2rayNG3 7"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
-      "type": "vless",
-      "server": "65.109.241.111",
-      "server_port": 443,
-      "uuid": "934943ff-bc93-4715-ed3c-c7b33cdedb40",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
-      "type": "vless",
-      "server": "65.109.241.111",
-      "server_port": 443,
-      "uuid": "990f5f4d-5568-4e0a-96bf-2d86270d8fbf",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "Free 110 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@172.67.161.104:443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 111 (@Outline_Vpn)vless://c7d543af-1023-4b96-a698-187c190d3f4c@104.22.56.77:443?path=/47.89.39.186-39251&security=tls&encryption=none&host=nautica.foolvpn.me&type=ws&sni=nautica.foolvpn.me#Free 112 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.17.148.22:8443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 113 (@Outline_Vpn)vless://df0680ca-e43c-498d-ed86-8e196eedd012@638804378561968196.ahvaz-shleprx-aaaj.info:8880?mode=gun&security=none&encryption=none&type=grpc#Free 114 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.26.4.157:2083?security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=chrome&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 115 (@Outline_Vpn)",
-      "type": "vless",
-      "server": "37.27.31.235",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3",
-      "type": "vless",
-      "server": "638732516883232709.rome-mpl-dr.info",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 2",
-      "type": "vless",
-      "server": "157.180.20.123",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 3",
-      "type": "vless",
-      "server": "157.180.20.84",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 4",
-      "type": "vless",
-      "server": "65.109.212.64",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 5",
-      "type": "vless",
-      "server": "65.21.245.172",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 6",
-      "type": "vless",
-      "server": "37.27.250.184",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇬 @V2rayNG3 7",
-      "type": "vless",
-      "server": "37.27.15.167",
-      "server_port": 2089,
-      "uuid": "c95740bb-b3be-44f9-9fa4-260c3fbec6de",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "refersion.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "bvEBes1y2n6327dEgJyZTR6Xz_EuyfLdkEX7DxWGFFg",
-          "short_id": "e3c5c005cae07eb8"
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
         }
-      }
+    ],
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
+                "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
+                "🇳🇬 @V2rayNG3",
+                "🇳🇬 @V2rayNG3 2",
+                "🇳🇬 @V2rayNG3 3",
+                "🇳🇬 @V2rayNG3 4",
+                "🇳🇬 @V2rayNG3 5",
+                "🇳🇬 @V2rayNG3 6"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
+                "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
+                "🇳🇬 @V2rayNG3",
+                "🇳🇬 @V2rayNG3 2",
+                "🇳🇬 @V2rayNG3 3",
+                "🇳🇬 @V2rayNG3 4",
+                "🇳🇬 @V2rayNG3 5",
+                "🇳🇬 @V2rayNG3 6"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "65.109.241.111",
+            "server_port": 443,
+            "tag": "https://t.me/custom_14.-کانفینگ رایگان چنل ماhttps://t.me/custom_14",
+            "type": "vless",
+            "uuid": "934943ff-bc93-4715-ed3c-c7b33cdedb40"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "65.109.241.111",
+            "server_port": 443,
+            "tag": "https://t.me/custom_14.-چنل ماhttps://t.me/custom_14",
+            "type": "vless",
+            "uuid": "990f5f4d-5568-4e0a-96bf-2d86270d8fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "37.27.31.235",
+            "server_port": 8880,
+            "tag": "Free 110 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@172.67.161.104:443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 111 (@Outline_Vpn)vless://c7d543af-1023-4b96-a698-187c190d3f4c@104.22.56.77:443?path=/47.89.39.186-39251&security=tls&encryption=none&host=nautica.foolvpn.me&type=ws&sni=nautica.foolvpn.me#Free 112 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.17.148.22:8443?path=/?ed=2560&security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=random&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 113 (@Outline_Vpn)vless://df0680ca-e43c-498d-ed86-8e196eedd012@638804378561968196.ahvaz-shleprx-aaaj.info:8880?mode=gun&security=none&encryption=none&type=grpc#Free 114 (@Outline_Vpn)vless://59860b15-b2d9-47f9-9b92-81bd1639fcc5@104.26.4.157:2083?security=tls&encryption=none&host=5-55sfjslf.ifenxiang.cfd&fp=chrome&type=ws&sni=5-55sfjslf.ifenxiang.cfd#Free 115 (@Outline_Vpn)",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "638732516883232709.rome-mpl-dr.info",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "157.180.20.123",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3 2",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "157.180.20.84",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3 3",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "65.109.212.64",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3 4",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "65.21.245.172",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3 5",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "37.27.250.184",
+            "server_port": 8880,
+            "tag": "🇳🇬 @V2rayNG3 6",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
