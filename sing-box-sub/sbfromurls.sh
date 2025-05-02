@@ -80,19 +80,22 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
        -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 # 初始化数组
-urls=()
+#urls=()
 # 使用 shuf 随机打乱文件行顺序，并选取前 200 行
-while IFS= read -r line; do
-    urls+=("$line")
-done < <(shuf localurl.txt | tail -n 88)
+#while IFS= read -r line; do
+#    urls+=("$line")
+#done < <(shuf localurl.txt | tail -n 88)
+tail -n 68 > links
+sed -n '1,4,8,32,33p' localurl.txt >> links
 
 counter=1
-for url in "${urls[@]}"; do
-    echo "Extracting from URL: $url"
+while IFS= read -r line
+do
+    echo "Extracting from URL: $line"
     # curl "$url" | jq -r '.proxies[]'
     filename="./k${counter}.json"
     echo "Saving to file: $filename"
-    jq --arg url "$url" --arg filename "$filename" '.subscribes[0].url = $url | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
+    jq --arg url "$line" --arg filename "$filename" '.subscribes[0].url = $line | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
     python ./newmain.py -c provx.json
     ((counter++))
-done
+done < "$links"
