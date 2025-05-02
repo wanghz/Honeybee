@@ -86,7 +86,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
 #    urls+=("$line")
 #done < <(shuf localurl.txt | tail -n 88)
 tail -n 68 > links
-sed -n '1,4,8,32,33p' localurl.txt >> links
+sed -n '1p;4p;8p;32p;33p' localurl.txt >> links
 
 counter=1
 while IFS= read -r line
