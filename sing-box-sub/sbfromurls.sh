@@ -79,7 +79,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
-       -e '/SamanGho\/v2ray_collector\/refs\/heads\/main\/v2tel_links1\.txt/d'  \
+       -e '/\/v2tel_links[0-9]\+.txt/d'  \
        -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 
 # 使用命令组合提取指定行，并用 mapfile 读入数组
