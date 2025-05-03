@@ -60,6 +60,7 @@ echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
+echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
 # 删除一些找不到的或没内容的
 sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Vauth\/node\/main\/Master/d' \
@@ -78,6 +79,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
+       -e '/SamanGho\/v2ray_collector\/refs\/heads\/main\/v2tel_links1\.txt/d'  \
        -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 
 # 使用命令组合提取指定行，并用 mapfile 读入数组
