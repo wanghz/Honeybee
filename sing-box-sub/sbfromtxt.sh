@@ -1,9 +1,13 @@
 #!/bin/bash
 
+curl "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" -o split_a01.json
+curl "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" -o split_a02.json
+
 all_files=(
-        "split_act"
+        "split_a01"
         "split_1k"
         "htonly.yml"
+        "split_a02"
 )
 
 # 添加find找到的文件到数组
