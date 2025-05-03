@@ -90,6 +90,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
        -e '/\/v2tel_links[0-9]\+.txt/d'  \
        -e '/SoliSpirit\/v2ray-configs\/main\/all_configs\.txt/d' \
+       -e '/\/[A-Za-z]\+_file_vpn\.txt/d' \
        -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 
 # 使用命令组合提取指定行，并用 mapfile 读入数组
