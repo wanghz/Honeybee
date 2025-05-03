@@ -55,6 +55,15 @@ echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/m
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/two_file_vpn.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/three_file_vpn.txt">>localurl.txt
 echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/United_States.txt">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Germany.txt">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/De.txt">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/France.txt">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Canada.txt">>localurl.txt
+echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Au.txt">>localurl.txt
+echo "https://hideshots.eu/sub.txt">>localurl.txt
+echo "https://hideshots.eu/sub.txt">>localurl.txt
+echo "https://hideshots.eu/sub.txt">>localurl.txt
 echo "https://hideshots.eu/sub.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
@@ -80,6 +89,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
        -e '/\/v2tel_links[0-9]\+.txt/d'  \
+       -e '/SoliSpirit\/v2ray-configs\/main\/all_configs\.txt/d' \
        -e '/Flikify\/getNode\/refs\/heads\/main\/clash\.yaml/d'  localurl.txt
 
 # 使用命令组合提取指定行，并用 mapfile 读入数组
