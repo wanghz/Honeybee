@@ -1,8 +1,4 @@
 #!/bin/bash
-
-curl "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" -o split_a01.json
-curl "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" -o split_a02.json
-
 all_files=(
         "split_a01"
         "split_1k"
@@ -24,6 +20,22 @@ for file in "${all_files[@]}"; do
     filename="./f${counter}.json"
     echo "Saving to file: $filename"
     jq --arg localfile "$localfile" --arg filename "$filename" '.subscribes[0].url = $localfile | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
+    python ./newmain.py -c provx.json
+    ((counter++))
+done
+
+
+links=(
+        "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" 
+        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
+)
+counter=90
+for file in "${links[@]}"; do
+    # 在这里添加您的提取逻辑
+    echo "Extracting from local file: $file"
+    filename="./f${counter}.json"
+    echo "Saving to file: $filename"
+    jq --arg file "$file" --arg filename "$filename" '.subscribes[0].url = $file | .save_config_path = $filename' provx.json > tmpfile && mv tmpfile provx.json
     python ./newmain.py -c provx.json
     ((counter++))
 done
