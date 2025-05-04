@@ -1,9 +1,7 @@
 #!/bin/bash
 all_files=(
-        "split_a01"
         "split_1k"
         "htonly.yml"
-        "split_a02"
 )
 
 # 添加find找到的文件到数组
@@ -28,6 +26,7 @@ done
 links=(
         "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" 
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
+        "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/nodes/clashmeta.txt"
 )
 counter=90
 for file in "${links[@]}"; do
