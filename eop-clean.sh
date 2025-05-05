@@ -6,7 +6,7 @@ currentyears=$(date +%Y)
 
 urls=(
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
-  #"https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
+  "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
 )
 
 cd ./sub
@@ -14,15 +14,19 @@ cd ./sub
 download_and_filter() {
     url="$1"
     filename="${url##*/}"
-    output_prefix="split_"   # 分割后文件的前缀
+    # 使用时间戳或随机字符串生成唯一的前缀，避免覆盖
+    output_prefix="split_${filename%.*}_$(date +%s)_"
 
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
-    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\/|^hysteria|^trojan:\/\//!d' "$filename"
-    first_char=${$filename:0:1}
-    split -l 800 "$filename" "$output_prefix$first_char"
+    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
+    # 获取文件名首字符
+    first_char="${filename:0:1}"
+    # 分割文件，限制每块 800 行
+    split -l 800 "$filename" "$output_prefix"
 }
+
 # Loop through URLs and process each one
 for url in "${urls[@]}"; do
     download_and_filter "$url"
