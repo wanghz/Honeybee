@@ -35,8 +35,10 @@ links=(
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/hy2.txt"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/trojan.txt"
+        "https://raw.githubusercontent.com/V2RAYCONFIGSPOOL/V2RAY_SUB/refs/heads/main/v2ray_configs.txt"
+        "https://raw.githubusercontent.com/kSLAWIASCA/actions/refs/heads/main/Clash.yml"
 )
-counter=90
+counter=30
 for file in "${links[@]}"; do
     # 在这里添加您的提取逻辑
     echo "Extracting from local file: $file"
