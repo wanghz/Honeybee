@@ -14,15 +14,15 @@ cd ./sub
 download_and_filter() {
     url="$1"
     filename="${url##*/}"
+    # 获取文件名首字符
+    first_char="${filename:0:1}"
     # 使用时间戳或随机字符串生成唯一的前缀，避免覆盖
-    output_prefix="split_${filename%.*}_$(date +%s)_"
+    output_prefix="split_${first_char%.*}_$(date +%s)_"
 
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
-    # 获取文件名首字符
-    first_char="${filename:0:1}"
     # 分割文件，限制每块 800 行
     split -l 800 "$filename" "$output_prefix"
 }
@@ -47,6 +47,4 @@ cp ../editjson.py .
 
 cd ..
 # end
-echo get subscribe sucessfully
-echo hope you have a good day~
 echo bye~
