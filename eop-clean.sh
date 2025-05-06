@@ -22,9 +22,11 @@ download_and_filter() {
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
-    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
+    head -n 6000 "$filename" > ./tmp_file
+    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' ./tmp_file
     # 分割文件，限制每块 800 行
-    split -l 800 "$filename" "$output_prefix"
+    split -l 600 ./tmp_file "$output_prefix"
+    rm -f ./tmp_file
 }
 
 # Loop through URLs and process each one
