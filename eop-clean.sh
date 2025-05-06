@@ -22,10 +22,15 @@ download_and_filter() {
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
-    head -n 6000 "$filename" > ./tmp_file
+    head -n 8000 "$filename" > ./tmp_file
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' ./tmp_file
     # 分割文件，限制每块 800 行
     split -l 600 ./tmp_file "$output_prefix"
+    # 删除除前10个以外的所有文件
+    files=("$output_prefix"*)
+    for file in "${files[@]:10}"; do
+        rm -f "$file"
+    done
     rm -f ./tmp_file
 }
 
