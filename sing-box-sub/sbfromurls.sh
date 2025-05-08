@@ -29,8 +29,6 @@ echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/sour
 echo "https://raw.githubusercontent.com/aiboboxx/clashfree/refs/heads/main/clash.yml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
-echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
-echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11" >> localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
@@ -48,28 +46,27 @@ echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collecto
 echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
 echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
-echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
-echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/one_file_vpn.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/two_file_vpn.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/three_file_vpn.txt">>localurl.txt
-echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/United_States.txt">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Germany.txt">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/De.txt">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/France.txt">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Canada.txt">>localurl.txt
-echo "https://github.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Au.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/United_States.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Germany.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/De.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/France.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Canada.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Au.txt">>localurl.txt
 echo "https://hideshots.eu/sub.txt">>localurl.txt
-echo "https://hideshots.eu/sub.txt">>localurl.txt
-echo "https://hideshots.eu/sub.txt">>localurl.txt
-echo "https://hideshots.eu/sub.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
+#echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
+echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
+echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
+echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
+echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
+echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
 # 删除一些找不到的或没内容的
 sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Vauth\/node\/main\/Master/d' \
