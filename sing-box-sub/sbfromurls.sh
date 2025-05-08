@@ -50,12 +50,11 @@ echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2r
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/one_file_vpn.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/two_file_vpn.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/three_file_vpn.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/United_States.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Germany.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/De.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/France.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Canada.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/raw/refs/heads/main/Countries/Au.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/United_States.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/De.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/France.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Canada.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Au.txt">>localurl.txt
 echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
