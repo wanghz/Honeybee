@@ -1,658 +1,632 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "cloudflare|2882|puddincat07@Telegram",
+                "cloudflare|300a|puddincat07@Telegram",
+                "cloudflare|807c|puddincat07@Telegram",
+                "cloudflare|b74d|puddincat07@Telegram",
+                "cloudflare|7377|puddincat07@Telegram",
+                "cloudflare|aa95|puddincat07@Telegram",
+                "xx|b286|puddincat07@Telegram",
+                "xx|efbf|puddincat07@Telegram",
+                "us|9633|puddincat07@Telegram",
+                "cloudflare|0325|puddincat07@Telegram",
+                "cloudflare|d06d|puddincat07@Telegram",
+                "gb|9d6e|puddincat07@Telegram",
+                "us|151e|puddincat07@Telegram",
+                "cloudflare|7095|puddincat07@Telegram",
+                "us|56f4|puddincat07@Telegram",
+                "cloudflare|cdbc|puddincat07@Telegram",
+                "cn|7bfb|puddincat07@Telegram",
+                "us|1b04|puddincat07@Telegram",
+                "us|c547|puddincat07@Telegram",
+                "cn|3ea7|puddincat07@Telegram",
+                "us|185a|puddincat07@Telegram",
+                "br|ba34|puddincat07@Telegram"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "cloudflare|2882|puddincat07@Telegram",
+                "cloudflare|300a|puddincat07@Telegram",
+                "cloudflare|807c|puddincat07@Telegram",
+                "cloudflare|b74d|puddincat07@Telegram",
+                "cloudflare|7377|puddincat07@Telegram",
+                "cloudflare|aa95|puddincat07@Telegram",
+                "xx|b286|puddincat07@Telegram",
+                "xx|efbf|puddincat07@Telegram",
+                "us|9633|puddincat07@Telegram",
+                "cloudflare|0325|puddincat07@Telegram",
+                "cloudflare|d06d|puddincat07@Telegram",
+                "gb|9d6e|puddincat07@Telegram",
+                "us|151e|puddincat07@Telegram",
+                "cloudflare|7095|puddincat07@Telegram",
+                "us|56f4|puddincat07@Telegram",
+                "cloudflare|cdbc|puddincat07@Telegram",
+                "cn|7bfb|puddincat07@Telegram",
+                "us|1b04|puddincat07@Telegram",
+                "us|c547|puddincat07@Telegram",
+                "cn|3ea7|puddincat07@Telegram",
+                "us|185a|puddincat07@Telegram",
+                "br|ba34|puddincat07@Telegram"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.153.28",
+            "server_port": 2083,
+            "tag": "cloudflare|2882|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "1.659118019.uk",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "1.659118019.uk"
+                },
+                "max_early_data": 2560,
+                "path": "/Telegram@V2ray_Alpha/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "6965e558-73a4-4808-a778-67e8a82d15aa"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.16.83.224",
+            "server_port": 443,
+            "tag": "cloudflare|300a|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "taoj.eu.org"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "taoj.eu.org"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "1c4c856f-6ef1-4d32-a556-068d948a2158"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.152.139",
+            "server_port": 8443,
+            "tag": "cloudflare|807c|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "www.pjw5.top"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "www.pjw5.top"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "812d7dde-5f48-47eb-acc8-9c94c04550c2"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.16.95.143",
+            "server_port": 443,
+            "tag": "cloudflare|b74d|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bitget1.asdasd.click"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "bitget1.asdasd.click"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.24.40.146",
+            "server_port": 8443,
+            "tag": "cloudflare|7377|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "bitget1.asdasd.click",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "bitget1.asdasd.click"
+                },
+                "path": "/?ed=2560security=tls",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382"
+        },
+        {
+            "password": "Aimer",
+            "server": "27.50.48.154",
+            "server_port": 8443,
+            "tag": "cloudflare|aa95|puddincat07@Telegram",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "epccj.ambercc.filegear-sg.me",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "germany.gamingbazirani.ir",
+            "server_port": 3993,
+            "tag": "xx|b286|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "marzban.negintel.xyz",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "marzban.negintel.xyz"
+                },
+                "max_early_data": 2084,
+                "path": "",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "20afb0d4-7879-4f14-9dd8-39d8a026f75e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "icook.hk",
+            "server_port": 443,
+            "tag": "xx|efbf|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": ""
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "max_early_data": 2560,
+                "path": "/vmess-argo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2faaf996-d2b0-440d-8258-81f2b05dd0e4"
+        },
+        {
+            "password": "cad5a49f-14e5-4a05-aae9-c5df8fad394f",
+            "server": "172.67.157.220",
+            "server_port": 443,
+            "tag": "us|9633|puddincat07@Telegram",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "c1sWER.777159.XYz"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "cad5a49f-14e5-4a05-aae9-c5df8fad394f",
+            "server": "104.21.14.54",
+            "server_port": 443,
+            "tag": "cloudflare|0325|puddincat07@Telegram",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "C1Swew.777159.xyz"
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.16.190.87",
+            "server_port": 2053,
+            "tag": "cloudflare|d06d|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bitget1.asdasd.click"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "bitget1.asdasd.click"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "213.210.55.72",
+            "server_port": 24443,
+            "tag": "gb|9d6e|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "miku.mikuru.ip-ddns.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "miku.mikuru.ip-ddns.com"
+                },
+                "path": "/?ed",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "5543ae5c-c24f-405a-9266-597cbc43c818"
+        },
+        {
+            "password": "3482c71a-d01c-4ae5-b454-fa8cb3785f66",
+            "server": "94.131.20.3",
+            "server_port": 443,
+            "tag": "us|151e|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "chop-wrist-bud.stark-industries.solutions"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "f82fb954-06a1-4f0b-9180-17e07585b61f",
+            "server": "104.21.23.162",
+            "server_port": 443,
+            "tag": "cloudflare|7095|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "6tghjk.131.pp.ua"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "6tghjk.131.pp.ua"
+                },
+                "path": "%2FYu29UN3Yz8hcnI3SlZor0",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "4.255.56.137",
+            "server_port": 443,
+            "tag": "us|56f4|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "usb.carvic.me"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "usb.carvic.me"
+                },
+                "path": "/bing",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "c562022e-c51f-4742-cda8-9bff6b917558"
+        },
+        {
+            "password": "Aimer",
+            "server": "27.50.48.126",
+            "server_port": 2083,
+            "tag": "cloudflare|cdbc|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "tyep.esslh.filegear-sg.me"
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "47.104.186.133",
+            "server_port": 50002,
+            "tag": "cn|7bfb|puddincat07@Telegram",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "password": "Aimer",
+            "server": "209.208.227.79",
+            "server_port": 443,
+            "tag": "us|1b04|puddincat07@Telegram",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "epccj.ambercc.filegear-sg.me",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "type": "trojan"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "172.67.158.71",
+            "server_port": 80,
+            "tag": "us|c547|puddincat07@Telegram",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "max_early_data": 2048,
+                "path": "/rongseven",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2f38f848-a899-4c87-9807-207a41615e3c"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "183.236.51.38",
+            "server_port": 41024,
+            "tag": "cn|3ea7|puddincat07@Telegram",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "160.79.104.113",
+            "server_port": 443,
+            "tag": "us|185a|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "0229.patterdeng.pp.ua",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "0229.patterdeng.pp.ua"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "794f9f41-92c9-4a78-8ffc-1f82cb48a4e2"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.133.35.115",
+            "server_port": 443,
+            "tag": "br|ba34|puddincat07@Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "0229.patterdeng.pp.ua"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "0229.patterdeng.pp.ua"
+                },
+                "path": "/proxyip=185.133.35.115:443",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "794f9f41-92c9-4a78-8ffc-1f82cb48a4e2"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "cloudflare|2882|puddincat07@Telegram",
-        "cloudflare|300a|puddincat07@Telegram",
-        "cloudflare|807c|puddincat07@Telegram",
-        "cloudflare|b74d|puddincat07@Telegram",
-        "us|00cb|puddincat07@Telegram",
-        "cloudflare|7377|puddincat07@Telegram",
-        "cloudflare|aa95|puddincat07@Telegram",
-        "xx|b286|puddincat07@Telegram",
-        "xx|efbf|puddincat07@Telegram",
-        "us|9633|puddincat07@Telegram",
-        "cloudflare|0325|puddincat07@Telegram",
-        "cloudflare|d06d|puddincat07@Telegram",
-        "gb|9d6e|puddincat07@Telegram",
-        "us|151e|puddincat07@Telegram",
-        "cloudflare|7095|puddincat07@Telegram",
-        "us|56f4|puddincat07@Telegram",
-        "cloudflare|cdbc|puddincat07@Telegram",
-        "cn|7bfb|puddincat07@Telegram",
-        "us|1b04|puddincat07@Telegram",
-        "us|c547|puddincat07@Telegram",
-        "cn|3ea7|puddincat07@Telegram",
-        "us|185a|puddincat07@Telegram",
-        "br|ba34|puddincat07@Telegram"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "cloudflare|2882|puddincat07@Telegram",
-        "cloudflare|300a|puddincat07@Telegram",
-        "cloudflare|807c|puddincat07@Telegram",
-        "cloudflare|b74d|puddincat07@Telegram",
-        "us|00cb|puddincat07@Telegram",
-        "cloudflare|7377|puddincat07@Telegram",
-        "cloudflare|aa95|puddincat07@Telegram",
-        "xx|b286|puddincat07@Telegram",
-        "xx|efbf|puddincat07@Telegram",
-        "us|9633|puddincat07@Telegram",
-        "cloudflare|0325|puddincat07@Telegram",
-        "cloudflare|d06d|puddincat07@Telegram",
-        "gb|9d6e|puddincat07@Telegram",
-        "us|151e|puddincat07@Telegram",
-        "cloudflare|7095|puddincat07@Telegram",
-        "us|56f4|puddincat07@Telegram",
-        "cloudflare|cdbc|puddincat07@Telegram",
-        "cn|7bfb|puddincat07@Telegram",
-        "us|1b04|puddincat07@Telegram",
-        "us|c547|puddincat07@Telegram",
-        "cn|3ea7|puddincat07@Telegram",
-        "us|185a|puddincat07@Telegram",
-        "br|ba34|puddincat07@Telegram"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "cloudflare|2882|puddincat07@Telegram",
-      "type": "vless",
-      "server": "162.159.153.28",
-      "server_port": 2083,
-      "uuid": "6965e558-73a4-4808-a778-67e8a82d15aa",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "1.659118019.uk",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/Telegram@V2ray_Alpha/",
-        "headers": {
-          "Host": "1.659118019.uk"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "cloudflare|300a|puddincat07@Telegram",
-      "type": "vless",
-      "server": "104.16.83.224",
-      "server_port": 443,
-      "uuid": "1c4c856f-6ef1-4d32-a556-068d948a2158",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "taoj.eu.org"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "taoj.eu.org"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "cloudflare|807c|puddincat07@Telegram",
-      "type": "vless",
-      "server": "162.159.152.139",
-      "server_port": 8443,
-      "uuid": "812d7dde-5f48-47eb-acc8-9c94c04550c2",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.pjw5.top"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "www.pjw5.top"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "cloudflare|b74d|puddincat07@Telegram",
-      "type": "vless",
-      "server": "104.16.95.143",
-      "server_port": 443,
-      "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bitget1.asdasd.click"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "bitget1.asdasd.click"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "us|00cb|puddincat07@Telegram",
-      "type": "vless",
-      "server": "45.150.165.121",
-      "server_port": 7885,
-      "uuid": "82f6a148-5c4a-48f9-931a-e3b26777ffa2",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.yahoo.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "cauu7I7nFMqzwMDdULVRJam0T04U4knX8koK0OG5dC8",
-          "short_id": "40cb281a"
-        }
-      }
-    },
-    {
-      "tag": "cloudflare|7377|puddincat07@Telegram",
-      "type": "vless",
-      "server": "104.24.40.146",
-      "server_port": 8443,
-      "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "bitget1.asdasd.click",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/?ed=2560security=tls",
-        "headers": {
-          "Host": "bitget1.asdasd.click"
-        }
-      }
-    },
-    {
-      "tag": "cloudflare|aa95|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "27.50.48.154",
-      "server_port": 8443,
-      "password": "Aimer",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ],
-        "server_name": "epccj.ambercc.filegear-sg.me",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      }
-    },
-    {
-      "tag": "xx|b286|puddincat07@Telegram",
-      "type": "vless",
-      "server": "germany.gamingbazirani.ir",
-      "server_port": 3993,
-      "uuid": "20afb0d4-7879-4f14-9dd8-39d8a026f75e",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "marzban.negintel.xyz",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "",
-        "headers": {
-          "Host": "marzban.negintel.xyz"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2084
-      }
-    },
-    {
-      "tag": "xx|efbf|puddincat07@Telegram",
-      "type": "vmess",
-      "server": "icook.hk",
-      "server_port": 443,
-      "uuid": "2faaf996-d2b0-440d-8258-81f2b05dd0e4",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": ""
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/vmess-argo",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "us|9633|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "172.67.157.220",
-      "server_port": 443,
-      "password": "cad5a49f-14e5-4a05-aae9-c5df8fad394f",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "c1sWER.777159.XYz"
-      }
-    },
-    {
-      "tag": "cloudflare|0325|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "104.21.14.54",
-      "server_port": 443,
-      "password": "cad5a49f-14e5-4a05-aae9-c5df8fad394f",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "C1Swew.777159.xyz"
-      }
-    },
-    {
-      "tag": "cloudflare|d06d|puddincat07@Telegram",
-      "type": "vless",
-      "server": "104.16.190.87",
-      "server_port": 2053,
-      "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bitget1.asdasd.click"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "bitget1.asdasd.click"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "gb|9d6e|puddincat07@Telegram",
-      "type": "vless",
-      "server": "213.210.55.72",
-      "server_port": 24443,
-      "uuid": "5543ae5c-c24f-405a-9266-597cbc43c818",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "miku.mikuru.ip-ddns.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/?ed",
-        "headers": {
-          "Host": "miku.mikuru.ip-ddns.com"
-        }
-      }
-    },
-    {
-      "tag": "us|151e|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "94.131.20.3",
-      "server_port": 443,
-      "password": "3482c71a-d01c-4ae5-b454-fa8cb3785f66",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "chop-wrist-bud.stark-industries.solutions"
-      }
-    },
-    {
-      "tag": "cloudflare|7095|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "104.21.23.162",
-      "server_port": 443,
-      "password": "f82fb954-06a1-4f0b-9180-17e07585b61f",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "6tghjk.131.pp.ua"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "%2FYu29UN3Yz8hcnI3SlZor0",
-        "headers": {
-          "Host": "6tghjk.131.pp.ua"
-        }
-      }
-    },
-    {
-      "tag": "us|56f4|puddincat07@Telegram",
-      "type": "vless",
-      "server": "4.255.56.137",
-      "server_port": 443,
-      "uuid": "c562022e-c51f-4742-cda8-9bff6b917558",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "usb.carvic.me"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/bing",
-        "headers": {
-          "Host": "usb.carvic.me"
-        }
-      }
-    },
-    {
-      "tag": "cloudflare|cdbc|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "27.50.48.126",
-      "server_port": 2083,
-      "password": "Aimer",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "tyep.esslh.filegear-sg.me"
-      }
-    },
-    {
-      "tag": "cn|7bfb|puddincat07@Telegram",
-      "type": "vmess",
-      "server": "47.104.186.133",
-      "server_port": 50002,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "us|1b04|puddincat07@Telegram",
-      "type": "trojan",
-      "server": "209.208.227.79",
-      "server_port": 443,
-      "password": "Aimer",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ],
-        "server_name": "epccj.ambercc.filegear-sg.me",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      }
-    },
-    {
-      "tag": "us|c547|puddincat07@Telegram",
-      "type": "vmess",
-      "server": "172.67.158.71",
-      "server_port": 80,
-      "uuid": "2f38f848-a899-4c87-9807-207a41615e3c",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/rongseven",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "cn|3ea7|puddincat07@Telegram",
-      "type": "vmess",
-      "server": "183.236.51.38",
-      "server_port": 41024,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "us|185a|puddincat07@Telegram",
-      "type": "vless",
-      "server": "160.79.104.113",
-      "server_port": 443,
-      "uuid": "794f9f41-92c9-4a78-8ffc-1f82cb48a4e2",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "0229.patterdeng.pp.ua",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "0229.patterdeng.pp.ua"
-        }
-      }
-    },
-    {
-      "tag": "br|ba34|puddincat07@Telegram",
-      "type": "vless",
-      "server": "185.133.35.115",
-      "server_port": 443,
-      "uuid": "794f9f41-92c9-4a78-8ffc-1f82cb48a4e2",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "0229.patterdeng.pp.ua"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/proxyip=185.133.35.115:443",
-        "headers": {
-          "Host": "0229.patterdeng.pp.ua"
-        }
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
