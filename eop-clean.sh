@@ -8,6 +8,7 @@ urls=(
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
   "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
   "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/vl.txt"
+  "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/vm.txt"
 )
 
 cd ./sub
@@ -15,7 +16,7 @@ cd ./sub
 download_and_filter() {
     local url="$1"
     local filename="${url##*/}"
-    local output_prefix="split_${filename%%.*}_"
+    local output_prefix="split_${filename:0:2}_"
     local temp_file
     temp_file=$(mktemp)
 
@@ -32,7 +33,7 @@ download_and_filter() {
     # Filter the file
     local substring="5ubscrpt10n"
     if [[ "$url" =~ $substring ]]; then
-        if ! head -n 3000 "$filename" > "$temp_file"; then
+        if ! shuf -n 3000 "$filename" > "$temp_file"; then
             echo "Error: Failed to filter file" >&2
             return 1
         fi
