@@ -31,7 +31,7 @@ download_and_filter() {
     fi
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
     # 分割文件，限制每块 600 行
-    split -l 800 ./tmp_file "$output_prefix"
+    split -l 800 "$filename" "$output_prefix"
     # 删除除前10个以外的所有文件
     files=("$output_prefix"*)
     for file in "${files[@]:10}"; do
