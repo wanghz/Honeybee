@@ -13,32 +13,57 @@ urls=(
 cd ./sub
 # Function to download and filter text files
 download_and_filter() {
-    url="$1"
-    filename="${url##*/}"
-    # 获取文件名首字符
-    first_char="${filename:0:1}"
-    # 使用时间戳或随机字符串生成唯一的前缀，避免覆盖
-    output_prefix="split_${first_char%.*}_"
+    local url="$1"
+    local filename="${url##*/}"
+    local output_prefix="split_${filename%%.*}_"
+    local temp_file
+    temp_file=$(mktemp)
 
     # Download the file
-    curl -s "$url" -o "$filename"
-    
-    # Filter the file
-    substring="5ubscrpt10n"
-    if echo "$url" | grep -q "$substring"; then
-      head -n 3000 "$filename" > temp_file && mv temp_file "$filename"
-      echo "heading file ok"
+    if ! curl -s "$url" -o "$filename"; then
+        echo "Error: Failed to download $url" >&2
+        return 1
     fi
-    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
-    # 分割文件，限制每块 600 行
-    split -l 800 "$filename" "$output_prefix"
-    # 删除除前10个以外的所有文件
-    files=("$output_prefix"*)
-    for file in "${files[@]:10}"; do
-        rm -f "$file"
-    done
-    rm -f ./temp_file
+    if [[ ! -s "$filename" ]]; then
+        echo "Error: Downloaded file is empty" >&2
+        return 1
+    fi
+
+    # Filter the file
+    local substring="5ubscrpt10n"
+    if [[ "$url" =~ $substring ]]; then
+        if ! head -n 3000 "$filename" > "$temp_file"; then
+            echo "Error: Failed to filter file" >&2
+            return 1
+        fi
+        mv "$temp_file" "$filename"
+        echo "heading file ok"
+    fi
+
+    # Filter URLs
+    if ! sed '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename" > "$temp_file"; then
+        echo "Error: Failed to apply sed filter" >&2
+        return 1
+    fi
+    mv "$temp_file" "$filename"
+
+    # Split file
+    if ! split -l 800 "$filename" "$output_prefix"; then
+        echo "Error: Failed to split file" >&2
+        return 1
+    fi
+
+    # Delete excess files
+    local files=("$output_prefix"*)
+    if [[ ${#files[@]} -gt 10 ]]; then
+        for file in "${files[@]:10}"; do
+            rm -f "$file"
+        done
+    fi
+    # Clean up
+    rm -f "$filename" "$temp_file"
 }
+
 
 # Loop through URLs and process each one
 for url in "${urls[@]}"; do
