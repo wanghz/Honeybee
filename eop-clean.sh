@@ -7,6 +7,7 @@ currentyears=$(date +%Y)
 urls=(
   "https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/All_Configs_Sub.txt"
   "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/tr.txt"
+  "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/protocols/vl.txt"
 )
 
 cd ./sub
@@ -22,16 +23,20 @@ download_and_filter() {
     # Download the file
     curl -s "$url" -o "$filename"
     # Filter the file
-    head -n 6000 "$filename" > ./tmp_file
-    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' ./tmp_file
+    substring="5ubscrpt10n"
+
+    if echo "$url" | grep -q "$substring"; then
+      head -n 3000 "$filename" > temp_file && mv temp_file "$filename"
+    fi
+    sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
     # 分割文件，限制每块 600 行
-    split -l 600 ./tmp_file "$output_prefix"
+    split -l 800 ./tmp_file "$output_prefix"
     # 删除除前10个以外的所有文件
     files=("$output_prefix"*)
     for file in "${files[@]:10}"; do
         rm -f "$file"
     done
-    rm -f ./tmp_file
+    rm -f ./temp_file
 }
 
 # Loop through URLs and process each one
