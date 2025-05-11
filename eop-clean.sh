@@ -22,11 +22,12 @@ download_and_filter() {
 
     # Download the file
     curl -s "$url" -o "$filename"
+    
     # Filter the file
     substring="5ubscrpt10n"
-
     if echo "$url" | grep -q "$substring"; then
       head -n 3000 "$filename" > temp_file && mv temp_file "$filename"
+      echo "heading file ok"
     fi
     sed -i '/^ss:\/\/\|^vless:\/\/\|^vmess:\/\/\|^hysteria\|^trojan:\/\//!d' "$filename"
     # 分割文件，限制每块 600 行
