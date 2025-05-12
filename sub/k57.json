@@ -1,2049 +1,1760 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "auto",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
+                "@meli_proxyy",
+                "@meli_proxyy 2",
+                "telegram 🌟 DailyV2ry",
+                "@meli_proxyy 3",
+                "@meli_proxyy 4",
+                "telegram 🌟 DailyV2ry 2",
+                "@meli_proxyy 7",
+                "telegram 🚀 DailyV2ry",
+                "telegram 🍊 DailyV2ry",
+                "@meli_peoxyy",
+                "@meli_proxyy 8",
+                "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
+                "@meli_proxyy 9",
+                "@meli_proxyy 10",
+                "telegram 🚀 DailyV2ry 2",
+                "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
+                "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
+                "@meli_proxyyسرورای‌بیشتر",
+                "@meli_proxyy 13",
+                "telegram ☂️ DailyV2ry",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
+                "@meli_proxyy 14",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
+                "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
+                "@meli_proxyyسرورای‌بیشتر 2",
+                "@meli_peoxyy 3",
+                "@meli_proxyy 15",
+                "@meli_proxyy 16",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
+                "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
+                "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
+                "@meli_proxyy 17",
+                "Server-1",
+                "Server-2",
+                "Server-3",
+                "Server-4",
+                "telegram 🍊 DailyV2ry 4",
+                "telegram 🍊 DailyV2ry 5",
+                "telegram 🍊 DailyV2ry 6",
+                "telegram 🌟 DailyV2ry 5",
+                "telegram 🌟 DailyV2ry 6",
+                "telegram 🚀 DailyV2ry 3",
+                "telegram 🍊 DailyV2ry 7",
+                "telegram 🍊 DailyV2ry 8",
+                "@meli_proxyy 18",
+                "@Golestan_VPN - 👈 خرید کانفیگ",
+                "telegram 🌟 DailyV2ry 7",
+                "telegram 🚀 DailyV2ry 4",
+                "@meli_proxyy 19",
+                "@meli_proxyy 20",
+                "telegram 🍊 DailyV2ry 9",
+                "telegram 🚀 DailyV2ry 5",
+                "telegram 🍊 DailyV2ry 10",
+                "@meli_proxyy 21",
+                "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "@Golestan_VPN - 👈 خرید کانفیگ 2",
+                "@Golestan_VPN - 👈 خرید کانفیگ 3",
+                "telegram 🌺 DailyV2ry",
+                "🇭🇰 HK-1.65.209.56-6474",
+                "telegram 🌈 DailyV2ry",
+                "telegram 🍀 DailyV2ry",
+                "telegram 🌈 DailyV2ry 2",
+                "🏁RELAY-104.21.3.219-0980",
+                "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
+                "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
+                "telegram ☂️ DailyV2ry 2",
+                "telegram ☂️ DailyV2ry 3",
+                "telegram 🌈 DailyV2ry 3",
+                "telegram 🌈 DailyV2ry 4",
+                "telegram 🌺 DailyV2ry 2",
+                "telegram 🌺 DailyV2ry 3",
+                "telegram 🌺 DailyV2ry 4",
+                "telegram 🍀 DailyV2ry 2",
+                "telegram 🍀 DailyV2ry 3",
+                "telegram 🍀 DailyV2ry 4",
+                "telegram 🍊 DailyV2ry 11",
+                "telegram 🍊 DailyV2ry 12",
+                "telegram 🎪 DailyV2ry",
+                "telegram 🎪 DailyV2ry 2",
+                "telegram 🚀 DailyV2ry 6",
+                "🇫🇷 法国1 | ⬇️ 2.3MB/s",
+                "🇫🇷 法国2 | ⬇️ 4.1MB/s",
+                "🇯🇵 12|日本5|@ripaojiedian"
+            ],
+            "tag": "🌏 !cn",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
+                "@meli_proxyy",
+                "@meli_proxyy 2",
+                "telegram 🌟 DailyV2ry",
+                "@meli_proxyy 3",
+                "@meli_proxyy 4",
+                "telegram 🌟 DailyV2ry 2",
+                "@meli_proxyy 7",
+                "telegram 🚀 DailyV2ry",
+                "telegram 🍊 DailyV2ry",
+                "@meli_peoxyy",
+                "@meli_proxyy 8",
+                "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
+                "@meli_proxyy 9",
+                "@meli_proxyy 10",
+                "telegram 🚀 DailyV2ry 2",
+                "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
+                "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
+                "@meli_proxyyسرورای‌بیشتر",
+                "@meli_proxyy 13",
+                "telegram ☂️ DailyV2ry",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
+                "@meli_proxyy 14",
+                "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
+                "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
+                "@meli_proxyyسرورای‌بیشتر 2",
+                "@meli_peoxyy 3",
+                "@meli_proxyy 15",
+                "@meli_proxyy 16",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
+                "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
+                "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
+                "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
+                "@meli_proxyy 17",
+                "Server-1",
+                "Server-2",
+                "Server-3",
+                "Server-4",
+                "telegram 🍊 DailyV2ry 4",
+                "telegram 🍊 DailyV2ry 5",
+                "telegram 🍊 DailyV2ry 6",
+                "telegram 🌟 DailyV2ry 5",
+                "telegram 🌟 DailyV2ry 6",
+                "telegram 🚀 DailyV2ry 3",
+                "telegram 🍊 DailyV2ry 7",
+                "telegram 🍊 DailyV2ry 8",
+                "@meli_proxyy 18",
+                "@Golestan_VPN - 👈 خرید کانفیگ",
+                "telegram 🌟 DailyV2ry 7",
+                "telegram 🚀 DailyV2ry 4",
+                "@meli_proxyy 19",
+                "@meli_proxyy 20",
+                "telegram 🍊 DailyV2ry 9",
+                "telegram 🚀 DailyV2ry 5",
+                "telegram 🍊 DailyV2ry 10",
+                "@meli_proxyy 21",
+                "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+                "@Golestan_VPN - 👈 خرید کانفیگ 2",
+                "@Golestan_VPN - 👈 خرید کانفیگ 3",
+                "telegram 🌺 DailyV2ry",
+                "🇭🇰 HK-1.65.209.56-6474",
+                "telegram 🌈 DailyV2ry",
+                "telegram 🍀 DailyV2ry",
+                "telegram 🌈 DailyV2ry 2",
+                "🏁RELAY-104.21.3.219-0980",
+                "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
+                "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
+                "telegram ☂️ DailyV2ry 2",
+                "telegram ☂️ DailyV2ry 3",
+                "telegram 🌈 DailyV2ry 3",
+                "telegram 🌈 DailyV2ry 4",
+                "telegram 🌺 DailyV2ry 2",
+                "telegram 🌺 DailyV2ry 3",
+                "telegram 🌺 DailyV2ry 4",
+                "telegram 🍀 DailyV2ry 2",
+                "telegram 🍀 DailyV2ry 3",
+                "telegram 🍀 DailyV2ry 4",
+                "telegram 🍊 DailyV2ry 11",
+                "telegram 🍊 DailyV2ry 12",
+                "telegram 🎪 DailyV2ry",
+                "telegram 🎪 DailyV2ry 2",
+                "telegram 🚀 DailyV2ry 6",
+                "🇫🇷 法国1 | ⬇️ 2.3MB/s",
+                "🇫🇷 法国2 | ⬇️ 4.1MB/s",
+                "🇯🇵 12|日本5|@ripaojiedian"
+            ],
+            "tag": "auto",
+            "tolerance": 50,
+            "type": "urltest",
+            "url": "http://www.gstatic.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "37.156.47.23",
+            "server_port": 6666,
+            "tag": "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
+            "transport": {
+                "service_name": "/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "%43%4F%44%5F%56%50%4E"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.63.68.191",
+            "server_port": 8080,
+            "tag": "@meli_proxyy",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "0097a687-ee3d-48da-bf83-aabcd744fc05"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.77.120.195",
+            "server_port": 8080,
+            "tag": "@meli_proxyy 2",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "044ea0d1-309e-42a3-b9b0-a9fab400929e"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "69.84.182.141",
+            "server_port": 443,
+            "tag": "telegram 🌟 DailyV2ry",
+            "transport": {
+                "headers": {
+                    "Host": "hj.ylka.dpdns.org"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "06e4425e-a8cb-4b63-929f-2105604ab0a9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "germany.gamingbazirani.ir",
+            "server_port": 600,
+            "tag": "@meli_proxyy 3",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "marzban.negintel.xyz"
+            },
+            "type": "vless",
+            "uuid": "08fefda4-9bec-4f36-b673-8f8e6e60a8ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "italy.gamingbazirani.ir",
+            "server_port": 600,
+            "tag": "@meli_proxyy 4",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "marzban.negintel.xyz"
+            },
+            "type": "vless",
+            "uuid": "08fefda4-9bec-4f36-b673-8f8e6e60a8ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "tgju.org",
+            "server_port": 80,
+            "tag": "telegram 🌟 DailyV2ry 2",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "DAngeRouS-contacT.oNEeat.Co."
+                },
+                "max_early_data": 2048,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "0f8fac4e-4d6c-4f6c-8bc6-22a3c065ba6f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.16.1",
+            "server_port": 80,
+            "tag": "@meli_proxyy 7",
+            "transport": {
+                "headers": {
+                    "Host": "masaleini.mahsaamini.dpdns.org"
+                },
+                "path": "/TM@AZAFBAYJAB1",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "10d9df89-9a20-4110-9711-bca119490ee9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.16.1",
+            "server_port": 80,
+            "tag": "telegram 🚀 DailyV2ry",
+            "transport": {
+                "headers": {
+                    "Host": "masaleini.mahsaamini.dpdns.org"
+                },
+                "path": "/TM@AZAFBAYJAB1",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "10d9df89-9a20-4110-9711-bca119490ee9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "144.202.11.194",
+            "server_port": 8080,
+            "tag": "telegram 🍊 DailyV2ry",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "113955c8-4ae9-496e-849d-e13a9b0dd67a"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "157.180.75.119",
+            "server_port": 8880,
+            "tag": "@meli_peoxyy",
+            "transport": {
+                "service_name": "@cephalon_ai_bot",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "14fa7d10-ba31-4cc2-9cb3-278902e7946a"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "157.180.75.119",
+            "server_port": 8880,
+            "tag": "@meli_proxyy 8",
+            "transport": {
+                "service_name": "@cephalon_ai_bot",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "14fa7d10-ba31-4cc2-9cb3-278902e7946a"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "141.101.122.211",
+            "server_port": 2052,
+            "tag": "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
+            "transport": {
+                "headers": {
+                    "Host": "sPeedtest2.sbs.de.v2vless.sitespeedtest.net"
+                },
+                "path": "/vless",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "16224e08-aa02-50b9-bb4b-0c97926a3d6a"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "speedtest.net",
+            "server_port": 80,
+            "tag": "@meli_proxyy 9",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "foffmelo.com"
+                },
+                "max_early_data": 1024,
+                "path": "/olem/ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "17d7913a-da39-4e09-8634-8734679a19ae"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "zmaoz.faculty.ucdavis.edu",
+            "server_port": 80,
+            "tag": "@meli_proxyy 10",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "foffmelo.com"
+                },
+                "max_early_data": 1024,
+                "path": "/olem/ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "17d7913a-da39-4e09-8634-8734679a19ae"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "64.176.201.252",
+            "server_port": 8080,
+            "tag": "telegram 🚀 DailyV2ry 2",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "1fc2fd97-0e24-4eaf-fdb8-c18e55abe718"
+        },
+        {
+            "password": "3d4ad187-b554-4300-bf71-d26c71962504",
+            "server": "172.67.138.187",
+            "server_port": 443,
+            "tag": "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "FFfgtyy.7282728.XYZ"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
+            "server": "154.17.31.167",
+            "server_port": 28331,
+            "tag": "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "basket.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
+            "server": "154.17.31.167",
+            "server_port": 28331,
+            "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "basket.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
+            "server": "154.17.31.167",
+            "server_port": 28331,
+            "tag": "@meli_proxyyسرورای‌بیشتر",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "basket.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "aTArbZ2F0E",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "@meli_proxyy 13",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "uSa-vp-27.bLAzECLOUD.SITE"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "aTArbZ2F0E",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram ☂️ DailyV2ry",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "uSa-vp-27.bLAzECLOUD.SITE"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "aTArbZ2F0E",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "uSa-vp-27.bLAzECLOUD.SITE"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "ca48571a-403f-44b9-b2a6-e17c36d7cacc",
+            "server": "104.21.80.1",
+            "server_port": 443,
+            "tag": "@meli_proxyy 14",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "10r.iran1912.dpdns.org"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "e6a2e741-0fce-440b-910c-b81325e2263a",
+            "server": "94.131.20.3",
+            "server_port": 443,
+            "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "cache-giver-wife.stark-industries.solutions"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
+            "server": "154.17.21.41",
+            "server_port": 18332,
+            "tag": "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bedsheet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
+            "server": "154.17.21.41",
+            "server_port": 18332,
+            "tag": "@meli_proxyyسرورای‌بیشتر 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bedsheet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
+            "server": "154.17.21.41",
+            "server_port": 18332,
+            "tag": "@meli_peoxyy 3",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bedsheet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
+            "server": "154.17.21.41",
+            "server_port": 18332,
+            "tag": "@meli_proxyy 15",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "bedsheet.homeofbrave.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "t2WqbIW2JE",
+            "server": "15.204.175.111",
+            "server_port": 2083,
+            "tag": "@meli_proxyy 16",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "usa-vp-111.mETIkaPPs.cOm"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "usa-vp-111.mETIkaPPs.cOm"
+                },
+                "path": "/linkvws",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.36.247.226",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.37.27.97",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.37.27.97",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.37.64.182",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.51.117.245",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.53.33.12",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "13.62.8.215",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "15.236.121.158",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "15.236.97.249",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "15.236.97.249",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "15.237.238.127",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "18.199.43.148",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "3.74.122.89",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "3.74.18.33",
+            "server_port": 22223,
+            "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "4404245ed8c34398",
+            "server": "51.81.34.62",
+            "server_port": 18846,
+            "tag": "@meli_proxyy 17",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "51yloQC8D9w1Wae7FHtI65",
+            "server": "135.116.16.35",
+            "server_port": 48172,
+            "tag": "Server-1",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "51yloQC8D9w1Wae7FHtI65",
+            "server": "135.116.16.35",
+            "server_port": 48172,
+            "tag": "Server-2",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "51yloQC8D9w1Wae7FHtI65",
+            "server": "20.240.200.137",
+            "server_port": 48172,
+            "tag": "Server-3",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "51yloQC8D9w1Wae7FHtI65",
+            "server": "20.240.200.137",
+            "server_port": 48172,
+            "tag": "Server-4",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "9415c035950670bd",
+            "server": "51.195.221.43",
+            "server_port": 15119,
+            "tag": "telegram 🍊 DailyV2ry 4",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "9596922f76ceefde",
+            "server": "212.56.42.162",
+            "server_port": 41078,
+            "tag": "telegram 🍊 DailyV2ry 5",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "9cce8cf8a175fd79",
+            "server": "185.219.142.172",
+            "server_port": 28735,
+            "tag": "telegram 🍊 DailyV2ry 6",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "236db24033925c93",
+            "server": "217.77.2.248",
+            "server_port": 18423,
+            "tag": "telegram 🌟 DailyV2ry 5",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "2ac148af4b6d33e6",
+            "server": "66.94.112.154",
+            "server_port": 15568,
+            "tag": "telegram 🌟 DailyV2ry 6",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "2ed321a397eb97b7",
+            "server": "148.113.201.160",
+            "server_port": 26491,
+            "tag": "telegram 🚀 DailyV2ry 3",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "354fc5360a1382a4",
+            "server": "45.10.154.245",
+            "server_port": 16762,
+            "tag": "telegram 🍊 DailyV2ry 7",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "u17T3BvpYaaiuW2c",
+            "server": "api.namasha.co",
+            "server_port": 443,
+            "tag": "telegram 🍊 DailyV2ry 8",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "y6fgyC28hscmdwqXj2v0Fm",
+            "server": "62.60.152.158",
+            "server_port": 37618,
+            "tag": "@meli_proxyy 18",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "QCXDxuDlTTMD7jtgHUjIoj",
+            "server": "45.158.171.146",
+            "server_port": 8080,
+            "tag": "@Golestan_VPN - 👈 خرید کانفیگ",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "a875da78e291587b",
+            "server": "57.129.67.26",
+            "server_port": 48547,
+            "tag": "telegram 🌟 DailyV2ry 7",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "b2efa633e2e55cbf",
+            "server": "51.161.34.12",
+            "server_port": 47531,
+            "tag": "telegram 🚀 DailyV2ry 4",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "c3462d3f6020528d",
+            "server": "85.239.239.182",
+            "server_port": 16309,
+            "tag": "@meli_proxyy 19",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "cvII85TrW6n0OGyfpHVS1u",
+            "server": "45.158.171.141",
+            "server_port": 8080,
+            "tag": "@meli_proxyy 20",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "d54f10b4e72fa8f2",
+            "server": "154.205.134.155",
+            "server_port": 24850,
+            "tag": "telegram 🍊 DailyV2ry 9",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "ec708c1555abb290",
+            "server": "94.72.104.119",
+            "server_port": 45979,
+            "tag": "telegram 🚀 DailyV2ry 5",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-128-gcm",
+            "password": "shadowsocks",
+            "server": "212.102.47.131",
+            "server_port": 443,
+            "tag": "telegram 🍊 DailyV2ry 10",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-128-gcm",
+            "password": "shadowsocks",
+            "server": "212.102.53.78",
+            "server_port": 443,
+            "tag": "@meli_proxyy 21",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "154.90.63.177",
+            "server_port": 989,
+            "tag": "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "FoOiGlkAA9yPEGP",
+            "server": "67.220.95.102",
+            "server_port": 7307,
+            "tag": "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 64,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "142.4.116.177",
+            "server_port": 50009,
+            "tag": "@Golestan_VPN - 👈 خرید کانفیگ 2",
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "43.153.104.62",
+            "server_port": 45113,
+            "tag": "@Golestan_VPN - 👈 خرید کانفیگ 3",
+            "transport": {
+                "path": "/97cc0323",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "97cc0323-de53-4a75-d69d-c6acdac5fdc7"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.19.150.10",
+            "server_port": 80,
+            "tag": "telegram 🌺 DailyV2ry",
+            "type": "vmess",
+            "uuid": "32763470-5925-4df8-a615-77a18d25eeac"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "60cd512f-sv2sg0-swbdgq-1iddy.hk.p5pv.com",
+            "server_port": 80,
+            "tag": "🇭🇰 HK-1.65.209.56-6474",
+            "transport": {
+                "headers": {
+                    "Host": "60cd512f-sv2sg0-swbdgq-1iddy.hk.p5pv.com"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "e168c43e-c6d9-11ed-a8bf-f23c91cfbbc9"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "84a663fa-sunz40-swhx5y-1q3dm.hk.p5pv.com",
+            "server_port": 80,
+            "tag": "telegram 🌈 DailyV2ry",
+            "transport": {
+                "headers": {
+                    "Host": "broadcastlv.chat.bilibili.com"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "c1785de0-212f-11ef-92aa-f23c9164ca5d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "152.67.251.232",
+            "server_port": 443,
+            "tag": "telegram 🍀 DailyV2ry",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "irvideo.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "irvideo.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "e537f2f5-2a0c-4f59-92c9-832ca6433bf3"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "172.66.168.209",
+            "server_port": 443,
+            "tag": "telegram 🌈 DailyV2ry 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "maXNEtVIP-usA-VP3.nETKH3.SiTE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "maXNEtVIP-usA-VP3.nETKH3.SiTE"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "5428dcc2-9950-4404-b8a5-9dac82acb210"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "uswuxian.pai50288.uk",
+            "server_port": 8443,
+            "tag": "🏁RELAY-104.21.3.219-0980",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "uswuxian.pai50288.uk"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "uswuxian.pai50288.uk"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "c313606f-98c2-4d7b-ba74-48b94f61b11d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "45.79.121.243",
+            "server_port": 10002,
+            "tag": "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
+            "type": "vmess",
+            "uuid": "3699fa73-ac5c-41ca-8d6e-fe4cb70c7e02"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "182.237.0.127",
+            "server_port": 1086,
+            "tag": "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hk-02.foxspirit.click"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "www.ouabaua.com"
+                },
+                "path": "/zxascas",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "5aef9bfd-20e3-420a-9b16-433031984bd9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram ☂️ DailyV2ry 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "Fra-Vp-123.BLaZECLOUD.Site"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "Fra-Vp-123.BLaZECLOUD.Site"
+                },
+                "path": "/linvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "37f464cb-b826-4278-9bf8-11bdf1ec892b"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram ☂️ DailyV2ry 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "Usa-Vp-192.blazEcloudMAin.SitE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "Usa-Vp-192.blazEcloudMAin.SitE"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "96e44a22-4f5c-48f9-99d9-f2c1985dd5b9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🌈 DailyV2ry 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "MAxnETVipAP-ca2.MaxNetseRVIcES.OnLINE"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "MAxnETVipAP-ca2.MaxNetseRVIcES.OnLINE"
+                },
+                "max_early_data": 2560,
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2c329585-67a8-498b-8d38-176dac806bc7"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🌈 DailyV2ry 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "MaxNEtvip-usa1.MAXnEtcLOUDsERvICe.COM"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "MaxNEtvip-usa1.MAXnEtcLOUDsERvICe.COM"
+                },
+                "max_early_data": 2560,
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "a7b0ae1e-5376-4441-abc4-45db4093e889"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "15.204.254.246",
+            "server_port": 443,
+            "tag": "telegram 🌺 DailyV2ry 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "BLAze-usa-246.Vnetx-ServER.sItE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "BLAze-usa-246.Vnetx-ServER.sItE"
+                },
+                "path": "/linkvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "e3f4fcf6-e88e-40ec-b37f-70573da54a6d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🌺 DailyV2ry 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "CANADa-199.BLaZecANADA.sIte"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "CANADa-199.BLaZecANADA.sIte"
+                },
+                "path": "/linkvkvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🌺 DailyV2ry 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "CANADa-199.BLaZecANADA.sIte"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "CANADa-199.BLaZecANADA.sIte"
+                },
+                "path": "/linkvkvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.21.80.1",
+            "server_port": 2053,
+            "tag": "telegram 🍀 DailyV2ry 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "rak2.890601.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "rak2.890601.xyz"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "0245c2d4-0ad1-4f0f-eb9c-fbd5f1c47be7"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "15.204.254.246",
+            "server_port": 443,
+            "tag": "telegram 🍀 DailyV2ry 3",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "BLAze-usa-246.Vnetx-ServER.sItE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "BLAze-usa-246.Vnetx-ServER.sItE"
+                },
+                "path": "/linkvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "e3f4fcf6-e88e-40ec-b37f-70573da54a6d"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🍀 DailyV2ry 4",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "Usa-Vp-192.blazEcloudMAin.SitE"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "Usa-Vp-192.blazEcloudMAin.SitE"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "96e44a22-4f5c-48f9-99d9-f2c1985dd5b9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "57.128.161.120",
+            "server_port": 443,
+            "tag": "telegram 🍊 DailyV2ry 11",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "BLAze-uk-120.VNETx-sErVer.SiTe"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "BLAze-uk-120.VNETx-sErVer.SiTe"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "13aed4c8-21e8-4cba-a897-eb963b8cf1a2"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🍊 DailyV2ry 12",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "Fra-Vp-123.BLaZECLOUD.Site"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "Fra-Vp-123.BLaZECLOUD.Site"
+                },
+                "path": "/linvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "37f464cb-b826-4278-9bf8-11bdf1ec892b"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 2083,
+            "tag": "telegram 🎪 DailyV2ry",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "CanaDa-138.blAzecAnAdA.SITe"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "CanaDa-138.blAzecAnAdA.SITe"
+                },
+                "path": "/linkvkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "698d9a5b-59dc-4ea6-b404-cd9e967fc54c"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🎪 DailyV2ry 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "MaXnEtVipAp-ca1.MaxnetserVicEs.ONliNe"
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "MaXnEtVipAp-ca1.MaxnetserVicEs.ONliNe"
+                },
+                "max_early_data": 2560,
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "81380a5e-613c-4863-8b3a-5588f32690c3"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cloudgetservice.mcloudservice.site",
+            "server_port": 443,
+            "tag": "telegram 🚀 DailyV2ry 6",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "CANADa-199.BLaZecANADA.sIte"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "CANADa-199.BLaZecANADA.sIte"
+                },
+                "path": "/linkvkvws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "172.67.198.187",
+            "server_port": 443,
+            "tag": "🇫🇷 法国1 | ⬇️ 2.3MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xmivideo.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xmivideo.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.19.32.0",
+            "server_port": 443,
+            "tag": "🇫🇷 法国2 | ⬇️ 4.1MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xmivideo.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xmivideo.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "47.74.41.147",
+            "server_port": 53893,
+            "tag": "🇯🇵 12|日本5|@ripaojiedian",
+            "type": "vmess",
+            "uuid": "07287360-e12f-4f94-9c7a-54386c100d8a"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "auto",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !cn",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
-        "@meli_proxyy",
-        "@meli_proxyy 2",
-        "telegram 🌟 DailyV2ry",
-        "@meli_proxyy 3",
-        "@meli_proxyy 4",
-        "@meli_proxyy 5",
-        "telegram 🌟 DailyV2ry 2",
-        "@meli_proxyy 6",
-        "@meli_proxyy 7",
-        "telegram 🚀 DailyV2ry",
-        "telegram 🍊 DailyV2ry",
-        "@meli_peoxyy",
-        "@meli_proxyy 8",
-        "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
-        "@v2ray313 کانالمون 💪🏻",
-        "✅سرورهایبیشتردرکانال:prrofile_purple@✅💷",
-        "@meli_peoxyy 2",
-        "@meli_proxyy 9",
-        "@meli_proxyy 10",
-        "✅سرورهایبیشتردرکانال:prrofile_purple@✅🏅",
-        "telegram 🚀 DailyV2ry 2",
-        "telegram 🍊 DailyV2ry 2",
-        "telegram 🌟 DailyV2ry 3",
-        "telegram 🌟 DailyV2ry 4",
-        "@meli_proxyy 11",
-        "telegram 🍊 DailyV2ry 3",
-        "@meli_proxyy 12",
-        "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
-        "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
-        "@meli_proxyyسرورای‌بیشتر",
-        "@meli_proxyy 13",
-        "telegram ☂️ DailyV2ry",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
-        "@meli_proxyy 14",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
-        "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
-        "@meli_proxyyسرورای‌بیشتر 2",
-        "@meli_peoxyy 3",
-        "@meli_proxyy 15",
-        "@meli_proxyy 16",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
-        "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
-        "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
-        "@meli_proxyy 17",
-        "Server-1",
-        "Server-2",
-        "Server-3",
-        "Server-4",
-        "telegram 🍊 DailyV2ry 4",
-        "telegram 🍊 DailyV2ry 5",
-        "telegram 🍊 DailyV2ry 6",
-        "telegram 🌟 DailyV2ry 5",
-        "telegram 🌟 DailyV2ry 6",
-        "telegram 🚀 DailyV2ry 3",
-        "telegram 🍊 DailyV2ry 7",
-        "telegram 🍊 DailyV2ry 8",
-        "@meli_proxyy 18",
-        "@Golestan_VPN - 👈 خرید کانفیگ",
-        "telegram 🌟 DailyV2ry 7",
-        "telegram 🚀 DailyV2ry 4",
-        "@meli_proxyy 19",
-        "@meli_proxyy 20",
-        "telegram 🍊 DailyV2ry 9",
-        "telegram 🚀 DailyV2ry 5",
-        "telegram 🍊 DailyV2ry 10",
-        "@meli_proxyy 21",
-        "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "@Golestan_VPN - 👈 خرید کانفیگ 2",
-        "@Golestan_VPN - 👈 خرید کانفیگ 3",
-        "telegram 🌺 DailyV2ry",
-        "🇭🇰 HK-1.65.209.56-6474",
-        "telegram 🌈 DailyV2ry",
-        "telegram 🍀 DailyV2ry",
-        "telegram 🌈 DailyV2ry 2",
-        "🏁RELAY-104.21.3.219-0980",
-        "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
-        "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
-        "telegram ☂️ DailyV2ry 2",
-        "telegram ☂️ DailyV2ry 3",
-        "telegram 🌈 DailyV2ry 3",
-        "telegram 🌈 DailyV2ry 4",
-        "telegram 🌺 DailyV2ry 2",
-        "telegram 🌺 DailyV2ry 3",
-        "telegram 🌺 DailyV2ry 4",
-        "telegram 🍀 DailyV2ry 2",
-        "telegram 🍀 DailyV2ry 3",
-        "telegram 🍀 DailyV2ry 4",
-        "telegram 🍊 DailyV2ry 11",
-        "telegram 🍊 DailyV2ry 12",
-        "telegram 🎪 DailyV2ry",
-        "telegram 🎪 DailyV2ry 2",
-        "telegram 🚀 DailyV2ry 6",
-        "🇫🇷 法国1 | ⬇️ 2.3MB/s",
-        "🇫🇷 法国2 | ⬇️ 4.1MB/s",
-        "🇯🇵 12|日本5|@ripaojiedian"
-      ]
-    },
-    {
-      "tag": "auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
-        "@meli_proxyy",
-        "@meli_proxyy 2",
-        "telegram 🌟 DailyV2ry",
-        "@meli_proxyy 3",
-        "@meli_proxyy 4",
-        "@meli_proxyy 5",
-        "telegram 🌟 DailyV2ry 2",
-        "@meli_proxyy 6",
-        "@meli_proxyy 7",
-        "telegram 🚀 DailyV2ry",
-        "telegram 🍊 DailyV2ry",
-        "@meli_peoxyy",
-        "@meli_proxyy 8",
-        "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
-        "@v2ray313 کانالمون 💪🏻",
-        "✅سرورهایبیشتردرکانال:prrofile_purple@✅💷",
-        "@meli_peoxyy 2",
-        "@meli_proxyy 9",
-        "@meli_proxyy 10",
-        "✅سرورهایبیشتردرکانال:prrofile_purple@✅🏅",
-        "telegram 🚀 DailyV2ry 2",
-        "telegram 🍊 DailyV2ry 2",
-        "telegram 🌟 DailyV2ry 3",
-        "telegram 🌟 DailyV2ry 4",
-        "@meli_proxyy 11",
-        "telegram 🍊 DailyV2ry 3",
-        "@meli_proxyy 12",
-        "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
-        "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
-        "@meli_proxyyسرورای‌بیشتر",
-        "@meli_proxyy 13",
-        "telegram ☂️ DailyV2ry",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
-        "@meli_proxyy 14",
-        "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
-        "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
-        "@meli_proxyyسرورای‌بیشتر 2",
-        "@meli_peoxyy 3",
-        "@meli_proxyy 15",
-        "@meli_proxyy 16",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
-        "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
-        "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
-        "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
-        "@meli_proxyy 17",
-        "Server-1",
-        "Server-2",
-        "Server-3",
-        "Server-4",
-        "telegram 🍊 DailyV2ry 4",
-        "telegram 🍊 DailyV2ry 5",
-        "telegram 🍊 DailyV2ry 6",
-        "telegram 🌟 DailyV2ry 5",
-        "telegram 🌟 DailyV2ry 6",
-        "telegram 🚀 DailyV2ry 3",
-        "telegram 🍊 DailyV2ry 7",
-        "telegram 🍊 DailyV2ry 8",
-        "@meli_proxyy 18",
-        "@Golestan_VPN - 👈 خرید کانفیگ",
-        "telegram 🌟 DailyV2ry 7",
-        "telegram 🚀 DailyV2ry 4",
-        "@meli_proxyy 19",
-        "@meli_proxyy 20",
-        "telegram 🍊 DailyV2ry 9",
-        "telegram 🚀 DailyV2ry 5",
-        "telegram 🍊 DailyV2ry 10",
-        "@meli_proxyy 21",
-        "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-        "@Golestan_VPN - 👈 خرید کانفیگ 2",
-        "@Golestan_VPN - 👈 خرید کانفیگ 3",
-        "telegram 🌺 DailyV2ry",
-        "🇭🇰 HK-1.65.209.56-6474",
-        "telegram 🌈 DailyV2ry",
-        "telegram 🍀 DailyV2ry",
-        "telegram 🌈 DailyV2ry 2",
-        "🏁RELAY-104.21.3.219-0980",
-        "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
-        "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
-        "telegram ☂️ DailyV2ry 2",
-        "telegram ☂️ DailyV2ry 3",
-        "telegram 🌈 DailyV2ry 3",
-        "telegram 🌈 DailyV2ry 4",
-        "telegram 🌺 DailyV2ry 2",
-        "telegram 🌺 DailyV2ry 3",
-        "telegram 🌺 DailyV2ry 4",
-        "telegram 🍀 DailyV2ry 2",
-        "telegram 🍀 DailyV2ry 3",
-        "telegram 🍀 DailyV2ry 4",
-        "telegram 🍊 DailyV2ry 11",
-        "telegram 🍊 DailyV2ry 12",
-        "telegram 🎪 DailyV2ry",
-        "telegram 🎪 DailyV2ry 2",
-        "telegram 🚀 DailyV2ry 6",
-        "🇫🇷 法国1 | ⬇️ 2.3MB/s",
-        "🇫🇷 法国2 | ⬇️ 4.1MB/s",
-        "🇯🇵 12|日本5|@ripaojiedian"
-      ],
-      "url": "http://www.gstatic.com/generate_204",
-      "interval": "1m",
-      "tolerance": 50
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇸🇷 بیا ‌کانال همیشه وصل باش SRCVPN@",
-      "type": "vless",
-      "server": "37.156.47.23",
-      "server_port": 6666,
-      "uuid": "%43%4F%44%5F%56%50%4E",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX/@V2RAXX"
-      }
-    },
-    {
-      "tag": "@meli_proxyy",
-      "type": "vless",
-      "server": "45.63.68.191",
-      "server_port": 8080,
-      "uuid": "0097a687-ee3d-48da-bf83-aabcd744fc05",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": ""
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 2",
-      "type": "vless",
-      "server": "45.77.120.195",
-      "server_port": 8080,
-      "uuid": "044ea0d1-309e-42a3-b9b0-a9fab400929e",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": ""
-        }
-      }
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry",
-      "type": "vless",
-      "server": "69.84.182.141",
-      "server_port": 443,
-      "uuid": "06e4425e-a8cb-4b63-929f-2105604ab0a9",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "hj.ylka.dpdns.org"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 3",
-      "type": "vless",
-      "server": "germany.gamingbazirani.ir",
-      "server_port": 600,
-      "uuid": "08fefda4-9bec-4f36-b673-8f8e6e60a8ff",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "marzban.negintel.xyz"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 4",
-      "type": "vless",
-      "server": "italy.gamingbazirani.ir",
-      "server_port": 600,
-      "uuid": "08fefda4-9bec-4f36-b673-8f8e6e60a8ff",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "marzban.negintel.xyz"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 5",
-      "type": "vless",
-      "server": "uk.gamingbazirani.ir",
-      "server_port": 17297,
-      "uuid": "08fefda4-9bec-4f36-b673-8f8e6e60a8ff",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.tgju.org",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "tw6uAbjXzRSIKChb6pDbHVNjnU9Don4hbv6dHRkmJx8",
-          "short_id": "85978f35bcf139b5"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 2",
-      "type": "vless",
-      "server": "tgju.org",
-      "server_port": 80,
-      "uuid": "0f8fac4e-4d6c-4f6c-8bc6-22a3c065ba6f",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "DAngeRouS-contacT.oNEeat.Co."
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "@meli_proxyy 6",
-      "type": "vless",
-      "server": "147.45.221.3",
-      "server_port": 2040,
-      "uuid": "10b59513-ef76-4494-a925-305ec45dd3a4",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "cdnjs.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "iPjWLvXWt7ABJaSRRwzjgLrvlJlwoYQZN8zF-G3D-Qs",
-          "short_id": "27cfa05000c23cc4"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 7",
-      "type": "vless",
-      "server": "104.21.16.1",
-      "server_port": 80,
-      "uuid": "10d9df89-9a20-4110-9711-bca119490ee9",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TM@AZAFBAYJAB1",
-        "headers": {
-          "Host": "masaleini.mahsaamini.dpdns.org"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry",
-      "type": "vless",
-      "server": "104.21.16.1",
-      "server_port": 80,
-      "uuid": "10d9df89-9a20-4110-9711-bca119490ee9",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TM@AZAFBAYJAB1",
-        "headers": {
-          "Host": "masaleini.mahsaamini.dpdns.org"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry",
-      "type": "vless",
-      "server": "144.202.11.194",
-      "server_port": 8080,
-      "uuid": "113955c8-4ae9-496e-849d-e13a9b0dd67a",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": ""
-        }
-      }
-    },
-    {
-      "tag": "@meli_peoxyy",
-      "type": "vless",
-      "server": "157.180.75.119",
-      "server_port": 8880,
-      "uuid": "14fa7d10-ba31-4cc2-9cb3-278902e7946a",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "@cephalon_ai_bot"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 8",
-      "type": "vless",
-      "server": "157.180.75.119",
-      "server_port": 8880,
-      "uuid": "14fa7d10-ba31-4cc2-9cb3-278902e7946a",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "@cephalon_ai_bot"
-      }
-    },
-    {
-      "tag": "🇩🇪 Channel id: @ShadowProxy66🇩🇪",
-      "type": "vless",
-      "server": "141.101.122.211",
-      "server_port": 2052,
-      "uuid": "16224e08-aa02-50b9-bb4b-0c97926a3d6a",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/vless",
-        "headers": {
-          "Host": "sPeedtest2.sbs.de.v2vless.sitespeedtest.net"
-        }
-      }
-    },
-    {
-      "tag": "@v2ray313 کانالمون 💪🏻",
-      "type": "vless",
-      "server": "65.109.212.145",
-      "server_port": 36716,
-      "uuid": "1792f052-6399-465c-8497-ed28d6dff638",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.cdn77.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "JbRBBeUXey0AAabQ4oLo7cp8YyBP_SX18gvU0CRuOiM",
-          "short_id": "b65d"
-        }
-      }
-    },
-    {
-      "tag": "✅سرورهایبیشتردرکانال:prrofile_purple@✅💷",
-      "type": "vless",
-      "server": "65.109.212.145",
-      "server_port": 36716,
-      "uuid": "1792f052-6399-465c-8497-ed28d6dff638",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.cdn77.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "JbRBBeUXey0AAabQ4oLo7cp8YyBP_SX18gvU0CRuOiM",
-          "short_id": "b65d"
-        }
-      }
-    },
-    {
-      "tag": "@meli_peoxyy 2",
-      "type": "vless",
-      "server": "65.109.212.145",
-      "server_port": 36716,
-      "uuid": "1792f052-6399-465c-8497-ed28d6dff638",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.cdn77.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "JbRBBeUXey0AAabQ4oLo7cp8YyBP_SX18gvU0CRuOiM",
-          "short_id": "b65d"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 9",
-      "type": "vless",
-      "server": "speedtest.net",
-      "server_port": 80,
-      "uuid": "17d7913a-da39-4e09-8634-8734679a19ae",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/olem/ws",
-        "headers": {
-          "Host": "foffmelo.com"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 1024
-      }
-    },
-    {
-      "tag": "@meli_proxyy 10",
-      "type": "vless",
-      "server": "zmaoz.faculty.ucdavis.edu",
-      "server_port": 80,
-      "uuid": "17d7913a-da39-4e09-8634-8734679a19ae",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/olem/ws",
-        "headers": {
-          "Host": "foffmelo.com"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 1024
-      }
-    },
-    {
-      "tag": "✅سرورهایبیشتردرکانال:prrofile_purple@✅🏅",
-      "type": "vless",
-      "server": "83.147.18.150",
-      "server_port": 443,
-      "uuid": "18a70b59-777a-4ad2-9a57-14f742e7ab76",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "snapp.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "NVyURHRuwh2Y4RxejiTR0tczjPM2pBVWkc6D7FCUkxA",
-          "short_id": "0126b9"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry 2",
-      "type": "vless",
-      "server": "64.176.201.252",
-      "server_port": 8080,
-      "uuid": "1fc2fd97-0e24-4eaf-fdb8-c18e55abe718",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": ""
-        }
-      }
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 2",
-      "type": "vless",
-      "server": "138.197.168.56",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 3",
-      "type": "vless",
-      "server": "142.93.158.200",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 4",
-      "type": "vless",
-      "server": "147.182.150.230",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 11",
-      "type": "vless",
-      "server": "159.203.11.74",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 3",
-      "type": "vless",
-      "server": "159.203.11.74",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 12",
-      "type": "vless",
-      "server": "159.203.11.94",
-      "server_port": 5376,
-      "uuid": "217b2806-44e6-4d84-bd1e-8431a9dcfba5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yoast.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "pAkjrjLJqt7c3xA-hkNJlDNUZGut9H8ZpUej1zMoAFI",
-          "short_id": "acf7d7"
-        }
-      }
-    },
-    {
-      "tag": "[🇨🇦]t.me/MoftConfig🆔 @MoftConfig",
-      "type": "trojan",
-      "server": "172.67.138.187",
-      "server_port": 443,
-      "password": "3d4ad187-b554-4300-bf71-d26c71962504",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "FFfgtyy.7282728.XYZ"
-      }
-    },
-    {
-      "tag": "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA1",
-      "type": "trojan",
-      "server": "154.17.31.167",
-      "server_port": 28331,
-      "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "basket.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF•••••••••••••••••••••••••••••••••••",
-      "type": "trojan",
-      "server": "154.17.31.167",
-      "server_port": 28331,
-      "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "basket.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_proxyyسرورای‌بیشتر",
-      "type": "trojan",
-      "server": "154.17.31.167",
-      "server_port": 28331,
-      "password": "Dea6yR4qDISnzRwj3eSClagCRCyXSZRzaNOYDAyS0NFY8ICzcF3C48RaIDyj4ZOgATuCAR2eFeFOSZD",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "basket.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 13",
-      "type": "trojan",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "password": "aTArbZ2F0E",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkvkws",
-        "headers": {
-          "Host": "uSa-vp-27.bLAzECLOUD.SITE"
-        }
-      }
-    },
-    {
-      "tag": "telegram ☂️ DailyV2ry",
-      "type": "trojan",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "password": "aTArbZ2F0E",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkvkws",
-        "headers": {
-          "Host": "uSa-vp-27.bLAzECLOUD.SITE"
-        }
-      }
-    },
-    {
-      "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 2",
-      "type": "trojan",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "password": "aTArbZ2F0E",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "uSa-vp-27.bLAzECLOUD.SITE"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkvkws",
-        "headers": {
-          "Host": "uSa-vp-27.bLAzECLOUD.SITE"
-        }
-      }
-    },
-    {
-      "tag": "@meli_proxyy 14",
-      "type": "trojan",
-      "server": "104.21.80.1",
-      "server_port": 443,
-      "password": "ca48571a-403f-44b9-b2a6-e17c36d7cacc",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "10r.iran1912.dpdns.org"
-      }
-    },
-    {
-      "tag": "⚜️Telegram:@IP_CF•••••••••••••••••••••••••••••••••••📢 Channel : @IP_CF_Config📢 Main Channel : @IP_CF••••••••••••••••••••••••••••••••••• 3",
-      "type": "trojan",
-      "server": "94.131.20.3",
-      "server_port": 443,
-      "password": "e6a2e741-0fce-440b-910c-b81325e2263a",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "cache-giver-wife.stark-industries.solutions"
-      }
-    },
-    {
-      "tag": "🇺🇸 Channel id: @ShadowProxy66🇺🇸USA2دو کانفیگ اختصاصی تروجان 🇺🇸 متصل با همه اپراتورها(به پینگ توی کلاینت حساس نشید)⚡️ @ShadowProxy66",
-      "type": "trojan",
-      "server": "154.17.21.41",
-      "server_port": 18332,
-      "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bedsheet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_proxyyسرورای‌بیشتر 2",
-      "type": "trojan",
-      "server": "154.17.21.41",
-      "server_port": 18332,
-      "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bedsheet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_peoxyy 3",
-      "type": "trojan",
-      "server": "154.17.21.41",
-      "server_port": 18332,
-      "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bedsheet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 15",
-      "type": "trojan",
-      "server": "154.17.21.41",
-      "server_port": 18332,
-      "password": "q8eDApT3ExAIX6SDK7pyexT9COyRXwuIclY0ZDaNF3p8ZAYCeSDA52BB2Z7w3zFlSa94z",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "bedsheet.homeofbrave.net"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 16",
-      "type": "trojan",
-      "server": "15.204.175.111",
-      "server_port": 2083,
-      "password": "t2WqbIW2JE",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "usa-vp-111.mETIkaPPs.cOm"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/linkvws",
-        "headers": {
-          "Host": "usa-vp-111.mETIkaPPs.cOm"
-        }
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️",
-      "type": "trojan",
-      "server": "13.36.247.226",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 2",
-      "type": "trojan",
-      "server": "13.37.27.97",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-      "type": "trojan",
-      "server": "13.37.27.97",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 3",
-      "type": "trojan",
-      "server": "13.37.64.182",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 4",
-      "type": "trojan",
-      "server": "13.51.117.245",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 5",
-      "type": "trojan",
-      "server": "13.53.33.12",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 6",
-      "type": "trojan",
-      "server": "13.62.8.215",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 7",
-      "type": "trojan",
-      "server": "15.236.121.158",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 8",
-      "type": "trojan",
-      "server": "15.236.97.249",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot 2",
-      "type": "trojan",
-      "server": "15.236.97.249",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 9",
-      "type": "trojan",
-      "server": "15.237.238.127",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 10",
-      "type": "trojan",
-      "server": "18.199.43.148",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 11",
-      "type": "trojan",
-      "server": "3.74.122.89",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "OurChannel : @DirectVPN🚀 @DirectVPN ✴️ 12",
-      "type": "trojan",
-      "server": "3.74.18.33",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "@meli_proxyy 17",
-      "type": "shadowsocks",
-      "server": "51.81.34.62",
-      "server_port": 18846,
-      "method": "chacha20-ietf-poly1305",
-      "password": "4404245ed8c34398"
-    },
-    {
-      "tag": "Server-1",
-      "type": "shadowsocks",
-      "server": "135.116.16.35",
-      "server_port": 48172,
-      "method": "chacha20-ietf-poly1305",
-      "password": "51yloQC8D9w1Wae7FHtI65"
-    },
-    {
-      "tag": "Server-2",
-      "type": "shadowsocks",
-      "server": "135.116.16.35",
-      "server_port": 48172,
-      "method": "chacha20-ietf-poly1305",
-      "password": "51yloQC8D9w1Wae7FHtI65"
-    },
-    {
-      "tag": "Server-3",
-      "type": "shadowsocks",
-      "server": "20.240.200.137",
-      "server_port": 48172,
-      "method": "chacha20-ietf-poly1305",
-      "password": "51yloQC8D9w1Wae7FHtI65"
-    },
-    {
-      "tag": "Server-4",
-      "type": "shadowsocks",
-      "server": "20.240.200.137",
-      "server_port": 48172,
-      "method": "chacha20-ietf-poly1305",
-      "password": "51yloQC8D9w1Wae7FHtI65"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 4",
-      "type": "shadowsocks",
-      "server": "51.195.221.43",
-      "server_port": 15119,
-      "method": "chacha20-ietf-poly1305",
-      "password": "9415c035950670bd"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 5",
-      "type": "shadowsocks",
-      "server": "212.56.42.162",
-      "server_port": 41078,
-      "method": "chacha20-ietf-poly1305",
-      "password": "9596922f76ceefde"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 6",
-      "type": "shadowsocks",
-      "server": "185.219.142.172",
-      "server_port": 28735,
-      "method": "chacha20-ietf-poly1305",
-      "password": "9cce8cf8a175fd79"
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 5",
-      "type": "shadowsocks",
-      "server": "217.77.2.248",
-      "server_port": 18423,
-      "method": "chacha20-ietf-poly1305",
-      "password": "236db24033925c93"
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 6",
-      "type": "shadowsocks",
-      "server": "66.94.112.154",
-      "server_port": 15568,
-      "method": "chacha20-ietf-poly1305",
-      "password": "2ac148af4b6d33e6"
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry 3",
-      "type": "shadowsocks",
-      "server": "148.113.201.160",
-      "server_port": 26491,
-      "method": "chacha20-ietf-poly1305",
-      "password": "2ed321a397eb97b7"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 7",
-      "type": "shadowsocks",
-      "server": "45.10.154.245",
-      "server_port": 16762,
-      "method": "chacha20-ietf-poly1305",
-      "password": "354fc5360a1382a4"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 8",
-      "type": "shadowsocks",
-      "server": "api.namasha.co",
-      "server_port": 443,
-      "method": "chacha20-ietf-poly1305",
-      "password": "u17T3BvpYaaiuW2c"
-    },
-    {
-      "tag": "@meli_proxyy 18",
-      "type": "shadowsocks",
-      "server": "62.60.152.158",
-      "server_port": 37618,
-      "method": "chacha20-ietf-poly1305",
-      "password": "y6fgyC28hscmdwqXj2v0Fm"
-    },
-    {
-      "tag": "@Golestan_VPN - 👈 خرید کانفیگ",
-      "type": "shadowsocks",
-      "server": "45.158.171.146",
-      "server_port": 8080,
-      "method": "chacha20-ietf-poly1305",
-      "password": "QCXDxuDlTTMD7jtgHUjIoj"
-    },
-    {
-      "tag": "telegram 🌟 DailyV2ry 7",
-      "type": "shadowsocks",
-      "server": "57.129.67.26",
-      "server_port": 48547,
-      "method": "chacha20-ietf-poly1305",
-      "password": "a875da78e291587b"
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry 4",
-      "type": "shadowsocks",
-      "server": "51.161.34.12",
-      "server_port": 47531,
-      "method": "chacha20-ietf-poly1305",
-      "password": "b2efa633e2e55cbf"
-    },
-    {
-      "tag": "@meli_proxyy 19",
-      "type": "shadowsocks",
-      "server": "85.239.239.182",
-      "server_port": 16309,
-      "method": "chacha20-ietf-poly1305",
-      "password": "c3462d3f6020528d"
-    },
-    {
-      "tag": "@meli_proxyy 20",
-      "type": "shadowsocks",
-      "server": "45.158.171.141",
-      "server_port": 8080,
-      "method": "chacha20-ietf-poly1305",
-      "password": "cvII85TrW6n0OGyfpHVS1u"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 9",
-      "type": "shadowsocks",
-      "server": "154.205.134.155",
-      "server_port": 24850,
-      "method": "chacha20-ietf-poly1305",
-      "password": "d54f10b4e72fa8f2"
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry 5",
-      "type": "shadowsocks",
-      "server": "94.72.104.119",
-      "server_port": 45979,
-      "method": "chacha20-ietf-poly1305",
-      "password": "ec708c1555abb290"
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 10",
-      "type": "shadowsocks",
-      "server": "212.102.47.131",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "shadowsocks"
-    },
-    {
-      "tag": "@meli_proxyy 21",
-      "type": "shadowsocks",
-      "server": "212.102.53.78",
-      "server_port": 443,
-      "method": "aes-128-gcm",
-      "password": "shadowsocks"
-    },
-    {
-      "tag": "🇰🇷 KR-154.90.63.177:989🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-      "type": "shadowsocks",
-      "server": "154.90.63.177",
-      "server_port": 989,
-      "method": "aes-256-cfb",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇺🇸 Ashburn, VA, United States (25)🤯 Get 1 year premium VPN (100 tokens) for just $0.03 👉 @vpnfail_bot",
-      "type": "shadowsocks",
-      "server": "67.220.95.102",
-      "server_port": 7307,
-      "method": "aes-256-gcm",
-      "password": "FoOiGlkAA9yPEGP"
-    },
-    {
-      "tag": "@Golestan_VPN - 👈 خرید کانفیگ 2",
-      "type": "vmess",
-      "server": "142.4.116.177",
-      "server_port": 50009,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 64,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@Golestan_VPN - 👈 خرید کانفیگ 3",
-      "type": "vmess",
-      "server": "43.153.104.62",
-      "server_port": 45113,
-      "uuid": "97cc0323-de53-4a75-d69d-c6acdac5fdc7",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/97cc0323"
-      }
-    },
-    {
-      "tag": "telegram 🌺 DailyV2ry",
-      "type": "vmess",
-      "server": "104.19.150.10",
-      "server_port": 80,
-      "uuid": "32763470-5925-4df8-a615-77a18d25eeac",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK-1.65.209.56-6474",
-      "type": "vmess",
-      "server": "60cd512f-sv2sg0-swbdgq-1iddy.hk.p5pv.com",
-      "server_port": 80,
-      "uuid": "e168c43e-c6d9-11ed-a8bf-f23c91cfbbc9",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "60cd512f-sv2sg0-swbdgq-1iddy.hk.p5pv.com"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "telegram 🌈 DailyV2ry",
-      "type": "vmess",
-      "server": "84a663fa-sunz40-swhx5y-1q3dm.hk.p5pv.com",
-      "server_port": 80,
-      "uuid": "c1785de0-212f-11ef-92aa-f23c9164ca5d",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "broadcastlv.chat.bilibili.com"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "telegram 🍀 DailyV2ry",
-      "type": "vmess",
-      "server": "152.67.251.232",
-      "server_port": 443,
-      "uuid": "e537f2f5-2a0c-4f59-92c9-832ca6433bf3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "irvideo.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "irvideo.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "telegram 🌈 DailyV2ry 2",
-      "type": "vmess",
-      "server": "172.66.168.209",
-      "server_port": 443,
-      "uuid": "5428dcc2-9950-4404-b8a5-9dac82acb210",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "maXNEtVIP-usA-VP3.nETKH3.SiTE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "maXNEtVIP-usA-VP3.nETKH3.SiTE"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🏁RELAY-104.21.3.219-0980",
-      "type": "vmess",
-      "server": "uswuxian.pai50288.uk",
-      "server_port": 8443,
-      "uuid": "c313606f-98c2-4d7b-ba74-48b94f61b11d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "uswuxian.pai50288.uk"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "uswuxian.pai50288.uk"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇮🇳 🔒 VM-TCP-NA 🇮🇳 IN-45.79.121.243:10002",
-      "type": "vmess",
-      "server": "45.79.121.243",
-      "server_port": 10002,
-      "uuid": "3699fa73-ac5c-41ca-8d6e-fe4cb70c7e02",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 🔒 VM-WS-TLS 🇭🇰 HK-182.237.0.127:1086",
-      "type": "vmess",
-      "server": "182.237.0.127",
-      "server_port": 1086,
-      "uuid": "5aef9bfd-20e3-420a-9b16-433031984bd9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hk-02.foxspirit.click"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "www.ouabaua.com"
-        },
-        "path": "/zxascas"
-      }
-    },
-    {
-      "tag": "telegram ☂️ DailyV2ry 2",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "37f464cb-b826-4278-9bf8-11bdf1ec892b",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "Fra-Vp-123.BLaZECLOUD.Site"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "Fra-Vp-123.BLaZECLOUD.Site"
-        },
-        "path": "/linvkws"
-      }
-    },
-    {
-      "tag": "telegram ☂️ DailyV2ry 3",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "96e44a22-4f5c-48f9-99d9-f2c1985dd5b9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "Usa-Vp-192.blazEcloudMAin.SitE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "Usa-Vp-192.blazEcloudMAin.SitE"
-        },
-        "path": "/linkvkws"
-      }
-    },
-    {
-      "tag": "telegram 🌈 DailyV2ry 3",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "2c329585-67a8-498b-8d38-176dac806bc7",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "MAxnETVipAP-ca2.MaxNetseRVIcES.OnLINE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "MAxnETVipAP-ca2.MaxNetseRVIcES.OnLINE"
-        },
-        "path": "/linkws",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "telegram 🌈 DailyV2ry 4",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "a7b0ae1e-5376-4441-abc4-45db4093e889",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "MaxNEtvip-usa1.MAXnEtcLOUDsERvICe.COM"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "MaxNEtvip-usa1.MAXnEtcLOUDsERvICe.COM"
-        },
-        "path": "/linkws",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "telegram 🌺 DailyV2ry 2",
-      "type": "vmess",
-      "server": "15.204.254.246",
-      "server_port": 443,
-      "uuid": "e3f4fcf6-e88e-40ec-b37f-70573da54a6d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "BLAze-usa-246.Vnetx-ServER.sItE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "BLAze-usa-246.Vnetx-ServER.sItE"
-        },
-        "path": "/linkvws"
-      }
-    },
-    {
-      "tag": "telegram 🌺 DailyV2ry 3",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "CANADa-199.BLaZecANADA.sIte"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "CANADa-199.BLaZecANADA.sIte"
-        },
-        "path": "/linkvkvws"
-      }
-    },
-    {
-      "tag": "telegram 🌺 DailyV2ry 4",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "CANADa-199.BLaZecANADA.sIte"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "CANADa-199.BLaZecANADA.sIte"
-        },
-        "path": "/linkvkvws"
-      }
-    },
-    {
-      "tag": "telegram 🍀 DailyV2ry 2",
-      "type": "vmess",
-      "server": "104.21.80.1",
-      "server_port": 2053,
-      "uuid": "0245c2d4-0ad1-4f0f-eb9c-fbd5f1c47be7",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "rak2.890601.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "rak2.890601.xyz"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "telegram 🍀 DailyV2ry 3",
-      "type": "vmess",
-      "server": "15.204.254.246",
-      "server_port": 443,
-      "uuid": "e3f4fcf6-e88e-40ec-b37f-70573da54a6d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "BLAze-usa-246.Vnetx-ServER.sItE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "BLAze-usa-246.Vnetx-ServER.sItE"
-        },
-        "path": "/linkvws"
-      }
-    },
-    {
-      "tag": "telegram 🍀 DailyV2ry 4",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "96e44a22-4f5c-48f9-99d9-f2c1985dd5b9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "Usa-Vp-192.blazEcloudMAin.SitE"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "Usa-Vp-192.blazEcloudMAin.SitE"
-        },
-        "path": "/linkvkws"
-      }
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 11",
-      "type": "vmess",
-      "server": "57.128.161.120",
-      "server_port": 443,
-      "uuid": "13aed4c8-21e8-4cba-a897-eb963b8cf1a2",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "BLAze-uk-120.VNETx-sErVer.SiTe"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "BLAze-uk-120.VNETx-sErVer.SiTe"
-        },
-        "path": "/linkvkws"
-      }
-    },
-    {
-      "tag": "telegram 🍊 DailyV2ry 12",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "37f464cb-b826-4278-9bf8-11bdf1ec892b",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "Fra-Vp-123.BLaZECLOUD.Site"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "Fra-Vp-123.BLaZECLOUD.Site"
-        },
-        "path": "/linvkws"
-      }
-    },
-    {
-      "tag": "telegram 🎪 DailyV2ry",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 2083,
-      "uuid": "698d9a5b-59dc-4ea6-b404-cd9e967fc54c",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "CanaDa-138.blAzecAnAdA.SITe"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "CanaDa-138.blAzecAnAdA.SITe"
-        },
-        "path": "/linkvkws"
-      }
-    },
-    {
-      "tag": "telegram 🎪 DailyV2ry 2",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "81380a5e-613c-4863-8b3a-5588f32690c3",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "MaXnEtVipAp-ca1.MaxnetserVicEs.ONliNe"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "MaXnEtVipAp-ca1.MaxnetserVicEs.ONliNe"
-        },
-        "path": "/linkws",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "telegram 🚀 DailyV2ry 6",
-      "type": "vmess",
-      "server": "cloudgetservice.mcloudservice.site",
-      "server_port": 443,
-      "uuid": "b87cea1d-d14c-45c3-af40-7af5d3be88da",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "CANADa-199.BLaZecANADA.sIte"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "CANADa-199.BLaZecANADA.sIte"
-        },
-        "path": "/linkvkvws"
-      }
-    },
-    {
-      "tag": "🇫🇷 法国1 | ⬇️ 2.3MB/s",
-      "type": "vmess",
-      "server": "172.67.198.187",
-      "server_port": 443,
-      "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xmivideo.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xmivideo.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇫🇷 法国2 | ⬇️ 4.1MB/s",
-      "type": "vmess",
-      "server": "104.19.32.0",
-      "server_port": 443,
-      "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xmivideo.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xmivideo.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇯🇵 12|日本5|@ripaojiedian",
-      "type": "vmess",
-      "server": "47.74.41.147",
-      "server_port": 53893,
-      "uuid": "07287360-e12f-4f94-9c7a-54386c100d8a",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
