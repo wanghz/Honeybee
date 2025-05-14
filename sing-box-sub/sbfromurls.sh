@@ -78,6 +78,11 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/^https:\/\/hiddify-freevpnhomes-subscription\.meshkintaj\.homes/d' \
        -e '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' \
        -e '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' \
+       -e '/\/mai19950/d' \
+       -e '/Roywaller/d' \
+       -e '/Ruk1ng001/d' \
+       -e '/\/leetomlee123/d' \
+       -e '/\/snakem982\/proxypool\/refs\/heads\/main\/source\/v2ray\.txt/d' \
        -e '/airport/d' \
        -e '/space-00/d' \
        -e '/http:\/\/175\.178\.182\.178:12580/d' \
