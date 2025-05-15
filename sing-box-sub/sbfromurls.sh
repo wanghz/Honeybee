@@ -68,7 +68,7 @@ echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main
 #echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
 # 删除一些找不到的或没内容的
 sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
-       -e '/Vauth\/node\/main\/Master/d' \
+       -e '/Vauth/d' \
        -e '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' \
        -e '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' \
        -e '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' \
