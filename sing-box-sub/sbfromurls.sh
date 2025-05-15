@@ -55,17 +55,17 @@ echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main
 echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/France.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Canada.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Au.txt">>localurl.txt
-echo "https://hideshots.eu/sub.txt">>localurl.txt
+#echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
+#echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
-echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
-echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
-echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
-echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
-echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
+#echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
+#echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
+#echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
+#echo "https://clash.crossxx.com/sub/vmess/1734076804" >> localurl.txt
+#echo "https://clash.crossxx.com/sub/hysteria/1734076804" >> localurl.txt
 # 删除一些找不到的或没内容的
 sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Vauth\/node\/main\/Master/d' \
@@ -84,7 +84,11 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/\/leetomlee123/d' \
        -e '/\/snakem982\/proxypool\/refs\/heads\/main\/source\/v2ray\.txt/d' \
        -e '/airport/d' \
+       -e '/aiboboxx/d' \
+       -e '/a2470982985/d' \
+       -e '/a2470982985/getNode/main/clash.yaml/d' \
        -e '/space-00/d' \
+       -e '/crossxx/d' \
        -e '/http:\/\/175\.178\.182\.178:12580/d' \
        -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
