@@ -9,7 +9,6 @@ local="https://raw.githubusercontent.com/wanghz/Honeybee/refs/heads/main/sing-bo
 curl "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/nodelist.txt" -o snakem982url1.txt 
 curl "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/proxies.txt" -o snakem982url2.txt 
 curl "https://raw.githubusercontent.com/LalatinaHub/Mineral/refs/heads/master/result/subs" -o url3.txt 
-curl "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/refs/heads/main/working/links.json" -o temp_links.json
 
 curl -o localurl.txt "$local"
 echo "" >> localurl.txt
@@ -24,11 +23,6 @@ echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> local
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
-echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml" >> localurl.txt
-echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/v2ray.txt" >> localurl.txt
-echo "https://raw.githubusercontent.com/aiboboxx/clashfree/refs/heads/main/clash.yml" >> localurl.txt
-echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
-echo "https://raw.githubusercontent.com/Flikify/getNode/refs/heads/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >> localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11" >> localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
@@ -36,7 +30,6 @@ echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLE
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/mheidari98/.proxy/refs/heads/main/trojan">> localurl.txt
 echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/main/sub/hysteriabase64">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/main/subscribe/protocols/vless">>localurl.txt
@@ -87,11 +80,9 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/airport/d' \
        -e '/aiboboxx/d' \
        -e '/a2470982985/d' \
-       -e '/a2470982985/getNode/main/clash.yaml/d' \
        -e '/space-00/d' \
        -e '/crossxx/d' \
        -e '/http:\/\/175\.178\.182\.178:12580/d' \
-       -e '/aiboboxx\/clashfree\/main\/clash\.yml/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
        -e '/\/v2tel_links[0-9]\+.txt/d'  \
@@ -102,8 +93,8 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
 # 使用命令组合提取指定行，并用 mapfile 读入数组
 filename="localurl.txt"
 mapfile -t urls < <(
-  sed -n  '1p;4p;8p;32p;33p' "$filename"
-  tail -n 68 "$filename"
+  sed -n  '1p;4p;32p;33p' "$filename"
+  tail -n 70 "$filename"
 )
 
 counter=1
