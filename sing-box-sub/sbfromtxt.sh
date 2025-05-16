@@ -49,5 +49,7 @@ for file in "${links[@]}"; do
     ((counter++))
 done
 
+rm -f split_*
+
 
 
