@@ -38,7 +38,7 @@ links=(
         "https://raw.githubusercontent.com/V2RAYCONFIGSPOOL/V2RAY_SUB/refs/heads/main/v2ray_configs.txt"
         "https://raw.githubusercontent.com/kSLAWIASCA/actions/refs/heads/main/Clash.yml"
 )
-counter=30
+counter=60
 for file in "${links[@]}"; do
     # 在这里添加您的提取逻辑
     echo "Extracting from local file: $file"
