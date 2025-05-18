@@ -1,341 +1,340 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
         "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "距离下次重置剩余：12 天",
+                "🇮🇶 Iraq-1x",
+                "🇫🇷 France-1x",
+                "套餐到期：2025-06-19",
+                "剩余流量：120 GB",
+                "🇩🇪 Germany-1x",
+                "🇸🇬 Singapore-1x",
+                "🇦🇪 Dubai-1x",
+                "🇮🇳 India-1x"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "距离下次重置剩余：12 天",
+                "🇮🇶 Iraq-1x",
+                "🇫🇷 France-1x",
+                "套餐到期：2025-06-19",
+                "剩余流量：120 GB",
+                "🇩🇪 Germany-1x",
+                "🇸🇬 Singapore-1x",
+                "🇦🇪 Dubai-1x",
+                "🇮🇳 India-1x"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhifg.54264944.xyz",
+            "server_port": 43999,
+            "tag": "距离下次重置剩余：12 天",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhifr.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhiylk.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇮🇶 Iraq-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhiylk.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhifg.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇫🇷 France-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhifr.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhifg.54264944.xyz",
+            "server_port": 43999,
+            "tag": "套餐到期：2025-06-19",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhifr.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhifg.54264944.xyz",
+            "server_port": 43999,
+            "tag": "剩余流量：120 GB",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhifr.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhidg.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇩🇪 Germany-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhidg.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhixjp.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇸🇬 Singapore-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhixjp.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhidb.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇦🇪 Dubai-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhidb.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
+            "server": "jiangzhiyd.54264944.xyz",
+            "server_port": 43999,
+            "tag": "🇮🇳 India-1x",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "jiangzhiyd.54264944.xyz"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "距离下次重置剩余：12 天",
-        "🇮🇶 Iraq-1x",
-        "🇫🇷 France-1x",
-        "套餐到期：2025-06-19",
-        "剩余流量：120 GB",
-        "🇩🇪 Germany-1x",
-        "🇸🇬 Singapore-1x",
-        "🇦🇪 Dubai-1x",
-        "🇮🇳 India-1x"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "距离下次重置剩余：12 天",
-        "🇮🇶 Iraq-1x",
-        "🇫🇷 France-1x",
-        "套餐到期：2025-06-19",
-        "剩余流量：120 GB",
-        "🇩🇪 Germany-1x",
-        "🇸🇬 Singapore-1x",
-        "🇦🇪 Dubai-1x",
-        "🇮🇳 India-1x"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "距离下次重置剩余：12 天",
-      "type": "hysteria2",
-      "server": "jiangzhifg.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhifr.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇮🇶 Iraq-1x",
-      "type": "hysteria2",
-      "server": "jiangzhiylk.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhiylk.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇫🇷 France-1x",
-      "type": "hysteria2",
-      "server": "jiangzhifg.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhifr.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "套餐到期：2025-06-19",
-      "type": "hysteria2",
-      "server": "jiangzhifg.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhifr.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "剩余流量：120 GB",
-      "type": "hysteria2",
-      "server": "jiangzhifg.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhifr.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇩🇪 Germany-1x",
-      "type": "hysteria2",
-      "server": "jiangzhidg.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhidg.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇸🇬 Singapore-1x",
-      "type": "hysteria2",
-      "server": "jiangzhixjp.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhixjp.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇦🇪 Dubai-1x",
-      "type": "hysteria2",
-      "server": "jiangzhidb.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhidb.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇮🇳 India-1x",
-      "type": "hysteria2",
-      "server": "jiangzhiyd.54264944.xyz",
-      "server_port": 43999,
-      "password": "d00726a2-ff53-4a7d-a497-9df26d793e77",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "jiangzhiyd.54264944.xyz",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
