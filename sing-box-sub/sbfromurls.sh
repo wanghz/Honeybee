@@ -40,14 +40,6 @@ echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/ref
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
 echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/one_file_vpn.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/two_file_vpn.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/AvenCores/goida-vpn-configs/refs/heads/main/three_file_vpn.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/United_States.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/De.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/France.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Canada.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/SoliSpirit/v2ray-configs/refs/heads/main/Countries/Au.txt">>localurl.txt
 #echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
@@ -73,6 +65,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' \
        -e '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' \
        -e '/\/mai19950/d' \
+       -e '/zhlx2835/d' \
        -e '/Roywaller/d' \
        -e '/Ruk1ng001/d' \
        -e '/\/leetomlee123/d' \
