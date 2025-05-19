@@ -1,8 +1,34 @@
 #!/bin/bash
 all_files=(
-        "split_1k"
         "htonly.yml"
 )
+
+URL="https://github.com/Alvin9999/new-pac/wiki/v2ray%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7"
+# 使用 curl 获取网页内容，并用 pup 提取指定元素
+CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(22) > pre text{}')
+if [ -n "$CONTENT" ]; then
+  echo "$CONTENT" 
+  echo "$CONTENT" > split_alv
+else
+  echo "No content extracted" >&2
+fi
+
+CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(27) > pre text{}')
+if [ -n "$CONTENT" ]; then
+  echo "$CONTENT" 
+  echo "$CONTENT" >> split_alv
+else
+  echo "No content extracted" >&2
+fi
+
+URL="https://github.com/Alvin9999/new-pac/wiki/ss%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7"
+CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(25) > pre text{}')
+if [ -n "$CONTENT" ]; then
+  echo "$CONTENT" 
+  echo "$CONTENT" >> split_alv
+else
+  echo "No content extracted" >&2
+fi
 
 # 添加find找到的文件到数组
 while IFS= read -r file; do
