@@ -85,7 +85,7 @@ URL="https://github.com/Alvin9999/new-pac/wiki/v2ray%E5%85%8D%E8%B4%B9%E8%B4%A6%
 CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(22) > pre text{}')
 if [ -n "$CONTENT" ]; then
   echo "$CONTENT" 
-  echo "$CONTENT" >> split_act
+  echo "$CONTENT" > split_alv
 else
   echo "No content extracted" >&2
 fi
@@ -93,7 +93,7 @@ fi
 CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(27) > pre text{}')
 if [ -n "$CONTENT" ]; then
   echo "$CONTENT" 
-  echo "$CONTENT" >> split_act
+  echo "$CONTENT" >> split_alv
 else
   echo "No content extracted" >&2
 fi
@@ -102,7 +102,7 @@ URL="https://github.com/Alvin9999/new-pac/wiki/ss%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%
 CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(25) > pre text{}')
 if [ -n "$CONTENT" ]; then
   echo "$CONTENT" 
-  echo "$CONTENT" >> split_act
+  echo "$CONTENT" >> split_alv
 else
   echo "No content extracted" >&2
 fi
