@@ -3,6 +3,9 @@ all_files=(
         "htonly.yml"
 )
 
+wget https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip
+unzip pup_v0.4.0_linux_amd64.zip
+sudo mv pup /usr/local/bin/
 URL="https://github.com/Alvin9999/new-pac/wiki/v2ray%E5%85%8D%E8%B4%B9%E8%B4%A6%E5%8F%B7"
 # 使用 curl 获取网页内容，并用 pup 提取指定元素
 CONTENT=$(curl -s "$URL" | pup '#wiki-body > div > div:nth-child(22) > pre text{}')
