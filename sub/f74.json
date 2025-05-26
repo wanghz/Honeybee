@@ -1,2423 +1,947 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
         "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "🇩🇪 DE_3",
+                "🇫🇷 FR_10",
+                "🇫🇷 FR_8",
+                "🇭🇰 HK_1",
+                "🇷🇺 RU_1",
+                "🇷🇺 RU_2",
+                "🇷🇺 RU_3",
+                "🇸🇬 SG_1",
+                "🇸🇬 SG_2",
+                "🇹🇷 TR_1",
+                "🇹🇷 TR_2",
+                "🇹🇷 TR_3",
+                "UN_1",
+                "🇺🇸 US_1",
+                "🇺🇸 US_10",
+                "🇺🇸 US_11",
+                "🇺🇸 US_13",
+                "🇺🇸 US_14",
+                "🇺🇸 US_15",
+                "🇺🇸 US_16",
+                "🇺🇸 US_17",
+                "🇺🇸 US_19",
+                "🇺🇸 US_2",
+                "🇺🇸 US_20",
+                "🇺🇸 US_21",
+                "🇺🇸 US_22",
+                "🇺🇸 US_24",
+                "🇺🇸 US_25",
+                "🇺🇸 US_26",
+                "🇺🇸 US_27",
+                "🇺🇸 US_28",
+                "🇺🇸 US_29",
+                "🇺🇸 US_30",
+                "🇺🇸 US_31",
+                "🇺🇸 US_33",
+                "🇺🇸 US_6",
+                "🇺🇸 US_8",
+                "🇺🇸 US_9",
+                "🇻🇳 VN_1",
+                "🇻🇳 VN_2"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇩🇪 DE_3",
+                "🇫🇷 FR_10",
+                "🇫🇷 FR_8",
+                "🇭🇰 HK_1",
+                "🇷🇺 RU_1",
+                "🇷🇺 RU_2",
+                "🇷🇺 RU_3",
+                "🇸🇬 SG_1",
+                "🇸🇬 SG_2",
+                "🇹🇷 TR_1",
+                "🇹🇷 TR_2",
+                "🇹🇷 TR_3",
+                "UN_1",
+                "🇺🇸 US_1",
+                "🇺🇸 US_10",
+                "🇺🇸 US_11",
+                "🇺🇸 US_13",
+                "🇺🇸 US_14",
+                "🇺🇸 US_15",
+                "🇺🇸 US_16",
+                "🇺🇸 US_17",
+                "🇺🇸 US_19",
+                "🇺🇸 US_2",
+                "🇺🇸 US_20",
+                "🇺🇸 US_21",
+                "🇺🇸 US_22",
+                "🇺🇸 US_24",
+                "🇺🇸 US_25",
+                "🇺🇸 US_26",
+                "🇺🇸 US_27",
+                "🇺🇸 US_28",
+                "🇺🇸 US_29",
+                "🇺🇸 US_30",
+                "🇺🇸 US_31",
+                "🇺🇸 US_33",
+                "🇺🇸 US_6",
+                "🇺🇸 US_8",
+                "🇺🇸 US_9",
+                "🇻🇳 VN_1",
+                "🇻🇳 VN_2"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "down_mbps": 100,
+            "password": "afcbb76e-860b-4277-8f5c-5dfc4c91a64c",
+            "server": "141.147.48.166",
+            "server_port": 55110,
+            "tag": "🇩🇪 DE_3",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.bing.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
+            "server": "fr1.node.cross666.top",
+            "server_port": 35398,
+            "tag": "🇫🇷 FR_10",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "ubuntu.mirrors.ovh.net"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
+            "server": "fr1.node.cross666.top",
+            "server_port": 37602,
+            "tag": "🇫🇷 FR_8",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "ubuntu.mirrors.ovh.net"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "afc216c8-e407-48e0-86b1-6bf20f709c72",
+            "server": "hka.node.cross666.top",
+            "server_port": 35557,
+            "tag": "🇭🇰 HK_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirrors.xtom.hk"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "c6d93228-6393-41ec-8403-da852407390a",
+            "server": "rua.node.cross666.top",
+            "server_port": 36010,
+            "tag": "🇷🇺 RU_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.hyperdedic.ru"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "c6d93228-6393-41ec-8403-da852407390a",
+            "server": "rua.node.cross666.top",
+            "server_port": 39106,
+            "tag": "🇷🇺 RU_2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.hyperdedic.ru"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "NDhhNmY5YTY0MGYzOTgxYQ==",
+                "type": "salamander"
+            },
+            "password": "2472eee9-f584-4524-835d-b9c2345b8dd9",
+            "server": "45.147.201.231",
+            "server_port": 30073,
+            "tag": "🇷🇺 RU_3",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
+            "server": "sg02.node.cross666.top",
+            "server_port": 38413,
+            "tag": "🇸🇬 SG_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.sg.gs"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "c6c1e4eb-06de-450a-9ad6-14a903db8406",
+            "server": "sg02.node.cross666.top",
+            "server_port": 38176,
+            "tag": "🇸🇬 SG_2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.sg.gs"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "0e00f9c1-65c3-4e20-9da8-47fa7c363423",
+            "server": "tr01.node.cross666.top",
+            "server_port": 39587,
+            "tag": "🇹🇷 TR_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.dogado.de"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "3fc383ac-5934-4139-a9a6-dbad72c41027",
+            "server": "tr01.node.cross666.top",
+            "server_port": 38163,
+            "tag": "🇹🇷 TR_2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.dogado.de"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "85ac1c2d-f3c4-496d-9a01-8d0d84eab17d",
+            "server": "tr01.node.cross666.top",
+            "server_port": 36838,
+            "tag": "🇹🇷 TR_3",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.dogado.de"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "afcbb76e-860b-4277-8f5c-5dfc4c91a64c",
+            "server": "140.245.35.137",
+            "server_port": 44111,
+            "tag": "UN_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.bing.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.26.13.54",
+            "server_port": 80,
+            "tag": "🇺🇸 US_1",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "REEdfREe8MahSaNg2.rEDOrG.IR"
+                },
+                "max_early_data": 2560,
+                "path": "/vpnowl",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "password": "21e5535e-4783-4a80-a735-24a1162d315c",
+            "server": "104.21.28.26",
+            "server_port": 443,
+            "tag": "🇺🇸 US_10",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "xxscdF56.999182.xYZ"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xxscdF56.999182.xYZ"
+                },
+                "path": "/cxZq9RPkYdTWbh4hKwvQX9",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.193.58.59",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_11",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "us.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "down_mbps": 100,
+            "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
+            "server": "us01.node.cross666.top",
+            "server_port": 35891,
+            "tag": "🇺🇸 US_13",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "173.245.58.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_14",
+            "transport": {
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "25.25.25.19",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_15",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "hk.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram🇨🇳 @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.71.112",
+            "server_port": 443,
+            "tag": "🇺🇸 US_16",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xSWe34.288288.ShoP",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xSWe34.288288.ShoP"
+                },
+                "path": "/wAlPWPCQWnsVcNgLsMVz",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "4e41764d-ac31-43f5-8e9b-231ddf252d1f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "103.169.142.29",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_17",
+            "transport": {
+                "headers": {
+                    "Host": "hk.laoyoutiao.link"
+                },
+                "path": "/TelegramU0001F1E8U0001F1F3",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "108.162.198.29",
+            "server_port": 80,
+            "tag": "🇺🇸 US_19",
+            "transport": {
+                "headers": {
+                    "Host": "REEdfREe8MahSaNg2.rEDOrG.IR"
+                },
+                "path": "/Join_Bade_Channel@JOKERRVPNTELEGRAM----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "down_mbps": 100,
+            "password": "d9485ee3-7afd-45c3-92fb-fce765618b2b",
+            "server": "us01.node.cross666.top",
+            "server_port": 36213,
+            "tag": "🇺🇸 US_2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "85ac1c2d-f3c4-496d-9a01-8d0d84eab17d",
+            "server": "use.node.cross666.top",
+            "server_port": 36216,
+            "tag": "🇺🇸 US_20",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "168.100.6.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_21",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "141.193.213.54",
+            "server_port": 80,
+            "tag": "🇺🇸 US_22",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "us.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "/Telegram🇨🇳 @MxlShare @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "down_mbps": 100,
+            "password": "e88cb266-71c1-4d02-acf1-86d208fc7371",
+            "server": "us4.node.cross666.top",
+            "server_port": 37130,
+            "tag": "🇺🇸 US_24",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
+            "server": "us01.node.cross666.top",
+            "server_port": 38166,
+            "tag": "🇺🇸 US_25",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.50.19",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_26",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "hk.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram🇨🇳 @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.25.95",
+            "server_port": 443,
+            "tag": "🇺🇸 US_27",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "CcP.890604.FIleGear-sg.me",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "CcP.890604.FIleGear-sg.me"
+                },
+                "path": "/h1iXYtqUZkDQMvgKagyIefJfM0OQ",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "43324bdf-a0e8-4f6f-8bdc-5482db82fd0f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.22.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_28",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "ip.langmanshanxi.top"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram🇨🇳 @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "583ceab3-4022-4553-9158-9bedc625ad4e"
+        },
+        {
+            "down_mbps": 100,
+            "password": "3fc383ac-5934-4139-a9a6-dbad72c41027",
+            "server": "us4.node.cross666.top",
+            "server_port": 37234,
+            "tag": "🇺🇸 US_29",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.148.106.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_30",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "us.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "/telegramu0001f1e8u0001f1f3 @mxlshare @wangcai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "5.10.215.51",
+            "server_port": 8880,
+            "tag": "🇺🇸 US_31",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.21.80.1",
+            "server_port": 2087,
+            "tag": "🇺🇸 US_33",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "cc2d2.988988.shop"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "cc2d2.988988.shop"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "8f78e709-2c5f-4c19-9f44-b5b5f80ab74c"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.26.12.101",
+            "server_port": 2052,
+            "tag": "🇺🇸 US_6",
+            "transport": {
+                "headers": {
+                    "Host": "Yak-Khanda-kUn-eY-gUL.biNG.com.xn--cR8HaaaAaAAAaAaaAaAaAAaAAaaaAAAAAaAaaAaaaAaaaaAAaaAAAaaaaAa.xN--Cr8hAaAaaAaaAAAAAAaaaAAAaAAaaAaAaAAAAAA.TREPAspeEdTEsT.NEtrag.cOm.PX.Com.sh017.IR.XN--Cr8hAaaAaaAaaAaaaAAAaaaAaaAaaaAaAAAaaaA.yek.dDnS-ip.nEt"
+                },
+                "path": "/client/?@",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "dfc1a9ab-6241-4b73-92f7-b299fc6b7751"
+        },
+        {
+            "down_mbps": 100,
+            "password": "afc216c8-e407-48e0-86b1-6bf20f709c72",
+            "server": "us4.node.cross666.top",
+            "server_port": 36645,
+            "tag": "🇺🇸 US_8",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yahoo.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "password": "6884d714-d3c4-4b49-aa20-767ea92837d6",
+            "server": "149.129.8.215",
+            "server_port": 443,
+            "tag": "🇺🇸 US_9",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "icecream.955850.xyz"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "icecream.955850.xyz"
+                },
+                "path": "/proxyip=149.129.8.215:443&proxyIP=null",
+                "type": "ws"
+            },
+            "type": "trojan"
+        },
+        {
+            "down_mbps": 100,
+            "password": "f9153abe-88d9-4ad7-a3a7-01eff2790b3e",
+            "server": "vn1r.node.cross666.top",
+            "server_port": 39762,
+            "tag": "🇻🇳 VN_1",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.sg.gs"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "f9153abe-88d9-4ad7-a3a7-01eff2790b3e",
+            "server": "vn1r.node.cross666.top",
+            "server_port": 36074,
+            "tag": "🇻🇳 VN_2",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mirror.sg.gs"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇨🇦 CA_1",
-        "🇨🇦 CA_10",
-        "🇨🇦 CA_2",
-        "🇨🇦 CA_3",
-        "🇨🇦 CA_4",
-        "🇨🇦 CA_5",
-        "🇨🇦 CA_6",
-        "🇨🇦 CA_7",
-        "🇨🇦 CA_8",
-        "🇨🇦 CA_9",
-        "🇩🇪 DE_1",
-        "🇩🇪 DE_2",
-        "🇩🇪 DE_3",
-        "🇩🇪 DE_4",
-        "🇩🇪 DE_5",
-        "🇫🇷 FR_1",
-        "🇫🇷 FR_10",
-        "🇫🇷 FR_11",
-        "🇫🇷 FR_2",
-        "🇫🇷 FR_3",
-        "🇫🇷 FR_4",
-        "🇫🇷 FR_5",
-        "🇫🇷 FR_6",
-        "🇫🇷 FR_7",
-        "🇫🇷 FR_8",
-        "🇫🇷 FR_9",
-        "GB_1",
-        "GB_2",
-        "GB_3",
-        "GB_4",
-        "GB_5",
-        "GB_6",
-        "GB_7",
-        "GB_8",
-        "GB_9",
-        "🇭🇰 HK_1",
-        "🇮🇪 IE_1",
-        "🇮🇪 IE_10",
-        "🇮🇪 IE_11",
-        "🇮🇪 IE_12",
-        "🇮🇪 IE_2",
-        "🇮🇪 IE_3",
-        "🇮🇪 IE_4",
-        "🇮🇪 IE_5",
-        "🇮🇪 IE_6",
-        "🇮🇪 IE_7",
-        "🇮🇪 IE_8",
-        "🇮🇪 IE_9",
-        "🇷🇺 RU_1",
-        "🇷🇺 RU_2",
-        "🇷🇺 RU_3",
-        "🇸🇪 SE_1",
-        "🇸🇪 SE_2",
-        "🇸🇪 SE_3",
-        "🇸🇪 SE_4",
-        "🇸🇪 SE_5",
-        "🇸🇪 SE_6",
-        "🇸🇪 SE_7",
-        "🇸🇬 SG_1",
-        "🇸🇬 SG_2",
-        "🇹🇷 TR_1",
-        "🇹🇷 TR_2",
-        "🇹🇷 TR_3",
-        "UN_1",
-        "🇺🇸 US_1",
-        "🇺🇸 US_10",
-        "🇺🇸 US_11",
-        "🇺🇸 US_12",
-        "🇺🇸 US_13",
-        "🇺🇸 US_14",
-        "🇺🇸 US_15",
-        "🇺🇸 US_16",
-        "🇺🇸 US_17",
-        "🇺🇸 US_18",
-        "🇺🇸 US_19",
-        "🇺🇸 US_2",
-        "🇺🇸 US_20",
-        "🇺🇸 US_21",
-        "🇺🇸 US_22",
-        "🇺🇸 US_23",
-        "🇺🇸 US_24",
-        "🇺🇸 US_25",
-        "🇺🇸 US_26",
-        "🇺🇸 US_27",
-        "🇺🇸 US_28",
-        "🇺🇸 US_29",
-        "🇺🇸 US_3",
-        "🇺🇸 US_30",
-        "🇺🇸 US_31",
-        "🇺🇸 US_32",
-        "🇺🇸 US_33",
-        "🇺🇸 US_4",
-        "🇺🇸 US_5",
-        "🇺🇸 US_6",
-        "🇺🇸 US_7",
-        "🇺🇸 US_8",
-        "🇺🇸 US_9",
-        "🇻🇳 VN_1",
-        "🇻🇳 VN_2"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇨🇦 CA_1",
-        "🇨🇦 CA_10",
-        "🇨🇦 CA_2",
-        "🇨🇦 CA_3",
-        "🇨🇦 CA_4",
-        "🇨🇦 CA_5",
-        "🇨🇦 CA_6",
-        "🇨🇦 CA_7",
-        "🇨🇦 CA_8",
-        "🇨🇦 CA_9",
-        "🇩🇪 DE_1",
-        "🇩🇪 DE_2",
-        "🇩🇪 DE_3",
-        "🇩🇪 DE_4",
-        "🇩🇪 DE_5",
-        "🇫🇷 FR_1",
-        "🇫🇷 FR_10",
-        "🇫🇷 FR_11",
-        "🇫🇷 FR_2",
-        "🇫🇷 FR_3",
-        "🇫🇷 FR_4",
-        "🇫🇷 FR_5",
-        "🇫🇷 FR_6",
-        "🇫🇷 FR_7",
-        "🇫🇷 FR_8",
-        "🇫🇷 FR_9",
-        "GB_1",
-        "GB_2",
-        "GB_3",
-        "GB_4",
-        "GB_5",
-        "GB_6",
-        "GB_7",
-        "GB_8",
-        "GB_9",
-        "🇭🇰 HK_1",
-        "🇮🇪 IE_1",
-        "🇮🇪 IE_10",
-        "🇮🇪 IE_11",
-        "🇮🇪 IE_12",
-        "🇮🇪 IE_2",
-        "🇮🇪 IE_3",
-        "🇮🇪 IE_4",
-        "🇮🇪 IE_5",
-        "🇮🇪 IE_6",
-        "🇮🇪 IE_7",
-        "🇮🇪 IE_8",
-        "🇮🇪 IE_9",
-        "🇷🇺 RU_1",
-        "🇷🇺 RU_2",
-        "🇷🇺 RU_3",
-        "🇸🇪 SE_1",
-        "🇸🇪 SE_2",
-        "🇸🇪 SE_3",
-        "🇸🇪 SE_4",
-        "🇸🇪 SE_5",
-        "🇸🇪 SE_6",
-        "🇸🇪 SE_7",
-        "🇸🇬 SG_1",
-        "🇸🇬 SG_2",
-        "🇹🇷 TR_1",
-        "🇹🇷 TR_2",
-        "🇹🇷 TR_3",
-        "UN_1",
-        "🇺🇸 US_1",
-        "🇺🇸 US_10",
-        "🇺🇸 US_11",
-        "🇺🇸 US_12",
-        "🇺🇸 US_13",
-        "🇺🇸 US_14",
-        "🇺🇸 US_15",
-        "🇺🇸 US_16",
-        "🇺🇸 US_17",
-        "🇺🇸 US_18",
-        "🇺🇸 US_19",
-        "🇺🇸 US_2",
-        "🇺🇸 US_20",
-        "🇺🇸 US_21",
-        "🇺🇸 US_22",
-        "🇺🇸 US_23",
-        "🇺🇸 US_24",
-        "🇺🇸 US_25",
-        "🇺🇸 US_26",
-        "🇺🇸 US_27",
-        "🇺🇸 US_28",
-        "🇺🇸 US_29",
-        "🇺🇸 US_3",
-        "🇺🇸 US_30",
-        "🇺🇸 US_31",
-        "🇺🇸 US_32",
-        "🇺🇸 US_33",
-        "🇺🇸 US_4",
-        "🇺🇸 US_5",
-        "🇺🇸 US_6",
-        "🇺🇸 US_7",
-        "🇺🇸 US_8",
-        "🇺🇸 US_9",
-        "🇻🇳 VN_1",
-        "🇻🇳 VN_2"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇨🇦 CA_1",
-      "type": "vless",
-      "server": "3.98.96.132",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_10",
-      "type": "vless",
-      "server": "99.79.65.218",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_2",
-      "type": "vless",
-      "server": "35.182.212.235",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_3",
-      "type": "vless",
-      "server": "3.99.149.96",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_4",
-      "type": "vless",
-      "server": "3.96.55.227",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_5",
-      "type": "vless",
-      "server": "35.183.12.191",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_6",
-      "type": "vless",
-      "server": "35.183.133.199",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_7",
-      "type": "vless",
-      "server": "15.156.96.182",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_8",
-      "type": "vless",
-      "server": "35.183.180.39",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_9",
-      "type": "vless",
-      "server": "35.182.194.220",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_1",
-      "type": "vless",
-      "server": "35.159.82.156",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_2",
-      "type": "vless",
-      "server": "54.93.226.118",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_3",
-      "type": "hysteria2",
-      "server": "141.147.48.166",
-      "server_port": 55110,
-      "password": "afcbb76e-860b-4277-8f5c-5dfc4c91a64c",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.bing.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_4",
-      "type": "vless",
-      "server": "54.93.234.181",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_5",
-      "type": "vless",
-      "server": "35.159.121.154",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_1",
-      "type": "vless",
-      "server": "15.237.121.49",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_10",
-      "type": "hysteria2",
-      "server": "fr1.node.cross666.top",
-      "server_port": 35398,
-      "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "ubuntu.mirrors.ovh.net",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_11",
-      "type": "vless",
-      "server": "35.181.173.182",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_2",
-      "type": "vless",
-      "server": "35.181.169.15",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_3",
-      "type": "vless",
-      "server": "15.237.96.178",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_4",
-      "type": "vless",
-      "server": "13.38.58.93",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_5",
-      "type": "vless",
-      "server": "15.188.246.101",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_6",
-      "type": "vless",
-      "server": "15.188.27.183",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_7",
-      "type": "vless",
-      "server": "35.181.169.189",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_8",
-      "type": "hysteria2",
-      "server": "fr1.node.cross666.top",
-      "server_port": 37602,
-      "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "ubuntu.mirrors.ovh.net",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_9",
-      "type": "vless",
-      "server": "13.37.226.218",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_1",
-      "type": "vless",
-      "server": "35.177.94.109",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_2",
-      "type": "vless",
-      "server": "13.43.121.150",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_3",
-      "type": "vless",
-      "server": "13.43.137.98",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_4",
-      "type": "vless",
-      "server": "18.133.27.141",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_5",
-      "type": "vless",
-      "server": "18.132.48.83",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_6",
-      "type": "vless",
-      "server": "18.175.154.241",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_7",
-      "type": "vless",
-      "server": "18.175.173.180",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_8",
-      "type": "vless",
-      "server": "18.134.0.99",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "GB_9",
-      "type": "vless",
-      "server": "13.42.21.171",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_1",
-      "type": "hysteria2",
-      "server": "hka.node.cross666.top",
-      "server_port": 35557,
-      "password": "afc216c8-e407-48e0-86b1-6bf20f709c72",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirrors.xtom.hk",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_1",
-      "type": "vless",
-      "server": "54.78.35.49",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_10",
-      "type": "vless",
-      "server": "34.251.183.100",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_11",
-      "type": "vless",
-      "server": "54.246.243.80",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_12",
-      "type": "vless",
-      "server": "54.155.220.68",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_2",
-      "type": "vless",
-      "server": "54.72.24.138",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_3",
-      "type": "vless",
-      "server": "3.253.97.38",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_4",
-      "type": "vless",
-      "server": "3.249.16.253",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_5",
-      "type": "vless",
-      "server": "52.213.220.92",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_6",
-      "type": "vless",
-      "server": "34.245.30.199",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_7",
-      "type": "vless",
-      "server": "63.33.207.57",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_8",
-      "type": "vless",
-      "server": "54.195.26.183",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇮🇪 IE_9",
-      "type": "vless",
-      "server": "3.254.212.88",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇷🇺 RU_1",
-      "type": "hysteria2",
-      "server": "rua.node.cross666.top",
-      "server_port": 36010,
-      "password": "c6d93228-6393-41ec-8403-da852407390a",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.hyperdedic.ru",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇷🇺 RU_2",
-      "type": "hysteria2",
-      "server": "rua.node.cross666.top",
-      "server_port": 39106,
-      "password": "c6d93228-6393-41ec-8403-da852407390a",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.hyperdedic.ru",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇷🇺 RU_3",
-      "type": "hysteria2",
-      "server": "45.147.201.231",
-      "server_port": 30073,
-      "password": "2472eee9-f584-4524-835d-b9c2345b8dd9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_1",
-      "type": "vless",
-      "server": "13.49.57.94",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_2",
-      "type": "vless",
-      "server": "51.21.244.125",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_3",
-      "type": "vless",
-      "server": "51.20.40.255",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_4",
-      "type": "vless",
-      "server": "16.170.220.49",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_5",
-      "type": "vless",
-      "server": "16.170.214.198",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_6",
-      "type": "vless",
-      "server": "51.20.130.19",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 SE_7",
-      "type": "vless",
-      "server": "13.51.238.164",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_1",
-      "type": "hysteria2",
-      "server": "sg02.node.cross666.top",
-      "server_port": 38413,
-      "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.sg.gs",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_2",
-      "type": "hysteria2",
-      "server": "sg02.node.cross666.top",
-      "server_port": 38176,
-      "password": "c6c1e4eb-06de-450a-9ad6-14a903db8406",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.sg.gs",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇹🇷 TR_1",
-      "type": "hysteria2",
-      "server": "tr01.node.cross666.top",
-      "server_port": 39587,
-      "password": "0e00f9c1-65c3-4e20-9da8-47fa7c363423",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.dogado.de",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇹🇷 TR_2",
-      "type": "hysteria2",
-      "server": "tr01.node.cross666.top",
-      "server_port": 38163,
-      "password": "3fc383ac-5934-4139-a9a6-dbad72c41027",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.dogado.de",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇹🇷 TR_3",
-      "type": "hysteria2",
-      "server": "tr01.node.cross666.top",
-      "server_port": 36838,
-      "password": "85ac1c2d-f3c4-496d-9a01-8d0d84eab17d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.dogado.de",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "UN_1",
-      "type": "hysteria2",
-      "server": "140.245.35.137",
-      "server_port": 44111,
-      "password": "afcbb76e-860b-4277-8f5c-5dfc4c91a64c",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.bing.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_1",
-      "type": "vless",
-      "server": "104.26.13.54",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/vpnowl",
-        "headers": {
-          "Host": "REEdfREe8MahSaNg2.rEDOrG.IR"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_10",
-      "type": "trojan",
-      "server": "104.21.28.26",
-      "server_port": 443,
-      "password": "21e5535e-4783-4a80-a735-24a1162d315c",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "xxscdF56.999182.xYZ"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/cxZq9RPkYdTWbh4hKwvQX9",
-        "headers": {
-          "Host": "xxscdF56.999182.xYZ"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_11",
-      "type": "vless",
-      "server": "91.193.58.59",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
-        "headers": {
-          "Host": "us.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_12",
-      "type": "vless",
-      "server": "18.188.73.71",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_13",
-      "type": "hysteria2",
-      "server": "us01.node.cross666.top",
-      "server_port": 35891,
-      "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_14",
-      "type": "vless",
-      "server": "173.245.58.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_15",
-      "type": "vless",
-      "server": "25.25.25.19",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram🇨🇳 @WangCai2 /",
-        "headers": {
-          "Host": "hk.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_16",
-      "type": "vless",
-      "server": "104.21.71.112",
-      "server_port": 443,
-      "uuid": "4e41764d-ac31-43f5-8e9b-231ddf252d1f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xSWe34.288288.ShoP",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/wAlPWPCQWnsVcNgLsMVz",
-        "headers": {
-          "Host": "xSWe34.288288.ShoP"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_17",
-      "type": "vless",
-      "server": "103.169.142.29",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TelegramU0001F1E8U0001F1F3",
-        "headers": {
-          "Host": "hk.laoyoutiao.link"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_18",
-      "type": "vless",
-      "server": "52.10.158.144",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_19",
-      "type": "vless",
-      "server": "108.162.198.29",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Join_Bade_Channel@JOKERRVPNTELEGRAM----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN----@JOKERRVPN",
-        "headers": {
-          "Host": "REEdfREe8MahSaNg2.rEDOrG.IR"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_2",
-      "type": "hysteria2",
-      "server": "us01.node.cross666.top",
-      "server_port": 36213,
-      "password": "d9485ee3-7afd-45c3-92fb-fce765618b2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_20",
-      "type": "hysteria2",
-      "server": "use.node.cross666.top",
-      "server_port": 36216,
-      "password": "85ac1c2d-f3c4-496d-9a01-8d0d84eab17d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_21",
-      "type": "vless",
-      "server": "168.100.6.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_22",
-      "type": "vless",
-      "server": "141.193.213.54",
-      "server_port": 80,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Telegram🇨🇳 @MxlShare @WangCai2 /",
-        "headers": {
-          "Host": "us.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_23",
-      "type": "vless",
-      "server": "52.43.136.224",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_24",
-      "type": "hysteria2",
-      "server": "us4.node.cross666.top",
-      "server_port": 37130,
-      "password": "e88cb266-71c1-4d02-acf1-86d208fc7371",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_25",
-      "type": "hysteria2",
-      "server": "us01.node.cross666.top",
-      "server_port": 38166,
-      "password": "5479f2d5-a0c4-437e-95c9-f79a0c485af1",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_26",
-      "type": "vless",
-      "server": "162.159.50.19",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram🇨🇳 @WangCai2 /",
-        "headers": {
-          "Host": "hk.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_27",
-      "type": "vless",
-      "server": "104.21.25.95",
-      "server_port": 443,
-      "uuid": "43324bdf-a0e8-4f6f-8bdc-5482db82fd0f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "CcP.890604.FIleGear-sg.me",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/h1iXYtqUZkDQMvgKagyIefJfM0OQ",
-        "headers": {
-          "Host": "CcP.890604.FIleGear-sg.me"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_28",
-      "type": "vless",
-      "server": "162.159.22.20",
-      "server_port": 8880,
-      "uuid": "583ceab3-4022-4553-9158-9bedc625ad4e",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram🇨🇳 @WangCai2 /",
-        "headers": {
-          "Host": "ip.langmanshanxi.top"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_29",
-      "type": "hysteria2",
-      "server": "us4.node.cross666.top",
-      "server_port": 37234,
-      "password": "3fc383ac-5934-4139-a9a6-dbad72c41027",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_3",
-      "type": "vless",
-      "server": "52.27.91.187",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_30",
-      "type": "vless",
-      "server": "185.148.106.20",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/telegramu0001f1e8u0001f1f3 @mxlshare @wangcai2 /",
-        "headers": {
-          "Host": "us.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_31",
-      "type": "vless",
-      "server": "5.10.215.51",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 US_32",
-      "type": "vless",
-      "server": "34.215.224.110",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_33",
-      "type": "vmess",
-      "server": "104.21.80.1",
-      "server_port": 2087,
-      "uuid": "8f78e709-2c5f-4c19-9f44-b5b5f80ab74c",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "cc2d2.988988.shop"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "cc2d2.988988.shop"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇺🇸 US_4",
-      "type": "vless",
-      "server": "18.117.177.168",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_5",
-      "type": "vless",
-      "server": "34.220.206.242",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_6",
-      "type": "vless",
-      "server": "104.26.12.101",
-      "server_port": 2052,
-      "uuid": "dfc1a9ab-6241-4b73-92f7-b299fc6b7751",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/client/?@",
-        "headers": {
-          "Host": "Yak-Khanda-kUn-eY-gUL.biNG.com.xn--cR8HaaaAaAAAaAaaAaAaAAaAAaaaAAAAAaAaaAaaaAaaaaAAaaAAAaaaaAa.xN--Cr8hAaAaaAaaAAAAAAaaaAAAaAAaaAaAaAAAAAA.TREPAspeEdTEsT.NEtrag.cOm.PX.Com.sh017.IR.XN--Cr8hAaaAaaAaaAaaaAAAaaaAaaAaaaAaAAAaaaA.yek.dDnS-ip.nEt"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_7",
-      "type": "vless",
-      "server": "54.214.201.255",
-      "server_port": 443,
-      "uuid": "7f93e196-1b2f-4a42-8051-5815554c05db",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "zula.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "GbWTeH8a_C8FLKqJ2hyuoY77WsSQIJschXB16usasCg",
-          "short_id": "7a2b"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 US_8",
-      "type": "hysteria2",
-      "server": "us4.node.cross666.top",
-      "server_port": 36645,
-      "password": "afc216c8-e407-48e0-86b1-6bf20f709c72",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.yahoo.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_9",
-      "type": "trojan",
-      "server": "149.129.8.215",
-      "server_port": 443,
-      "password": "6884d714-d3c4-4b49-aa20-767ea92837d6",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "icecream.955850.xyz"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/proxyip=149.129.8.215:443&proxyIP=null",
-        "headers": {
-          "Host": "icecream.955850.xyz"
-        }
-      }
-    },
-    {
-      "tag": "🇻🇳 VN_1",
-      "type": "hysteria2",
-      "server": "vn1r.node.cross666.top",
-      "server_port": 39762,
-      "password": "f9153abe-88d9-4ad7-a3a7-01eff2790b3e",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.sg.gs",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇻🇳 VN_2",
-      "type": "hysteria2",
-      "server": "vn1r.node.cross666.top",
-      "server_port": 36074,
-      "password": "f9153abe-88d9-4ad7-a3a7-01eff2790b3e",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "mirror.sg.gs",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
