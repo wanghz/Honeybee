@@ -75,6 +75,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/a2470982985/d' \
        -e '/space-00/d' \
        -e '/crossxx/d' \
+       -e '/barry-far/d' \
        -e '/http:\/\/175\.178\.182\.178:12580/d' \
        -e '/anaer\/Sub\/main\/clash\.yaml/d'  \
        -e '/155\.248\.172\.106:12580\/clash\/proxies/d'  \
