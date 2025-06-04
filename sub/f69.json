@@ -1,2103 +1,1667 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://223.5.5.5/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://223.5.5.5/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
+                "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
+                "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
+                "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
+                "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
+                "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
+                "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
+                "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
+                "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
+                "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
+                "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
+                "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
+                "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
+                "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
+                "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
+                "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
+                "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
+                "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
+                "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
+                "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
+                "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
+                "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
+                "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
+                "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
+                "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
+                "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
+                "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
+                "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
+                "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
+                "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
+                "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
+                "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
+                "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
+                "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
+                "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
+                "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
+                "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
+                "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "140.99.233.20",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.162.230.20",
+            "server_port": 8880,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
+            "transport": {
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.159.216.56",
+            "server_port": 80,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram:@vpnAndroid2/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "190.93.245.20",
+            "server_port": 8880,
+            "tag": "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "5.10.215.143",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
+            "transport": {
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.210.20",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.211.135",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "44fe4b7d-cd48-45fc-a036-60ea40e4a96c",
+            "server": "107.191.63.241",
+            "server_port": 30665,
+            "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "193.227.99.29",
+            "server_port": 8880,
+            "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "hk.laoyoutiao.link"
+                },
+                "max_early_data": 2560,
+                "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.211.213",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "108.165.216.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.12.31.163",
+            "server_port": 8880,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.211.196",
+            "server_port": 80,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram:@vpnAndroid2/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "159.246.55.178",
+            "server_port": 8880,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "188.164.248.20",
+            "server_port": 8880,
+            "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.147.22",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
+                },
+                "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?BIA_CHANEL@JOKERRVPN",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.80.111.24",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.18.250.162",
+            "server_port": 8880,
+            "tag": "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.248.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "188.42.89.100",
+            "server_port": 8880,
+            "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.148.22",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
+                },
+                "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?BIA_CHANEL@JOKERRVPN",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.6.68",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.80.111.215",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.162.230.6",
+            "server_port": 80,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
+            "transport": {
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.159.216.20",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.4.26",
+            "server_port": 8880,
+            "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "185.123.101.241",
+            "server_port": 990,
+            "tag": "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.251.82.187",
+            "server_port": 80,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
+            "transport": {
+                "headers": {
+                    "Host": "my-mail-management-pr0-git-land-manager.clients-github.com"
+                },
+                "path": "/58834/mail-template",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "8c9a892c-e9d5-4fff-bfdb-8ef9c50272b1"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "135.148.206.76",
+            "server_port": 443,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "147135010072.sec21org.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "type": "vless",
+            "uuid": "c4fa89d4-fcb9-48ba-adbc-665181cc817f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.174.138.20",
+            "server_port": 8880,
+            "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "hajlab.ucdavis.edu",
+            "server_port": 80,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "wWw.SpEeDtEsT.NeT.ZuLa.Ir.IkCoSaLeS.iR.D662599.v02.pronetwork02.com"
+                },
+                "max_early_data": 2048,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "2404f667-5969-4883-a71a-ea2e0db2d25b"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "194.182.79.100",
+            "server_port": 42438,
+            "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
+            "transport": {
+                "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "e9a4e01b-8b9c-4e02-9ab2-a7a0e8b7f271"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "172.67.73.163",
+            "server_port": 8080,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
+            "transport": {
+                "headers": {
+                    "Host": "J9.oDOtZrHUoO.ZuLAIR.ORg."
+                },
+                "path": "/?ed=2048@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "4ea841c1-0dc1-4563-9f47-deba8407cb4e"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "194.182.79.143",
+            "server_port": 36936,
+            "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
+            "transport": {
+                "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "0d5bca05-01a6-4675-a4d9-19d74467a7b6"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.159.248.125",
+            "server_port": 8880,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "G58X9QBRUK3WE37K",
+            "server": "185.126.238.37",
+            "server_port": 20004,
+            "tag": "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "60a930c17ff0",
+            "plugin": "v2ray-plugin",
+            "plugin_opts": "mode=websocket;host=kr6v1.xpmc.cc;path=/matwnpkhug;",
+            "server": "43.226.17.11",
+            "server_port": 37989,
+            "tag": "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "qawszxc123",
+            "server": "52.221.229.127",
+            "server_port": 443,
+            "tag": "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "www.wn03.cc",
+            "server_port": 80,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "us.freeyyds.dpdns.org"
+                },
+                "max_early_data": 2048,
+                "path": "/rongseven",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "2f38f848-a899-4c87-9807-207a41615e3c"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "xcf029.facai2024.com",
+            "server_port": 443,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xcf029.facai2024.com"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xcf029.facai2024.com"
+                },
+                "path": "/9ce4526a",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "9ce4526a-c500-4c66-99b0-048e4b6b5663"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "hk2.lrzdx.uk",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hk2.lrzdx.uk"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "hk2.lrzdx.uk"
+                },
+                "path": "/register",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "db69d5bc-d36c-4903-f471-74b98c5cefe5"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "172.67.198.187",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xmivideo.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xmivideo.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "3sdfgvcxxx.938.pp.ua",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "3sdfgvcxxx.938.pp.ua"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "3sdfgvcxxx.938.pp.ua"
+                },
+                "path": "/P879mtCoHQqaWO67qEaMINZ1",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "0212fab5-e93c-4904-b7a8-187fd535f354"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.17.137.127",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hk.niskakowski.ggff.net"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "hk.niskakowski.ggff.net"
+                },
+                "path": "/aa",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "47eab0de-97f9-49be-f2f3-2e4eb17268e6"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.19.32.0",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xmivideo.cfd"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xmivideo.cfd"
+                },
+                "path": "/linkws",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "hk2.lrzdx.uk",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hk2.lrzdx.uk"
+            },
+            "transport": {
+                "path": "/register",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "db69d5bc-d36c-4903-f471-74b98c5cefe5"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "xcf037.facai2024.com",
+            "server_port": 443,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "xcf037.facai2024.com"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "xcf037.facai2024.com"
+                },
+                "path": "/d9863037",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "d9863037-0463-4615-e972-36ba9662d1e9"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "time.is",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "time.is"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "shs111.kejixiaoqi666.store"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "b526926d-1474-4f41-985e-8b877cb840cd"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "speedtest.net",
+            "server_port": 80,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
+            "type": "vless",
+            "uuid": "bd70d0db-ee9b-460f-9ccb-91c074f33ee4"
+        },
+        {
+            "password": "e6a2e741-0fce-440b-910c-b81325e2263a",
+            "server": "94.131.20.3",
+            "server_port": 443,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "cache-giver-wife.stark-industries.solutions"
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.12.31.10",
+            "server_port": 80,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram:@vpnAndroid2/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "103.169.142.80",
+            "server_port": 8880,
+            "tag": "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.4.6",
+            "server_port": 80,
+            "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram:@vpnAndroid2/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "password": "telegram-id-directvpn",
+            "server": "63.177.148.25",
+            "server_port": 22223,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "telegram-id-privatevpns",
+            "server": "63.177.148.25",
+            "server_port": 22222,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
+            "tls": {
+                "alpn": [
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "63.177.148.25",
+            "server_port": 22224,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "trojan.burgerip.co.uk"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "trojan.burgerip.co.uk"
+                },
+                "path": "/telegram-channel-vlessconfig",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "156.238.18.251",
+            "server_port": 8880,
+            "tag": "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
+            "transport": {
+                "headers": {
+                    "Host": "yd.laoyoutiao.link"
+                },
+                "path": "/TelegramU0001F1E8U0001F1F3",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "64.74.163.130",
+            "server_port": 990,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "5.42.223.147",
+            "server_port": 15319,
+            "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
+            "type": "vless",
+            "uuid": "64bb8ea6-f39a-4f9a-bc0e-5a1313540aca"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.142.120.234",
+            "server_port": 8880,
+            "tag": "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.148.106.56",
+            "server_port": 80,
+            "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "Telegram:@vpnAndroid2/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "192.200.160.20",
+            "server_port": 8880,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "1RWwXhwfAB5gAEozU4G2Pg",
+            "server": "45.87.175.181",
+            "server_port": 8080,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.2.133",
+            "server_port": 80,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "xasshsga---RUBIKA.ir.speedtest.net.ARCHYU.IR"
+                },
+                "max_early_data": 2048,
+                "path": "/ws/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "75ecef77-2050-4250-99f7-936d0188edf2"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.67.215.20",
+            "server_port": 8880,
+            "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "f8f7aCzcPKbsF8p3",
+            "server": "64.74.163.82",
+            "server_port": 990,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
+            "type": "shadowsocks"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "hajlab.ucdavis.edu",
+            "server_port": 80,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "joinxvproxybedee.ir"
+                },
+                "max_early_data": 2048,
+                "path": "/@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "467e0c2b-8a0c-4ff9-9e11-39dfb03542fc"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.148.22",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
+                },
+                "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.147.22",
+            "server_port": 443,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
+                },
+                "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "135.148.157.112",
+            "server_port": 443,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "147135010072.sec21org.com"
+            },
+            "type": "vless",
+            "uuid": "c4fa89d4-fcb9-48ba-adbc-665181cc817f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "185.18.250.20",
+            "server_port": 8880,
+            "tag": "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "62.72.166.20",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
+            "transport": {
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "198.41.208.211",
+            "server_port": 8080,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "worker-falling-snow-ffd7.test61.workers.dev"
+                },
+                "max_early_data": 2048,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "d01a40f5-4e6f-4279-b0a9-0f2a268ab03c"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.12.31.211",
+            "server_port": 8880,
+            "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.4.20",
+            "server_port": 8880,
+            "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.159.216.206",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "194.182.79.216",
+            "server_port": 52843,
+            "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
+            "transport": {
+                "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "a829aa2b-6740-4fbc-af99-a5e7f8ee42ac"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "141.193.213.57",
+            "server_port": 8880,
+            "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.131.5.35",
+            "server_port": 8880,
+            "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/Channel id: @ShadowProxy66",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "31.43.179.20",
+            "server_port": 8880,
+            "tag": "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "45.159.218.20",
+            "server_port": 8880,
+            "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.129.167.20",
+            "server_port": 8880,
+            "tag": "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "reedfree8mahsang2.redorg.ir"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
-        "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
-        "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
-        "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Ashburn🅿️ping:15.91ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:35.15ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Fuldabrück🅿️ping:34.48ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 2",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:29.65ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Dronten🅿️ping:68.63ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 3",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:41.33ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 2",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 4",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 5",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 3",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Miami🅿️ping:152.38ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 6",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 4",
-        "🇫🇮 👉🆔@v2ray_configs_pool📡🇫🇮®️Finland©️Helsinki🅿️ping:13.98ms",
-        "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
-        "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
-        "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
-        "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
-        "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
-        "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
-        "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
-        "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
-        "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
-        "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
-        "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
-        "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
-        "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Ashburn🅿️ping:15.91ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:35.15ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Fuldabrück🅿️ping:34.48ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 2",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:29.65ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Dronten🅿️ping:68.63ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 3",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
-        "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:41.33ms",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 2",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 4",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 5",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 3",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Miami🅿️ping:152.38ms",
-        "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 6",
-        "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 4",
-        "🇫🇮 👉🆔@v2ray_configs_pool📡🇫🇮®️Finland©️Helsinki🅿️ping:13.98ms",
-        "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
-        "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
-        "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
-        "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
-        "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
-        "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
-        "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
-        "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
-        "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
-        "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
-        "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
-        "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
-        "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
-        "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
-        "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
-        "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
-        "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
-        "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Berlin🅿️ping:8.51ms",
-      "type": "vless",
-      "server": "140.99.233.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:9.0ms",
-      "type": "vless",
-      "server": "185.162.230.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.19ms",
-      "type": "vless",
-      "server": "45.159.216.56",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram:@vpnAndroid2/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇷 👉🆔@v2ray_configs_pool📡🇨🇷®️Costa Rica©️Pozos🅿️ping:8.0ms",
-      "type": "vless",
-      "server": "190.93.245.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.45ms",
-      "type": "vless",
-      "server": "5.10.215.143",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        }
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.1ms",
-      "type": "vless",
-      "server": "45.131.210.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.71ms",
-      "type": "vless",
-      "server": "45.131.211.135",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Aubervilliers🅿️ping:37.37ms",
-      "type": "shadowsocks",
-      "server": "107.191.63.241",
-      "server_port": 30665,
-      "method": "chacha20-ietf-poly1305",
-      "password": "44fe4b7d-cd48-45fc-a036-60ea40e4a96c"
-    },
-    {
-      "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.33ms",
-      "type": "vless",
-      "server": "193.227.99.29",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TelegramU0001F1E8U0001F1F3 @MxlShare @WangCai2 /",
-        "headers": {
-          "Host": "hk.laoyoutiao.link"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.59ms",
-      "type": "vless",
-      "server": "45.131.211.213",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Wilmington🅿️ping:9.2ms",
-      "type": "vless",
-      "server": "108.165.216.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.32ms",
-      "type": "vless",
-      "server": "45.12.31.163",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.12ms",
-      "type": "vless",
-      "server": "45.131.211.196",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram:@vpnAndroid2/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️South Bend🅿️ping:8.95ms",
-      "type": "vless",
-      "server": "159.246.55.178",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam (Amsterdam-Zuidoost)🅿️ping:8.12ms",
-      "type": "vless",
-      "server": "188.164.248.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms",
-      "type": "vless",
-      "server": "104.17.147.22",
-      "server_port": 443,
-      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?BIA_CHANEL@JOKERRVPN",
-        "headers": {
-          "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.46ms",
-      "type": "vless",
-      "server": "45.80.111.24",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:8.41ms",
-      "type": "vless",
-      "server": "185.18.250.162",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Newark🅿️ping:8.74ms",
-      "type": "vless",
-      "server": "162.159.248.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:8.28ms",
-      "type": "vless",
-      "server": "188.42.89.100",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms",
-      "type": "vless",
-      "server": "104.17.148.22",
-      "server_port": 443,
-      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?BIA_CHANEL@JOKERRVPN",
-        "headers": {
-          "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
-        }
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.38ms",
-      "type": "vless",
-      "server": "45.131.6.68",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main (Frankfurt am Main Süd)🅿️ping:8.77ms",
-      "type": "vless",
-      "server": "45.80.111.215",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️Southport🅿️ping:8.07ms",
-      "type": "vless",
-      "server": "185.162.230.6",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.11ms",
-      "type": "vless",
-      "server": "45.159.216.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.19ms",
-      "type": "vless",
-      "server": "45.131.4.26",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇹🇷 👉🆔@v2ray_configs_pool📡🇹🇷®️Turkey©️Istanbul🅿️ping:121.15ms",
-      "type": "shadowsocks",
-      "server": "185.123.101.241",
-      "server_port": 990,
-      "method": "chacha20-ietf-poly1305",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Burlington🅿️ping:9.24ms",
-      "type": "vless",
-      "server": "162.251.82.187",
-      "server_port": 80,
-      "uuid": "8c9a892c-e9d5-4fff-bfdb-8ef9c50272b1",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/58834/mail-template",
-        "headers": {
-          "Host": "my-mail-management-pr0-git-land-manager.clients-github.com"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Ashburn🅿️ping:15.91ms",
-      "type": "vless",
-      "server": "77.110.98.221",
-      "server_port": 36994,
-      "uuid": "9e8f8a07-f5ce-4643-a20c-1b9305f85d28",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "google.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "B0o9qWjR8-Rwid0pZe-C4LPfxUJCDSWANN0CMbbPxSY",
-          "short_id": "8b5ba7aca4"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Sarasota🅿️ping:140.91ms",
-      "type": "vless",
-      "server": "135.148.206.76",
-      "server_port": 443,
-      "uuid": "c4fa89d4-fcb9-48ba-adbc-665181cc817f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "147135010072.sec21org.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      }
-    },
-    {
-      "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:8.03ms",
-      "type": "vless",
-      "server": "185.174.138.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:35.15ms",
-      "type": "vless",
-      "server": "arvancloud.fn.ir.systemgamingirani.ir",
-      "server_port": 443,
-      "uuid": "ed4ac7bf-9ec8-4a7a-b45a-72b62f1e18dc",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "tgju.org",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "tw6uAbjXzRSIKChb6pDbHVNjnU9Don4hbv6dHRkmJx8",
-          "short_id": "e54b5ad736ae4c38"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.69ms",
-      "type": "vless",
-      "server": "hajlab.ucdavis.edu",
-      "server_port": 80,
-      "uuid": "2404f667-5969-4883-a71a-ea2e0db2d25b",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "wWw.SpEeDtEsT.NeT.ZuLa.Ir.IkCoSaLeS.iR.D662599.v02.pronetwork02.com"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_182318",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Fuldabrück🅿️ping:34.48ms",
-      "type": "vless",
-      "server": "5.75.203.66",
-      "server_port": 39216,
-      "uuid": "31e18807-9671-47b9-9dea-6e2f6ecd8c54",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "Google.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "efkIZIpJH8HUqshKjh6qoI8EC_MkDUR4fk_rjeH2zh0",
-          "short_id": "c0113423"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.74ms",
-      "type": "vless",
-      "server": "194.182.79.100",
-      "server_port": 42438,
-      "uuid": "e9a4e01b-8b9c-4e02-9ab2-a7a0e8b7f271",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048"
-      }
-    },
-    {
-      "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms",
-      "type": "vless",
-      "server": "77.91.76.14",
-      "server_port": 443,
-      "uuid": "CHIK_182107",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "7YEakrIiKu1CHDSOOrglxndNDLdh8ub7DzVoecOOtws",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.94ms",
-      "type": "vless",
-      "server": "172.67.73.163",
-      "server_port": 8080,
-      "uuid": "4ea841c1-0dc1-4563-9f47-deba8407cb4e",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/?ed=2048@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
-        "headers": {
-          "Host": "J9.oDOtZrHUoO.ZuLAIR.ORg."
-        }
-      }
-    },
-    {
-      "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.25ms",
-      "type": "vless",
-      "server": "194.182.79.143",
-      "server_port": 36936,
-      "uuid": "0d5bca05-01a6-4675-a4d9-19d74467a7b6",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048"
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 2",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_781793",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:29.65ms",
-      "type": "vless",
-      "server": "89.169.1.40",
-      "server_port": 28495,
-      "uuid": "7e296434-2d17-48d3-928d-19eaa34aecb1",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "dl.google.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "KXMH8QzaRa66F6GxOR1CanBunO2uHdJvri2zCbar2RQ",
-          "short_id": "0ecc2c1392"
-        }
-      }
-    },
-    {
-      "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Dronten🅿️ping:68.63ms",
-      "type": "vless",
-      "server": "46.243.3.15",
-      "server_port": 443,
-      "uuid": "715b3f21-8774-484a-9230-f0a2c187e168",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.cdn77.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "SWA-po18cETv3noGE9OearcQaA6ERQRg31ejuSMpbkI",
-          "short_id": "e54b5ad736ae4c38"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 3",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_781376",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️New Barnet🅿️ping:53.14ms",
-      "type": "vless",
-      "server": "45.159.248.125",
-      "server_port": 8880,
-      "uuid": "df0680ca-e43c-498d-ed86-8e196eedd012",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇳🇱 👉🆔@v2ray_configs_pool📡🇳🇱®️The Netherlands©️Amsterdam🅿️ping:41.33ms",
-      "type": "vless",
-      "server": "185.33.24.229",
-      "server_port": 28495,
-      "uuid": "7e296434-2d17-48d3-928d-19eaa34aecb1",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "dl.google.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "KXMH8QzaRa66F6GxOR1CanBunO2uHdJvri2zCbar2RQ",
-          "short_id": "0ecc2c1392"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 2",
-      "type": "vless",
-      "server": "77.91.76.14",
-      "server_port": 443,
-      "uuid": "CHIK_781333",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "7YEakrIiKu1CHDSOOrglxndNDLdh8ub7DzVoecOOtws",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 4",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_981062",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 5",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_281047",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 3",
-      "type": "vless",
-      "server": "77.91.76.14",
-      "server_port": 443,
-      "uuid": "CHIK_981036",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "7YEakrIiKu1CHDSOOrglxndNDLdh8ub7DzVoecOOtws",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Miami🅿️ping:152.38ms",
-      "type": "vless",
-      "server": "us1.chik-chirik.xyz",
-      "server_port": 443,
-      "uuid": "CHIK_881548",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "wsuNVssCC7Wh0VH_CpY3Th8z1brS70MpoqkgWmSdAk4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇪 👉🆔@v2ray_configs_pool📡🇸🇪®️Sweden©️Stockholm🅿️ping:13.79ms 6",
-      "type": "vless",
-      "server": "77.91.85.161",
-      "server_port": 443,
-      "uuid": "CHIK_481529",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "3oWpho0EjulohjRTwmTeFPDwIg01t8XRpyXmgpw_2T4",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇷 👉🆔@v2ray_configs_pool📡🇫🇷®️France©️Paris🅿️ping:29.43ms 4",
-      "type": "vless",
-      "server": "77.91.76.14",
-      "server_port": 443,
-      "uuid": "CHIK_181509",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "7YEakrIiKu1CHDSOOrglxndNDLdh8ub7DzVoecOOtws",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇫🇮 👉🆔@v2ray_configs_pool📡🇫🇮®️Finland©️Helsinki🅿️ping:13.98ms",
-      "type": "vless",
-      "server": "83.147.252.114",
-      "server_port": 443,
-      "uuid": "CHIK_481495",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "whatsapp.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "jP5khyw0xKq1-GuOB4RApEzC48qE4yyExXqPaPFvezo",
-          "short_id": "ffffffffff"
-        }
-      }
-    },
-    {
-      "tag": "🇬🇷 👉🆔@v2ray_configs_pool📡🇬🇷®️Greece©️Athens🅿️ping:62.98ms",
-      "type": "shadowsocks",
-      "server": "185.126.238.37",
-      "server_port": 20004,
-      "method": "aes-256-gcm",
-      "password": "G58X9QBRUK3WE37K"
-    },
-    {
-      "tag": "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Hong Kong🅿️ping:298.3ms",
-      "type": "shadowsocks",
-      "server": "43.226.17.11",
-      "server_port": 37989,
-      "method": "chacha20-ietf-poly1305",
-      "password": "60a930c17ff0",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=websocket;host=kr6v1.xpmc.cc;path=/matwnpkhug;"
-    },
-    {
-      "tag": "🇸🇬 👉🆔@v2ray_configs_pool📡🇸🇬®️Singapore©️Singapore🅿️ping:254.13ms",
-      "type": "shadowsocks",
-      "server": "52.221.229.127",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "qawszxc123"
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.7ms",
-      "type": "vmess",
-      "server": "www.wn03.cc",
-      "server_port": 80,
-      "uuid": "2f38f848-a899-4c87-9807-207a41615e3c",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "us.freeyyds.dpdns.org"
-        },
-        "path": "/rongseven",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:101.25ms",
-      "type": "vmess",
-      "server": "xcf029.facai2024.com",
-      "server_port": 443,
-      "uuid": "9ce4526a-c500-4c66-99b0-048e4b6b5663",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xcf029.facai2024.com"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xcf029.facai2024.com"
-        },
-        "path": "/9ce4526a"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms",
-      "type": "vmess",
-      "server": "hk2.lrzdx.uk",
-      "server_port": 443,
-      "uuid": "db69d5bc-d36c-4903-f471-74b98c5cefe5",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hk2.lrzdx.uk"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "hk2.lrzdx.uk"
-        },
-        "path": "/register"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:11.71ms",
-      "type": "vmess",
-      "server": "172.67.198.187",
-      "server_port": 443,
-      "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xmivideo.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xmivideo.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.39ms",
-      "type": "vmess",
-      "server": "3sdfgvcxxx.938.pp.ua",
-      "server_port": 443,
-      "uuid": "0212fab5-e93c-4904-b7a8-187fd535f354",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "3sdfgvcxxx.938.pp.ua"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "3sdfgvcxxx.938.pp.ua"
-        },
-        "path": "/P879mtCoHQqaWO67qEaMINZ1"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:10.81ms",
-      "type": "vmess",
-      "server": "104.17.137.127",
-      "server_port": 443,
-      "uuid": "47eab0de-97f9-49be-f2f3-2e4eb17268e6",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hk.niskakowski.ggff.net"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "hk.niskakowski.ggff.net"
-        },
-        "path": "/aa"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:21.99ms",
-      "type": "vmess",
-      "server": "104.19.32.0",
-      "server_port": 443,
-      "uuid": "93ea486a-bada-42a4-ac38-d088b320fa1e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xmivideo.cfd"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xmivideo.cfd"
-        },
-        "path": "/linkws"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.99ms 2",
-      "type": "vmess",
-      "server": "hk2.lrzdx.uk",
-      "server_port": 443,
-      "uuid": "db69d5bc-d36c-4903-f471-74b98c5cefe5",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hk2.lrzdx.uk"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/register"
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Seattle🅿️ping:171.84ms",
-      "type": "vmess",
-      "server": "xcf037.facai2024.com",
-      "server_port": 443,
-      "uuid": "d9863037-0463-4615-e972-36ba9662d1e9",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "xcf037.facai2024.com"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "xcf037.facai2024.com"
-        },
-        "path": "/d9863037"
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:9.04ms",
-      "type": "vmess",
-      "server": "time.is",
-      "server_port": 443,
-      "uuid": "b526926d-1474-4f41-985e-8b877cb840cd",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "time.is"
-      },
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "shs111.kejixiaoqi666.store"
-        },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.6ms",
-      "type": "vless",
-      "server": "speedtest.net",
-      "server_port": 80,
-      "uuid": "bd70d0db-ee9b-460f-9ccb-91c074f33ee4",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Queens🅿️ping:29.07ms",
-      "type": "trojan",
-      "server": "94.131.20.3",
-      "server_port": 443,
-      "password": "e6a2e741-0fce-440b-910c-b81325e2263a",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "cache-giver-wife.stark-industries.solutions"
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:28.4ms",
-      "type": "vless",
-      "server": "45.12.31.10",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram:@vpnAndroid2/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇦🇺 👉🆔@v2ray_configs_pool📡🇦🇺®️Australia©️Surry Hills🅿️ping:8.28ms",
-      "type": "vless",
-      "server": "103.169.142.80",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:8.45ms",
-      "type": "vless",
-      "server": "45.131.4.6",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram:@vpnAndroid2/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.78ms",
-      "type": "trojan",
-      "server": "63.177.148.25",
-      "server_port": 22223,
-      "password": "telegram-id-directvpn",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.47ms",
-      "type": "trojan",
-      "server": "63.177.148.25",
-      "server_port": 22222,
-      "password": "telegram-id-privatevpns",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "http/1.1"
-        ],
-        "server_name": "trojan.burgerip.co.uk"
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:25.39ms",
-      "type": "vless",
-      "server": "63.177.148.25",
-      "server_port": 22224,
-      "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "trojan.burgerip.co.uk"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/telegram-channel-vlessconfig",
-        "headers": {
-          "Host": "trojan.burgerip.co.uk"
-        }
-      }
-    },
-    {
-      "tag": "🇯🇵 👉🆔@v2ray_configs_pool📡🇯🇵®️Japan©️Chiyoda🅿️ping:8.18ms",
-      "type": "vless",
-      "server": "156.238.18.251",
-      "server_port": 8880,
-      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/TelegramU0001F1E8U0001F1F3",
-        "headers": {
-          "Host": "yd.laoyoutiao.link"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:105.66ms",
-      "type": "shadowsocks",
-      "server": "64.74.163.130",
-      "server_port": 990,
-      "method": "chacha20-ietf-poly1305",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇮🇷 👉🆔@v2ray_configs_pool📡🇮🇷®️Iran©️Tehrān🅿️ping:125.47ms",
-      "type": "vless",
-      "server": "5.42.223.147",
-      "server_port": 15319,
-      "uuid": "64bb8ea6-f39a-4f9a-bc0e-5a1313540aca",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇧🇬 👉🆔@v2ray_configs_pool📡🇧🇬®️Bulgaria©️Sandanski🅿️ping:8.12ms",
-      "type": "vless",
-      "server": "45.142.120.234",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Moscow🅿️ping:7.95ms",
-      "type": "vless",
-      "server": "185.148.106.56",
-      "server_port": 80,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "Telegram:@vpnAndroid2/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Four Points Centre)🅿️ping:8.39ms",
-      "type": "vless",
-      "server": "192.200.160.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️New York🅿️ping:30.84ms",
-      "type": "shadowsocks",
-      "server": "45.87.175.181",
-      "server_port": 8080,
-      "method": "chacha20-ietf-poly1305",
-      "password": "1RWwXhwfAB5gAEozU4G2Pg"
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️San Francisco🅿️ping:7.33ms",
-      "type": "vless",
-      "server": "151.101.2.133",
-      "server_port": 80,
-      "uuid": "75ecef77-2050-4250-99f7-936d0188edf2",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/ws/",
-        "headers": {
-          "Host": "xasshsga---RUBIKA.ir.speedtest.net.ARCHYU.IR"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇷🇺 👉🆔@v2ray_configs_pool📡🇷🇺®️Russia©️Novosibirsk🅿️ping:8.5ms",
-      "type": "vless",
-      "server": "45.67.215.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Pointe-Claire🅿️ping:109.06ms",
-      "type": "shadowsocks",
-      "server": "64.74.163.82",
-      "server_port": 990,
-      "method": "chacha20-ietf-poly1305",
-      "password": "f8f7aCzcPKbsF8p3"
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Montreal🅿️ping:7.69ms",
-      "type": "vless",
-      "server": "hajlab.ucdavis.edu",
-      "server_port": 80,
-      "uuid": "467e0c2b-8a0c-4ff9-9e11-39dfb03542fc",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy----@XvProxy",
-        "headers": {
-          "Host": "joinxvproxybedee.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.21ms 2",
-      "type": "vless",
-      "server": "104.17.148.22",
-      "server_port": 443,
-      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
-        "headers": {
-          "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.28ms 2",
-      "type": "vless",
-      "server": "104.17.147.22",
-      "server_port": 443,
-      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "UUHuhyYgESDfgh.UyHjhgvgFCjgujhBuILbVFDXdxM.xYZ",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/egFIvRfmDaCdL5Uk/ODQuMjM1LjE2OS4yMzQ=?ed=2560/?@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn----@Evay_vpn",
-        "headers": {
-          "Host": "UuhUHYygESDfgh.uYhJhGVgfCjgujhbUiLbVFdXDXM.XyZ"
-        }
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Reston🅿️ping:138.97ms",
-      "type": "vless",
-      "server": "135.148.157.112",
-      "server_port": 443,
-      "uuid": "c4fa89d4-fcb9-48ba-adbc-665181cc817f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "147135010072.sec21org.com"
-      }
-    },
-    {
-      "tag": "🇪🇸 👉🆔@v2ray_configs_pool📡🇪🇸®️Spain©️Madrid🅿️ping:9.05ms",
-      "type": "vless",
-      "server": "185.18.250.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇨🇼®️Curacao©️Willemstad🅿️ping:8.38ms",
-      "type": "vless",
-      "server": "62.72.166.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.4ms",
-      "type": "vless",
-      "server": "198.41.208.211",
-      "server_port": 8080,
-      "uuid": "d01a40f5-4e6f-4279-b0a9-0f2a268ab03c",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "worker-falling-snow-ffd7.test61.workers.dev"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇬🇧 👉🆔@v2ray_configs_pool📡🇬🇧®️United Kingdom©️London🅿️ping:8.25ms",
-      "type": "vless",
-      "server": "45.12.31.211",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇦 👉🆔@v2ray_configs_pool📡🇨🇦®️Canada©️Toronto🅿️ping:8.06ms",
-      "type": "vless",
-      "server": "162.159.4.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.22ms",
-      "type": "vless",
-      "server": "45.159.216.206",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇨🇿 👉🆔@v2ray_configs_pool📡🇨🇿®️Czechia©️Prague🅿️ping:38.64ms",
-      "type": "vless",
-      "server": "194.182.79.216",
-      "server_port": 52843,
-      "uuid": "a829aa2b-6740-4fbc-af99-a5e7f8ee42ac",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON?ed=2048"
-      }
-    },
-    {
-      "tag": "🇺🇸 👉🆔@v2ray_configs_pool📡🇺🇸®️United States©️Austin (Downtown Austin)🅿️ping:8.14ms",
-      "type": "vless",
-      "server": "141.193.213.57",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "👉🆔@v2ray_configs_pool📡🇧🇿®️Belize©️Belize City🅿️ping:8.3ms",
-      "type": "vless",
-      "server": "45.131.5.35",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Channel id: @ShadowProxy66",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇰🇿 👉🆔@v2ray_configs_pool📡🇰🇿®️Kazakhstan©️Kapshagay🅿️ping:9.57ms",
-      "type": "vless",
-      "server": "31.43.179.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇩🇪 👉🆔@v2ray_configs_pool📡🇩🇪®️Germany©️Frankfurt am Main🅿️ping:8.1ms",
-      "type": "vless",
-      "server": "45.159.218.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇭🇰 👉🆔@v2ray_configs_pool📡🇭🇰®️Hong Kong©️Kwai Chung🅿️ping:8.87ms",
-      "type": "vless",
-      "server": "104.129.167.20",
-      "server_port": 8880,
-      "uuid": "53fa8faf-ba4b-4322-9c69-a3e5b1555049",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "reedfree8mahsang2.redorg.ir"
-        },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
