@@ -1,0 +1,366 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 美国-拉斯维加斯-001-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-001-1B",
+        "🇺🇸 美国-拉斯维加斯-002-1B",
+        "🇺🇸 美国-拉斯维加斯-001-1B",
+        "🇺🇸 美国-纽约-HY-001-1A",
+        "🇺🇸 美国-纽约-HY-001-1B",
+        "🇺🇸 美国-拉斯维加斯-002-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-002-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-001-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-002-1B"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 美国-拉斯维加斯-001-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-001-1B",
+        "🇺🇸 美国-拉斯维加斯-002-1B",
+        "🇺🇸 美国-拉斯维加斯-001-1B",
+        "🇺🇸 美国-纽约-HY-001-1A",
+        "🇺🇸 美国-纽约-HY-001-1B",
+        "🇺🇸 美国-拉斯维加斯-002-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-002-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-001-1A",
+        "🇺🇸 美国-拉斯维加斯-HY-002-1B"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-001-1A",
+      "type": "vmess",
+      "server": "45.147.201.231",
+      "server_port": 20063,
+      "uuid": "0c610497-bf72-4ca2-bece-7d1b83d74660",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-HY-001-1B",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 30076,
+      "password": "f47270a8-c82f-430a-8e70-5e357929cbc9",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-002-1B",
+      "type": "vmess",
+      "server": "45.147.201.231",
+      "server_port": 23103,
+      "uuid": "f47270a8-c82f-430a-8e70-5e357929cbc9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-001-1B",
+      "type": "vmess",
+      "server": "45.147.201.231",
+      "server_port": 20063,
+      "uuid": "f47270a8-c82f-430a-8e70-5e357929cbc9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-纽约-HY-001-1A",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 31007,
+      "password": "0c610497-bf72-4ca2-bece-7d1b83d74660",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-纽约-HY-001-1B",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 31007,
+      "password": "f47270a8-c82f-430a-8e70-5e357929cbc9",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-002-1A",
+      "type": "vmess",
+      "server": "45.147.201.231",
+      "server_port": 23103,
+      "uuid": "0c610497-bf72-4ca2-bece-7d1b83d74660",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-HY-002-1A",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 33078,
+      "password": "0c610497-bf72-4ca2-bece-7d1b83d74660",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-HY-001-1A",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 30076,
+      "password": "0c610497-bf72-4ca2-bece-7d1b83d74660",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    },
+    {
+      "tag": "🇺🇸 美国-拉斯维加斯-HY-002-1B",
+      "type": "hysteria2",
+      "server": "45.147.201.231",
+      "server_port": 33078,
+      "password": "f47270a8-c82f-430a-8e70-5e357929cbc9",
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "NDhhNmY5YTY0MGYzOTgxYQ=="
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
