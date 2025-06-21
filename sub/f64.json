@@ -1,0 +1,534 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇨🇦 CA-23.162.200.227-6986",
+        "🇨🇦 CA-134.195.198.147-6987",
+        "🇩🇪 DE-57.129.24.125-7001",
+        "🏁RELAY-104.21.29.205-4948",
+        "🇹🇼 TW-111.243.96.82-4963",
+        "🏁RELAY-104.21.21.192-0211",
+        "🏁RELAY-104.21.64.1-0988",
+        "🇭🇰 HK-1.65.218.55-0378",
+        "🇨🇦 CA-51.79.102.253-0977",
+        "🏁RELAY-104.18.41.190-0670",
+        "🏁RELAY-172.67.191.174-4946",
+        "🏁RELAY-104.21.84.242-1057",
+        "🏁RELAY-104.21.29.205-4947",
+        "🇭🇰 HK-1.65.202.165-5080",
+        "🏁RELAY-104.21.112.1-0704",
+        "🇭🇰 HK-1.65.202.165-5079",
+        "🏁RELAY-104.21.48.1-0693"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇨🇦 CA-23.162.200.227-6986",
+        "🇨🇦 CA-134.195.198.147-6987",
+        "🇩🇪 DE-57.129.24.125-7001",
+        "🏁RELAY-104.21.29.205-4948",
+        "🇹🇼 TW-111.243.96.82-4963",
+        "🏁RELAY-104.21.21.192-0211",
+        "🏁RELAY-104.21.64.1-0988",
+        "🇭🇰 HK-1.65.218.55-0378",
+        "🇨🇦 CA-51.79.102.253-0977",
+        "🏁RELAY-104.18.41.190-0670",
+        "🏁RELAY-172.67.191.174-4946",
+        "🏁RELAY-104.21.84.242-1057",
+        "🏁RELAY-104.21.29.205-4947",
+        "🇭🇰 HK-1.65.202.165-5080",
+        "🏁RELAY-104.21.112.1-0704",
+        "🇭🇰 HK-1.65.202.165-5079",
+        "🏁RELAY-104.21.48.1-0693"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇨🇦 CA-23.162.200.227-6986",
+      "type": "vmess",
+      "server": "23.162.200.227",
+      "server_port": 443,
+      "uuid": "03fcc618-b93d-6796-6aed-8a38c975d581",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": ""
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/linkvws"
+      }
+    },
+    {
+      "tag": "🇨🇦 CA-134.195.198.147-6987",
+      "type": "vmess",
+      "server": "134.195.198.147",
+      "server_port": 443,
+      "uuid": "03fcc618-b93d-6796-6aed-8a38c975d581",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "inna.cfd"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "inna.cfd"
+        },
+        "path": "/linkvws"
+      }
+    },
+    {
+      "tag": "🇩🇪 DE-57.129.24.125-7001",
+      "type": "vmess",
+      "server": "57.129.24.125",
+      "server_port": 443,
+      "uuid": "03fcc618-b93d-6796-6aed-8a38c975d581",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "wrmelmwxlf.gktevlrqznwqqozy.fabpfs66gizmnojhcvqxwl.kytrcfzqla87gvgvs6c7kjnrubuh.cc"
+        },
+        "path": "/linkvws"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.29.205-4948",
+      "type": "vmess",
+      "server": "Xcvfgt5.222560.xyz",
+      "server_port": 80,
+      "uuid": "19a78eeb-d83a-4364-b095-b7dd93436320",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "Xcvfgt5.222560.xyz"
+        },
+        "path": "/7LBPethgWxDoVuzO0WLijID"
+      }
+    },
+    {
+      "tag": "🇹🇼 TW-111.243.96.82-4963",
+      "type": "vmess",
+      "server": "twjxlnnoljxc.jkhkgj.xyz",
+      "server_port": 80,
+      "uuid": "b0af4d14-db9d-4217-b010-5fd2a4b80590",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "twjxlnnoljxc.jkhkgj.xyz"
+        },
+        "path": "/market/tw",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 512
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.21.192-0211",
+      "type": "vmess",
+      "server": "1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top",
+      "server_port": 443,
+      "uuid": "5f726fe3-d82e-4da5-a711-8af0cbb2b682",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "1a2d514b-37cf-499f-8d08-d017a92ab5bb.asoul-ava.top"
+        },
+        "path": "/azumase.ren"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.64.1-0988",
+      "type": "vmess",
+      "server": "104.21.64.1",
+      "server_port": 2096,
+      "uuid": "b3928f8d-ea81-4d75-bcec-4016a072adff",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "de01.sh-cloudflare.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "de01.sh-cloudflare.sbs"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK-1.65.218.55-0378",
+      "type": "vmess",
+      "server": "359d1785-sv2sg0-svim0o-1slop.hk.p5pv.com",
+      "server_port": 80,
+      "uuid": "520b9126-9870-11ef-81b0-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "359d1785-sv2sg0-svim0o-1slop.hk.p5pv.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇦 CA-51.79.102.253-0977",
+      "type": "vmess",
+      "server": "51.79.102.253",
+      "server_port": 80,
+      "uuid": "58fe1542-5290-40ad-815a-77707a81afe5",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "51.79.102.253"
+        },
+        "path": "/IOebhLMhl1CTbFHbL95myfRX2"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.18.41.190-0670",
+      "type": "vmess",
+      "server": "www.hdmoli.com",
+      "server_port": 80,
+      "uuid": "2f38f848-a899-4c87-9807-207a41615e3c",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "fr.freeyyds.dpdns.org"
+        },
+        "path": "/rongseven",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2048
+      }
+    },
+    {
+      "tag": "🏁RELAY-172.67.191.174-4946",
+      "type": "vmess",
+      "server": "OOoOOOooOp.222769.XYZ",
+      "server_port": 80,
+      "uuid": "ce921385-2b31-45fe-84c5-1843e8ae845b",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "OOoOOOooOp.222769.XYZ"
+        },
+        "path": "/VaaSEfNLHdW3I98dxLkez"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.84.242-1057",
+      "type": "vmess",
+      "server": "wWWD.4444916.xYZ",
+      "server_port": 443,
+      "uuid": "03e92910-34b1-4245-ac63-04a865f43cd5",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "wwwd.4444916.xyz"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "wwwd.4444916.xyz"
+        },
+        "path": "/NjLXrucxVIcvpHPhIJoo2wcE6Q"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.29.205-4947",
+      "type": "vmess",
+      "server": "LllLLLllllLKJh.222560.xyZ",
+      "server_port": 80,
+      "uuid": "ce921385-2b31-45fe-84c5-1843e8ae845b",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "LllLLLllllLKJh.222560.xyZ"
+        },
+        "path": "/VaaSEfNLHdW3I98dxLkez"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK-1.65.202.165-5080",
+      "type": "vmess",
+      "server": "ae709d15-sv0xs0-svim0o-1slop.hk3.p5pv.com",
+      "server_port": 80,
+      "uuid": "520b9126-9870-11ef-81b0-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ae709d15-sv0xs0-svim0o-1slop.hk3.p5pv.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.112.1-0704",
+      "type": "vmess",
+      "server": "104.21.112.1",
+      "server_port": 2096,
+      "uuid": "b3928f8d-ea81-4d75-bcec-4016a072adff",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "de01.sh-cloudflare.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "de01.sh-cloudflare.sbs"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK-1.65.202.165-5079",
+      "type": "vmess",
+      "server": "0613ae96-sv2sg0-svim0o-1slop.hk3.p5pv.com",
+      "server_port": 80,
+      "uuid": "520b9126-9870-11ef-81b0-f23c9164ca5d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "0613ae96-sv2sg0-svim0o-1slop.hk3.p5pv.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🏁RELAY-104.21.48.1-0693",
+      "type": "vmess",
+      "server": "de01.sh-cloudflare.sbs",
+      "server_port": 2096,
+      "uuid": "b3928f8d-ea81-4d75-bcec-4016a072adff",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "de01.sh-cloudflare.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "de01.sh-cloudflare.sbs"
+        },
+        "path": "/"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
