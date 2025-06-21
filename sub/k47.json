@@ -1,0 +1,326 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "local",
+        "address": "https://223.5.5.5/dns-query",
+        "detour": "direct",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇷🇺 俄罗斯+V2CROSS.COM",
+        "🇺🇸 美国+纽约市DigitalOcean云公司",
+        "🇨🇳 广东省广州市 移动",
+        "🇨🇳 广东省广州市+电信",
+        "🇨🇳 广东省广州市 电信",
+        "广东省汕头市+移动",
+        "广东省中山市 移动",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 广东省广州市 电信 2",
+        "🇨🇳 广东省广州市+腾讯云",
+        "广东省+移动",
+        "🇮🇩 广东省广州市+电信IDC机房"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇷🇺 俄罗斯+V2CROSS.COM",
+        "🇺🇸 美国+纽约市DigitalOcean云公司",
+        "🇨🇳 广东省广州市 移动",
+        "🇨🇳 广东省广州市+电信",
+        "🇨🇳 广东省广州市 电信",
+        "广东省汕头市+移动",
+        "广东省中山市 移动",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 广东省广州市 电信 2",
+        "🇨🇳 广东省广州市+腾讯云",
+        "广东省+移动",
+        "🇮🇩 广东省广州市+电信IDC机房"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇷🇺 俄罗斯+V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "h110vpnde.outlinekeys.net",
+      "server_port": 21712,
+      "method": "chacha20-ietf-poly1305",
+      "password": "NTE3PCCNFgLyG6nsTv80Yp"
+    },
+    {
+      "tag": "🇺🇸 美国+纽约市DigitalOcean云公司",
+      "type": "trojan",
+      "server": "us.blazeppn.info",
+      "server_port": 443,
+      "password": "xxoo",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "us.blazeppn.info"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市 移动",
+      "type": "vmess",
+      "server": "183.236.51.38",
+      "server_port": 41024,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信",
+      "type": "trojan",
+      "server": "116.31.75.150",
+      "server_port": 39001,
+      "password": "85f133142f04dbf6547da33895cfabb3",
+      "tls": {
+        "enabled": true,
+        "insecure": false
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市 电信",
+      "type": "vmess",
+      "server": "fa.fxlcn.com",
+      "server_port": 45237,
+      "uuid": "469e0b31-30c3-4dab-800d-711232634ce1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "广东省汕头市+移动",
+      "type": "trojan",
+      "server": "83242d49-sy41s0-szh3gf-ggww.cm5.cnkuaishou.com",
+      "server_port": 21233,
+      "password": "bcc58e88-e147-11ec-b286-f23c91cfbbc9",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "83242d49-sy41s0-szh3gf-ggww.cm5.cnkuaishou.com"
+      }
+    },
+    {
+      "tag": "广东省中山市 移动",
+      "type": "vmess",
+      "server": "183.238.90.8",
+      "server_port": 46920,
+      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
+      "security": "auto",
+      "alter_id": 64,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "吉林省 移动(全省通用)",
+      "type": "vmess",
+      "server": "v9.heduian.link",
+      "server_port": 30809,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "baidu.com"
+        },
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市 电信 2",
+      "type": "vmess",
+      "server": "fg.fxlcn.com",
+      "server_port": 45242,
+      "uuid": "469e0b31-30c3-4dab-800d-711232634ce1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+腾讯云",
+      "type": "trojan",
+      "server": "113.99.140.184",
+      "server_port": 39001,
+      "password": "85f133142f04dbf6547da33895cfabb3",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "www.yrtok.com"
+      }
+    },
+    {
+      "tag": "广东省+移动",
+      "type": "trojan",
+      "server": "120.233.128.68",
+      "server_port": 39001,
+      "password": "85f133142f04dbf6547da33895cfabb3",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "120.233.128.68"
+      }
+    },
+    {
+      "tag": "🇮🇩 广东省广州市+电信IDC机房",
+      "type": "shadowsocks",
+      "server": "111.45.33.5",
+      "server_port": 30017,
+      "method": "aes-256-gcm",
+      "password": "dwz1GtF7"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
