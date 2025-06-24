@@ -1,386 +1,353 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://123.125.81.6/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://123.125.81.6/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
         "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
+        },
+        {
+            "outbounds": [
+                "6元高速机场：cczzuu.top 2",
+                "🇭🇰 香港2|@stairnode",
+                "🇭🇰 香港3|@stairnode",
+                "🇭🇰 香港4|@stairnode",
+                "🇭🇰 香港5|@stairnode",
+                "🇭🇰 香港6|@stairnode 2",
+                "🇹🇼 🇨🇳 台湾|@stairnode",
+                "🇹🇼 🇨🇳 台湾2|@stairnode",
+                "🇯🇵 日本|@stairnode",
+                "🇯🇵 日本2|@stairnode",
+                "🇯🇵 日本3|@stairnode",
+                "🇯🇵 日本5|@stairnode",
+                "🇰🇷 韩国2|@stairnode",
+                "🇰🇷 韩国|@stairnode",
+                "🇺🇸 美国2|@stairnode 2",
+                "🇺🇸 美国3|@stairnode"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "6元高速机场：cczzuu.top 2",
+                "🇭🇰 香港2|@stairnode",
+                "🇭🇰 香港3|@stairnode",
+                "🇭🇰 香港4|@stairnode",
+                "🇭🇰 香港5|@stairnode",
+                "🇭🇰 香港6|@stairnode 2",
+                "🇹🇼 🇨🇳 台湾|@stairnode",
+                "🇹🇼 🇨🇳 台湾2|@stairnode",
+                "🇯🇵 日本|@stairnode",
+                "🇯🇵 日本2|@stairnode",
+                "🇯🇵 日本3|@stairnode",
+                "🇯🇵 日本5|@stairnode",
+                "🇰🇷 韩国2|@stairnode",
+                "🇰🇷 韩国|@stairnode",
+                "🇺🇸 美国2|@stairnode 2",
+                "🇺🇸 美国3|@stairnode"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "yijian0503",
+            "server": "43.203.242.204",
+            "server_port": 443,
+            "tag": "6元高速机场：cczzuu.top 2",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "08293b204707",
+            "plugin": "v2ray-plugin",
+            "plugin_opts": "mode=websocket;host=hk6v1.pmxiaonan.xyz;path=/sclbvcgkp;",
+            "server": "156.251.179.238",
+            "server_port": 58697,
+            "tag": "🇭🇰 香港2|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "43.247.135.170",
+            "server_port": 46210,
+            "tag": "🇭🇰 香港3|@stairnode",
+            "type": "vmess",
+            "uuid": "d1eca706-1aae-42d3-bab0-69995d7b023d"
+        },
+        {
+            "password": "85f133142f04dbf6547da33895cfabb3",
+            "server": "113.99.140.184",
+            "server_port": 39001,
+            "tag": "🇭🇰 香港4|@stairnode",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yrtok.com"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dwz1GtF7",
+            "server": "120.232.220.156",
+            "server_port": 20406,
+            "tag": "🇭🇰 香港5|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dwz1GtF7",
+            "server": "111.45.33.5",
+            "server_port": 30017,
+            "tag": "🇭🇰 香港6|@stairnode 2",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dwz1GtF7",
+            "server": "120.233.128.98",
+            "server_port": 30015,
+            "tag": "🇹🇼 🇨🇳 台湾|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "Paofu",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=412b9308255.microsoft.com;",
+            "server": "yd-03.paofunlink.com",
+            "server_port": 1176,
+            "tag": "🇹🇼 🇨🇳 台湾2|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "efanccyun",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=202506212021989-867GWDXRgC.download.microsoft.com;",
+            "server": "cn01.efan8867801.xyz",
+            "server_port": 8766,
+            "tag": "🇯🇵 日本|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "264727317ef6",
+            "plugin": "v2ray-plugin",
+            "plugin_opts": "mode=websocket;host=kr9v1.3ci.xyz;path=/ylikhqxcjfeb;",
+            "server": "121.0.97.29",
+            "server_port": 45154,
+            "tag": "🇯🇵 日本2|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "0991bb00-5a25-4c42-8205-153787512b5b",
+            "server": "jp2asdfghjtyhj.aeccssssss.xyz",
+            "server_port": 57805,
+            "tag": "🇯🇵 日本3|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dwz1GtF7",
+            "server": "112.54.160.36",
+            "server_port": 30232,
+            "tag": "🇯🇵 日本5|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "85f133142f04dbf6547da33895cfabb3",
+            "server": "203.156.253.12",
+            "server_port": 39001,
+            "tag": "🇰🇷 韩国2|@stairnode",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.yrtok.com"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dwz1GtF7",
+            "server": "112.54.161.141",
+            "server_port": 20406,
+            "tag": "🇰🇷 韩国|@stairnode",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "efanccyun",
+            "plugin": "obfs-local",
+            "plugin_opts": "obfs=http;obfs-host=202506212021989-867GWDXRgC.download.microsoft.com;",
+            "server": "cn01.efan8867801.xyz",
+            "server_port": 8774,
+            "tag": "🇺🇸 美国2|@stairnode 2",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "6757b7d6-fa32-4708-b5d1-30e3cf928b51",
+            "server": "104.21.6.179",
+            "server_port": 443,
+            "tag": "🇺🇸 美国3|@stairnode",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "ZZzzzZZ.890601.XYZ"
+            },
+            "type": "trojan"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "6元高速机场：cczzuu.top 2",
-        "6元高速机场：cczzuu.top 2",
-        "🇭🇰 香港2|@stairnode",
-        "🇭🇰 香港3|@stairnode",
-        "🇭🇰 香港4|@stairnode",
-        "🇭🇰 香港5|@stairnode",
-        "🇭🇰 香港6|@stairnode 2",
-        "🇭🇰 香港6|@stairnode 2",
-        "🇹🇼 🇨🇳 台湾|@stairnode",
-        "🇹🇼 🇨🇳 台湾2|@stairnode",
-        "🇯🇵 日本|@stairnode",
-        "🇯🇵 日本2|@stairnode",
-        "🇯🇵 日本3|@stairnode",
-        "🇯🇵 日本5|@stairnode",
-        "🇰🇷 韩国2|@stairnode",
-        "🇰🇷 韩国|@stairnode",
-        "🇺🇸 美国2|@stairnode 2",
-        "🇺🇸 美国2|@stairnode 2",
-        "🇺🇸 美国3|@stairnode"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "6元高速机场：cczzuu.top 2",
-        "6元高速机场：cczzuu.top 2",
-        "🇭🇰 香港2|@stairnode",
-        "🇭🇰 香港3|@stairnode",
-        "🇭🇰 香港4|@stairnode",
-        "🇭🇰 香港5|@stairnode",
-        "🇭🇰 香港6|@stairnode 2",
-        "🇭🇰 香港6|@stairnode 2",
-        "🇹🇼 🇨🇳 台湾|@stairnode",
-        "🇹🇼 🇨🇳 台湾2|@stairnode",
-        "🇯🇵 日本|@stairnode",
-        "🇯🇵 日本2|@stairnode",
-        "🇯🇵 日本3|@stairnode",
-        "🇯🇵 日本5|@stairnode",
-        "🇰🇷 韩国2|@stairnode",
-        "🇰🇷 韩国|@stairnode",
-        "🇺🇸 美国2|@stairnode 2",
-        "🇺🇸 美国2|@stairnode 2",
-        "🇺🇸 美国3|@stairnode"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "6元高速机场：cczzuu.top 2",
-      "type": "shadowsocks",
-      "server": "43.203.242.204",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "yijian0503"
-    },
-    {
-      "tag": "6元高速机场：cczzuu.top 2",
-      "type": "shadowsocks",
-      "server": "43.203.242.204",
-      "server_port": 443,
-      "method": "aes-256-cfb",
-      "password": "yijian0503"
-    },
-    {
-      "tag": "🇭🇰 香港2|@stairnode",
-      "type": "shadowsocks",
-      "server": "156.251.179.238",
-      "server_port": 58697,
-      "method": "chacha20-ietf-poly1305",
-      "password": "08293b204707",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=websocket;host=hk6v1.pmxiaonan.xyz;path=/sclbvcgkp;"
-    },
-    {
-      "tag": "🇭🇰 香港3|@stairnode",
-      "type": "vmess",
-      "server": "43.247.135.170",
-      "server_port": 46210,
-      "uuid": "d1eca706-1aae-42d3-bab0-69995d7b023d",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 香港4|@stairnode",
-      "type": "trojan",
-      "server": "113.99.140.184",
-      "server_port": 39001,
-      "password": "85f133142f04dbf6547da33895cfabb3",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.yrtok.com"
-      }
-    },
-    {
-      "tag": "🇭🇰 香港5|@stairnode",
-      "type": "shadowsocks",
-      "server": "120.232.220.156",
-      "server_port": 20406,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇭🇰 香港6|@stairnode 2",
-      "type": "shadowsocks",
-      "server": "111.45.33.5",
-      "server_port": 30017,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇭🇰 香港6|@stairnode 2",
-      "type": "shadowsocks",
-      "server": "111.45.33.5",
-      "server_port": 30017,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇹🇼 🇨🇳 台湾|@stairnode",
-      "type": "shadowsocks",
-      "server": "120.233.128.98",
-      "server_port": 30015,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇹🇼 🇨🇳 台湾2|@stairnode",
-      "type": "shadowsocks",
-      "server": "yd-03.paofunlink.com",
-      "server_port": 1176,
-      "method": "rc4-md5",
-      "password": "Paofu",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=412b9308255.microsoft.com;"
-    },
-    {
-      "tag": "🇯🇵 日本|@stairnode",
-      "type": "shadowsocks",
-      "server": "cn01.efan8867801.xyz",
-      "server_port": 8766,
-      "method": "rc4-md5",
-      "password": "efanccyun",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=202506212021989-867GWDXRgC.download.microsoft.com;"
-    },
-    {
-      "tag": "🇯🇵 日本2|@stairnode",
-      "type": "shadowsocks",
-      "server": "121.0.97.29",
-      "server_port": 45154,
-      "method": "aes-256-gcm",
-      "password": "264727317ef6",
-      "plugin": "v2ray-plugin",
-      "plugin_opts": "mode=websocket;host=kr9v1.3ci.xyz;path=/ylikhqxcjfeb;"
-    },
-    {
-      "tag": "🇯🇵 日本3|@stairnode",
-      "type": "shadowsocks",
-      "server": "jp2asdfghjtyhj.aeccssssss.xyz",
-      "server_port": 57805,
-      "method": "chacha20-ietf-poly1305",
-      "password": "0991bb00-5a25-4c42-8205-153787512b5b"
-    },
-    {
-      "tag": "🇯🇵 日本5|@stairnode",
-      "type": "shadowsocks",
-      "server": "112.54.160.36",
-      "server_port": 30232,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇰🇷 韩国2|@stairnode",
-      "type": "trojan",
-      "server": "203.156.253.12",
-      "server_port": 39001,
-      "password": "85f133142f04dbf6547da33895cfabb3",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.yrtok.com"
-      }
-    },
-    {
-      "tag": "🇰🇷 韩国|@stairnode",
-      "type": "shadowsocks",
-      "server": "112.54.161.141",
-      "server_port": 20406,
-      "method": "aes-256-gcm",
-      "password": "dwz1GtF7"
-    },
-    {
-      "tag": "🇺🇸 美国2|@stairnode 2",
-      "type": "shadowsocks",
-      "server": "cn01.efan8867801.xyz",
-      "server_port": 8774,
-      "method": "rc4-md5",
-      "password": "efanccyun",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=202506212021989-867GWDXRgC.download.microsoft.com;"
-    },
-    {
-      "tag": "🇺🇸 美国2|@stairnode 2",
-      "type": "shadowsocks",
-      "server": "cn01.efan8867801.xyz",
-      "server_port": 8774,
-      "method": "rc4-md5",
-      "password": "efanccyun",
-      "plugin": "obfs-local",
-      "plugin_opts": "obfs=http;obfs-host=202506212021989-867GWDXRgC.download.microsoft.com;"
-    },
-    {
-      "tag": "🇺🇸 美国3|@stairnode",
-      "type": "trojan",
-      "server": "104.21.6.179",
-      "server_port": 443,
-      "password": "6757b7d6-fa32-4708-b5d1-30e3cf928b51",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "ZZzzzZZ.890601.XYZ"
-      }
-    }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
