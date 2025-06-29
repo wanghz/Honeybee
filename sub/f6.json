@@ -1,400 +1,399 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://123.125.81.6/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://123.125.81.6/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
         "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
-        "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
-        "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
-        "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
-        "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
-        "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
-        "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
-        "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
-        "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
-        "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
-        "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
-        "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
-        "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
-        "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
-        "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
-        "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
-        "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
-        "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
-        "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
-        "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
-        "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
-        "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
-        "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
-        "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
-        "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
-        "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
-        "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
-        "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
-        "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
-      "type": "vless",
-      "server": "91.99.205.175",
-      "server_port": 51615,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
-      "type": "vless",
-      "server": "91.99.192.185",
-      "server_port": 443,
-      "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
-      "type": "vless",
-      "server": "91.99.207.135",
-      "server_port": 51615,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
-      "type": "vless",
-      "server": "85.9.125.186",
-      "server_port": 16597,
-      "uuid": "011c3c13-fbfb-4783-eb12-ce30912321d2",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
-      "type": "vless",
-      "server": "91.99.206.91",
-      "server_port": 51615,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
-      "type": "vless",
-      "server": "91.99.92.95",
-      "server_port": 51615,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
-      "type": "vless",
-      "server": "91.99.203.65",
-      "server_port": 443,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
-      "type": "vless",
-      "server": "91.99.195.240",
-      "server_port": 443,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
-      "type": "vless",
-      "server": "151.101.194.165",
-      "server_port": 80,
-      "uuid": "2fb8567e-0c85-4950-9975-af714241b2db",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": ""
-        }
-      }
-    },
-    {
-      "tag": "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
-      "type": "vless",
-      "server": "151.101.194.133",
-      "server_port": 443,
-      "uuid": "064992a8-95e0-4948-8346-58eba99aaedd",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "live.989bull.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/@vistav2ray---@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vist",
-        "headers": {
-          "Host": "live.989bull.com"
-        }
-      }
-    },
-    {
-      "tag": "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
-      "type": "vless",
-      "server": "162.159.38.232",
-      "server_port": 443,
-      "uuid": "dd9ff1b6-070c-4dc8-8227-c2e619e0eb43",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "57ik6b.testsnew.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/wss",
-        "headers": {
-          "Host": "57ik6b.testsnew.com"
-        }
-      }
-    },
-    {
-      "tag": "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
-      "type": "vless",
-      "server": "104.17.147.22",
-      "server_port": 2083,
-      "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "hAsTi.frEEairLainEs.Com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "randomized"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/tmevpnAndroid2X",
-        "headers": {
-          "Host": "hAsTi.frEEairLainEs.Com"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
-      "type": "vless",
-      "server": "5.181.23.67",
-      "server_port": 80,
-      "uuid": "09e30204-6e54-5f5c-9fff-73328d9bb927",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/vless#@vpnAndroid2,",
-        "headers": {
-          "Host": ""
+        {
+            "outbounds": [
+                "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
+                "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
+                "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
+                "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
+                "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
+                "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
+                "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
+                "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
+                "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
+                "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
+                "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
+                "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
+                "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
+                "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
+                "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
+        },
+        {
+            "interval": "1m",
+            "outbounds": [
+                "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
+                "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
+                "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
+                "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
+                "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
+                "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
+                "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
+                "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
+                "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
+                "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
+                "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
+                "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
+                "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
+                "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
+                "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.205.175",
+            "server_port": 51615,
+            "tag": "506cbc3e908b40cea5da7eaed31de228_@_%40flyv2ray",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.192.185",
+            "server_port": 443,
+            "tag": "0ee121d2205940318d288304971d35b2_@_%40flyv2ray",
+            "type": "vless",
+            "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.207.135",
+            "server_port": 51615,
+            "tag": "165edb17adbf4f64b7d3de72e19707a8_@_%40flyv2ray``",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "85.9.125.186",
+            "server_port": 16597,
+            "tag": "8560350813364f19a471794937c80b4c_@_%40flyv2ray``",
+            "type": "vless",
+            "uuid": "011c3c13-fbfb-4783-eb12-ce30912321d2"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.206.91",
+            "server_port": 51615,
+            "tag": "58b0699e335c416080501ed38cc2aac4_@_%40flyv2ray",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.92.95",
+            "server_port": 51615,
+            "tag": "a83ab0177b14425398d8ac707b991490_@_%40flyv2ray",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.203.65",
+            "server_port": 443,
+            "tag": "6c4b9f2c8d0e45bcb8a7048d545d2445_@_%40flyv2ray",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.195.240",
+            "server_port": 443,
+            "tag": "860d9e9a2f98465f82e197c21a583744_@_%40flyv2ray``",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.194.165",
+            "server_port": 80,
+            "tag": "53251c132d684830b410722c91c0b1d4_@_@Hope_Net-join-us-on-Telegram",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "2fb8567e-0c85-4950-9975-af714241b2db"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.194.133",
+            "server_port": 443,
+            "tag": "e9e2036e1b3c4b74a7b2d64e42799c21_@_@Hope_Net-join-us-on-Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "live.989bull.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "live.989bull.com"
+                },
+                "path": "/@vistav2ray---@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vist",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "064992a8-95e0-4948-8346-58eba99aaedd"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "162.159.38.232",
+            "server_port": 443,
+            "tag": "96ee6898cee74855a6eac1aec2777c28_@_@Hope_Net-join-us-on-Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "57ik6b.testsnew.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "57ik6b.testsnew.com"
+                },
+                "path": "/wss",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "dd9ff1b6-070c-4dc8-8227-c2e619e0eb43"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.147.22",
+            "server_port": 2083,
+            "tag": "1ea3c0cdca2043e8b00eca4efb8154c0_@_@Hope_Net-join-us-on-Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "hAsTi.frEEairLainEs.Com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "randomized"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "hAsTi.frEEairLainEs.Com"
+                },
+                "max_early_data": 2560,
+                "path": "/tmevpnAndroid2X",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "89b3cbba-e6ac-485a-9481-976a0415eab9"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "5.181.23.67",
+            "server_port": 80,
+            "tag": "8fc402845aee4bb8bd0d1a7c29b8f8a3_@_@Hope_Net-join-us-on-Telegram",
+            "transport": {
+                "headers": {
+                    "Host": ""
+                },
+                "path": "/vless#@vpnAndroid2,",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "09e30204-6e54-5f5c-9fff-73328d9bb927"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.32.1",
+            "server_port": 2087,
+            "tag": "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "mAHdISErVeR-6dx.paGes.DEv",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "mAHdISErVeR-6dx.paGes.DEv"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "318c3441-9f7a-4edd-ada8-775d5f65529f"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.150.74",
+            "server_port": 51615,
+            "tag": "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
         }
-      }
-    },
-    {
-      "tag": "c5f820538c6043df8160ae7e8411b1fe_@_@Hope_Net-join-us-on-Telegram`",
-      "type": "vless",
-      "server": "104.21.32.1",
-      "server_port": 2087,
-      "uuid": "318c3441-9f7a-4edd-ada8-775d5f65529f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "mAHdISErVeR-6dx.paGes.DEv",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
         }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "mAHdISErVeR-6dx.paGes.DEv"
-        }
-      }
-    },
-    {
-      "tag": "04dc1ad0da2542e1a06ce8dd99666769_@_Join%20To%20%40ghalagyann",
-      "type": "vless",
-      "server": "91.99.150.74",
-      "server_port": 51615,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
