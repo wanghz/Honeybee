@@ -1,0 +1,318 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "local",
+        "address": "https://123.125.81.6/dns-query",
+        "detour": "direct",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 美国 CloudFlare节点",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 广东省广州市+电信",
+        "🇺🇸 美国+Amazon+EC2服务器",
+        "吉林省 移动(全省通用) 2",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇺🇸 美国 CloudFlare节点 2",
+        "🇨🇭 瑞士 V2CROSS.COM",
+        "广东省佛山市+电信"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 美国 CloudFlare节点",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 广东省广州市+电信",
+        "🇺🇸 美国+Amazon+EC2服务器",
+        "吉林省 移动(全省通用) 2",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇺🇸 美国 CloudFlare节点 2",
+        "🇨🇭 瑞士 V2CROSS.COM",
+        "广东省佛山市+电信"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点",
+      "type": "vmess",
+      "server": "104.21.96.1",
+      "server_port": 8443,
+      "uuid": "f10598e2-c606-4945-bfde-e5730756a2dd",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "us01.sh-cloudflare.sbs"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "us01.sh-cloudflare.sbs"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "吉林省 移动(全省通用)",
+      "type": "vmess",
+      "server": "v24.heduian.link",
+      "server_port": 30824,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "v24.heduian.link"
+        },
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇨🇳 广东省广州市+电信",
+      "type": "shadowsocks",
+      "server": "a.moeya.cc",
+      "server_port": 15028,
+      "method": "chacha20-ietf-poly1305",
+      "password": "9214b8e1-5eed-4b36-9ef5-42c2f915bd0e"
+    },
+    {
+      "tag": "🇺🇸 美国+Amazon+EC2服务器",
+      "type": "trojan",
+      "server": "3.77.229.34",
+      "server_port": 22223,
+      "password": "telegram-id-directvpn",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "trojan.burgerip.co.uk"
+      }
+    },
+    {
+      "tag": "吉林省 移动(全省通用) 2",
+      "type": "vmess",
+      "server": "v7.heduian.link",
+      "server_port": 30807,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "v7.heduian.link"
+        },
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点",
+      "type": "trojan",
+      "server": "104.17.128.1",
+      "server_port": 2096,
+      "password": "d6b8011a-c725-435a-9fec-bf6d3530392c",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "vle.amclubdns.dpdns.org"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/?ed=2560&PROT_TYPE=trojan",
+        "headers": {
+          "Host": "vle.amclubdns.dpdns.org"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点 2",
+      "type": "vmess",
+      "server": "SSxXZASw.999824.Xyz",
+      "server_port": 80,
+      "uuid": "512d9674-db12-44ca-a1b5-654244549b65",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ssxxzasw.999824.xyz"
+        },
+        "path": "/uiAxvH6OkVk0VCfa7dX3JIrYk7zm"
+      }
+    },
+    {
+      "tag": "🇨🇭 瑞士 V2CROSS.COM",
+      "type": "vmess",
+      "server": "91.199.27.118",
+      "server_port": 6531,
+      "uuid": "bb28cfcd-c3d0-4866-bb0a-c3fd86b0ec12",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "广东省佛山市+电信",
+      "type": "shadowsocks",
+      "server": "qh62onjn.slashdevslashnetslashtun.net",
+      "server_port": 15011,
+      "method": "aes-256-gcm",
+      "password": "20WYWZ6W8U5M5UDL"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
