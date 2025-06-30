@@ -1,468 +1,467 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "rules": [
-      {
-        "rule_set": [
-          "geosite-cn"
+    "log": {
+        "level": "error",
+        "timestamp": true
+    },
+    "dns": {
+        "rules": [
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "server": "local"
+            },
+            {
+                "clash_mode": "direct",
+                "server": "local"
+            },
+            {
+                "clash_mode": "proxy",
+                "server": "remote"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "server": "block"
+            },
+            {
+                "outbound": [
+                    "any"
+                ],
+                "server": "query"
+            }
         ],
-        "server": "local"
-      },
-      {
-        "clash_mode": "direct",
-        "server": "local"
-      },
-      {
-        "clash_mode": "proxy",
-        "server": "remote"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
+        "servers": [
+            {
+                "tag": "remote",
+                "address": "https://8.8.8.8/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4",
+                "client_subnet": "110.242.68.66"
+            },
+            {
+                "tag": "query",
+                "address": "https://1.1.1.1/dns-query",
+                "detour": "proxy",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "local",
+                "address": "https://123.125.81.6/dns-query",
+                "detour": "direct",
+                "strategy": "prefer_ipv4"
+            },
+            {
+                "tag": "block",
+                "address": "rcode://success"
+            }
         ],
-        "server": "block"
-      },
-      {
-        "outbound": [
-          "any"
-        ],
-        "server": "query"
-      }
-    ],
-    "servers": [
-      {
-        "tag": "remote",
-        "address": "https://8.8.8.8/dns-query",
-        "detour": "proxy",
-        "strategy": "prefer_ipv4",
-        "client_subnet": "110.242.68.66"
-      },
-      {
-        "tag": "query",
-        "address": "https://1.1.1.1/dns-query",
-        "detour": "proxy",
         "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "local",
-        "address": "https://123.125.81.6/dns-query",
-        "detour": "direct",
-        "strategy": "prefer_ipv4"
-      },
-      {
-        "tag": "block",
-        "address": "rcode://success"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "proxy"
-      },
-      {
-        "rule_set": [
-          "geosite-cn"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "proxy"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
         "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "@Hope_Net-join-us-on-Telegram",
-        "🇩🇪 سرور های بیشتر: @customv2ray`",
-        "🇸🇬 سرور های بیشتر: @customv2ray`",
-        "@meli_proxyy",
-        "@`",
-        "@Hope_Net-join-us-on-Telegram`",
-        "@Hope_Net-join-us-on-Telegram 2",
-        "@mehrosaboran`",
-        "@meli_proxyy 2",
-        "@meli_proxyy 3",
-        "@meli_proxyy 4",
-        "@Hope_Net-join-us-on-Telegram 3",
-        "@Hope_Net-join-us-on-Telegram 4",
-        "🇳🇱 [openproxylist.com] vless-NL```",
-        "@Hope_Net-join-us-on-Telegram 5",
-        "@Hope_Net-join-us-on-Telegram 6",
-        "@Hope_Net-join-us-on-Telegram 7",
-        "IoXYUch1_vless",
-        "SS节点"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "@Hope_Net-join-us-on-Telegram",
-        "🇩🇪 سرور های بیشتر: @customv2ray`",
-        "🇸🇬 سرور های بیشتر: @customv2ray`",
-        "@meli_proxyy",
-        "@`",
-        "@Hope_Net-join-us-on-Telegram`",
-        "@Hope_Net-join-us-on-Telegram 2",
-        "@mehrosaboran`",
-        "@meli_proxyy 2",
-        "@meli_proxyy 3",
-        "@meli_proxyy 4",
-        "@Hope_Net-join-us-on-Telegram 3",
-        "@Hope_Net-join-us-on-Telegram 4",
-        "🇳🇱 [openproxylist.com] vless-NL```",
-        "@Hope_Net-join-us-on-Telegram 5",
-        "@Hope_Net-join-us-on-Telegram 6",
-        "@Hope_Net-join-us-on-Telegram 7",
-        "IoXYUch1_vless",
-        "SS节点"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "1m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram",
-      "type": "vmess",
-      "server": "104.17.148.22",
-      "server_port": 2096,
-      "uuid": "da9013d6-3bca-4ce4-9cb9-cc150a6e9f34",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "api3.waltonweb.ir",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "🇩🇪 سرور های بیشتر: @customv2ray`",
-      "type": "vless",
-      "server": "91.99.160.41",
-      "server_port": 443,
-      "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇸🇬 سرور های بیشتر: @customv2ray`",
-      "type": "vless",
-      "server": "91.99.205.56",
-      "server_port": 443,
-      "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@meli_proxyy",
-      "type": "vless",
-      "server": "91.99.207.47",
-      "server_port": 443,
-      "uuid": "2eaef053-5fd6-4def-b234-d760690355ff",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@`",
-      "type": "vless",
-      "server": "172.66.132.44",
-      "server_port": 80,
-      "uuid": "5459f68e-d914-4b31-93a3-ecdf638b7a5b",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "abcd.taraneh.dpdns.org"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram`",
-      "type": "vless",
-      "server": "18.157.121.95",
-      "server_port": 22222,
-      "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "telegram-channel-vlessconfig.sohala.uk"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/telegram-channel-vlessconfig-ws",
-        "headers": {
-          "Host": "telegram-channel-vlessconfig.sohala.uk"
-        }
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 2",
-      "type": "vless",
-      "server": "151.101.192.223",
-      "server_port": 80,
-      "uuid": "7dd494e0-65dc-48b4-a8f8-ef7bb25fab70",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "JOIN.unlimiteddev.4.4.4.4.wWw.CloudFlare.cOm.wWw.SpeedTeSt.cOm.Home.iRan.0.0.0.0.Hide.my.IP.xXx.333.22.1.CDN.Free.unlimiteddev.DDNS1-IP.nEt"
-        }
-      }
-    },
-    {
-      "tag": "@mehrosaboran`",
-      "type": "vless",
-      "server": "testi.shirinifandogh.ir",
-      "server_port": 235,
-      "uuid": "c2df3028-a48c-4f0f-a104-013594dfa659",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@meli_proxyy 2",
-      "type": "vless",
-      "server": "lwndnnw.js87nlw.iwhwkdh87.owjfj87kdk.theiranoflegends.com",
-      "server_port": 883,
-      "uuid": "55143323-5ef4-45c2-b8fb-9f7b987589e6",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@meli_proxyy 3",
-      "type": "vless",
-      "server": "s85cndx2225.mmadvip8563.ir",
-      "server_port": 3799,
-      "uuid": "a8e41efd-0fb8-459a-9fab-95e038a003f4",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@meli_proxyy 4",
-      "type": "vless",
-      "server": "91.99.207.21",
-      "server_port": 443,
-      "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 3",
-      "type": "vless",
-      "server": "151.101.66.133",
-      "server_port": 443,
-      "uuid": "961a174e-f775-4d59-cc81-96169f4cfb19",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "live.theworldwidewolf.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/@vistav2ray---@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vist",
-        "headers": {
-          "Host": "vistapcit.com"
-        }
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 4",
-      "type": "vless",
-      "server": "151.101.66.228",
-      "server_port": 443,
-      "uuid": "7f97027a-6f60-5723-b101-eef62aab17db",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "faculty.ucdavis.edu",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "qq"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "JoinBede-mosiv2.ir"
-        }
-      }
-    },
-    {
-      "tag": "🇳🇱 [openproxylist.com] vless-NL```",
-      "type": "vless",
-      "server": "85.133.215.188",
-      "server_port": 3311,
-      "uuid": "ccd5d8c4-634c-46bc-8f7a-5be3b8649858",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 5",
-      "type": "vless",
-      "server": "104.21.112.1",
-      "server_port": 2096,
-      "uuid": "c0b9dd6c-9676-4cd1-9e7c-9c6ac59afd37",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "app2.year2025appdatat.lat"
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": ""
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 6",
-      "type": "vmess",
-      "server": "38.174.190.75",
-      "server_port": 38007,
-      "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24",
-      "security": "auto",
-      "alter_id": 64,
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": ""
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/path/251724052818"
-      }
-    },
-    {
-      "tag": "@Hope_Net-join-us-on-Telegram 7",
-      "type": "vless",
-      "server": "104.17.148.22",
-      "server_port": 80,
-      "uuid": "1a563e92-9f9b-4158-b800-50ed4fc98214",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE",
-        "headers": {
-          "Host": "www.speedtest.net.join.vpncustomize.api.nhl.ir.abrha.co.ZA."
+        {
+            "outbounds": [
+                "@Hope_Net-join-us-on-Telegram",
+                "🇩🇪 سرور های بیشتر: @customv2ray`",
+                "🇸🇬 سرور های بیشتر: @customv2ray`",
+                "@meli_proxyy",
+                "@`",
+                "@Hope_Net-join-us-on-Telegram`",
+                "@Hope_Net-join-us-on-Telegram 2",
+                "@mehrosaboran`",
+                "@meli_proxyy 2",
+                "@meli_proxyy 3",
+                "@meli_proxyy 4",
+                "@Hope_Net-join-us-on-Telegram 3",
+                "@Hope_Net-join-us-on-Telegram 4",
+                "🇳🇱 [openproxylist.com] vless-NL```",
+                "@Hope_Net-join-us-on-Telegram 5",
+                "@Hope_Net-join-us-on-Telegram 6",
+                "@Hope_Net-join-us-on-Telegram 7",
+                "IoXYUch1_vless",
+                "SS节点"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "IoXYUch1_vless",
-      "type": "vless",
-      "server": "212.129.5.242",
-      "server_port": 15194,
-      "uuid": "d7703b51-41e8-42c1-aa71-2b5099148227",
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "SS节点",
-      "type": "shadowsocks",
-      "server": "46.17.40.79",
-      "server_port": 38674,
-      "method": "aes-256-gcm",
-      "password": "dongtaiwang.com"
+        {
+            "interval": "1m",
+            "outbounds": [
+                "@Hope_Net-join-us-on-Telegram",
+                "🇩🇪 سرور های بیشتر: @customv2ray`",
+                "🇸🇬 سرور های بیشتر: @customv2ray`",
+                "@meli_proxyy",
+                "@`",
+                "@Hope_Net-join-us-on-Telegram`",
+                "@Hope_Net-join-us-on-Telegram 2",
+                "@mehrosaboran`",
+                "@meli_proxyy 2",
+                "@meli_proxyy 3",
+                "@meli_proxyy 4",
+                "@Hope_Net-join-us-on-Telegram 3",
+                "@Hope_Net-join-us-on-Telegram 4",
+                "🇳🇱 [openproxylist.com] vless-NL```",
+                "@Hope_Net-join-us-on-Telegram 5",
+                "@Hope_Net-join-us-on-Telegram 6",
+                "@Hope_Net-join-us-on-Telegram 7",
+                "IoXYUch1_vless",
+                "SS节点"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "104.17.148.22",
+            "server_port": 2096,
+            "tag": "@Hope_Net-join-us-on-Telegram",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "api3.waltonweb.ir",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vmess",
+            "uuid": "da9013d6-3bca-4ce4-9cb9-cc150a6e9f34"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.160.41",
+            "server_port": 443,
+            "tag": "🇩🇪 سرور های بیشتر: @customv2ray`",
+            "type": "vless",
+            "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.205.56",
+            "server_port": 443,
+            "tag": "🇸🇬 سرور های بیشتر: @customv2ray`",
+            "type": "vless",
+            "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.207.47",
+            "server_port": 443,
+            "tag": "@meli_proxyy",
+            "type": "vless",
+            "uuid": "2eaef053-5fd6-4def-b234-d760690355ff"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "172.66.132.44",
+            "server_port": 80,
+            "tag": "@`",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "abcd.taraneh.dpdns.org"
+                },
+                "max_early_data": 2560,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "5459f68e-d914-4b31-93a3-ecdf638b7a5b"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "18.157.121.95",
+            "server_port": 22222,
+            "tag": "@Hope_Net-join-us-on-Telegram`",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "telegram-channel-vlessconfig.sohala.uk"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "telegram-channel-vlessconfig.sohala.uk"
+                },
+                "path": "/telegram-channel-vlessconfig-ws",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "05519058-d2ac-4f28-9e4a-2b2a1386749e"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.192.223",
+            "server_port": 80,
+            "tag": "@Hope_Net-join-us-on-Telegram 2",
+            "transport": {
+                "headers": {
+                    "Host": "JOIN.unlimiteddev.4.4.4.4.wWw.CloudFlare.cOm.wWw.SpeedTeSt.cOm.Home.iRan.0.0.0.0.Hide.my.IP.xXx.333.22.1.CDN.Free.unlimiteddev.DDNS1-IP.nEt"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "7dd494e0-65dc-48b4-a8f8-ef7bb25fab70"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "testi.shirinifandogh.ir",
+            "server_port": 235,
+            "tag": "@mehrosaboran`",
+            "type": "vless",
+            "uuid": "c2df3028-a48c-4f0f-a104-013594dfa659"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "lwndnnw.js87nlw.iwhwkdh87.owjfj87kdk.theiranoflegends.com",
+            "server_port": 883,
+            "tag": "@meli_proxyy 2",
+            "type": "vless",
+            "uuid": "55143323-5ef4-45c2-b8fb-9f7b987589e6"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "s85cndx2225.mmadvip8563.ir",
+            "server_port": 3799,
+            "tag": "@meli_proxyy 3",
+            "type": "vless",
+            "uuid": "a8e41efd-0fb8-459a-9fab-95e038a003f4"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "91.99.207.21",
+            "server_port": 443,
+            "tag": "@meli_proxyy 4",
+            "type": "vless",
+            "uuid": "153ee04c-dcc1-4ef8-a146-8fb31cec1f48"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.66.133",
+            "server_port": 443,
+            "tag": "@Hope_Net-join-us-on-Telegram 3",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "live.theworldwidewolf.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "vistapcit.com"
+                },
+                "path": "/@vistav2ray---@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vistav2ray----@vist",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "961a174e-f775-4d59-cc81-96169f4cfb19"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "151.101.66.228",
+            "server_port": 443,
+            "tag": "@Hope_Net-join-us-on-Telegram 4",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "faculty.ucdavis.edu",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "qq"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "JoinBede-mosiv2.ir"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "7f97027a-6f60-5723-b101-eef62aab17db"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "85.133.215.188",
+            "server_port": 3311,
+            "tag": "🇳🇱 [openproxylist.com] vless-NL```",
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "ccd5d8c4-634c-46bc-8f7a-5be3b8649858"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.112.1",
+            "server_port": 2096,
+            "tag": "@Hope_Net-join-us-on-Telegram 5",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "app2.year2025appdatat.lat"
+            },
+            "transport": {
+                "service_name": "",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "c0b9dd6c-9676-4cd1-9e7c-9c6ac59afd37"
+        },
+        {
+            "alter_id": 64,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "38.174.190.75",
+            "server_port": 38007,
+            "tag": "@Hope_Net-join-us-on-Telegram 6",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": ""
+            },
+            "transport": {
+                "path": "/path/251724052818",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "418048af-a293-4b99-9b0c-98ca3580dd24"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.17.148.22",
+            "server_port": 80,
+            "tag": "@Hope_Net-join-us-on-Telegram 7",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "www.speedtest.net.join.vpncustomize.api.nhl.ir.abrha.co.ZA."
+                },
+                "max_early_data": 2560,
+                "path": "/Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE,Telegram,VPNCUSTOMIZE",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "1a563e92-9f9b-4158-b800-50ed4fc98214"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "212.129.5.242",
+            "server_port": 15194,
+            "tag": "IoXYUch1_vless",
+            "type": "vless",
+            "uuid": "d7703b51-41e8-42c1-aa71-2b5099148227"
+        },
+        {
+            "method": "aes-256-gcm",
+            "password": "dongtaiwang.com",
+            "server": "46.17.40.79",
+            "server_port": 38674,
+            "tag": "SS节点",
+            "type": "shadowsocks"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "proxy",
-      "default_mode": "rule"
-    }
-  }
 }
