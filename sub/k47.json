@@ -1,0 +1,338 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "address": "https://8.8.8.8/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4",
+        "client_subnet": "110.242.68.66"
+      },
+      {
+        "tag": "query",
+        "address": "https://1.1.1.1/dns-query",
+        "detour": "proxy",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "local",
+        "address": "https://123.125.81.6/dns-query",
+        "detour": "direct",
+        "strategy": "prefer_ipv4"
+      },
+      {
+        "tag": "block",
+        "address": "rcode://success"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇨🇴 亚美尼亚+V2CROSS.COM",
+        "🇨🇴 中国+V2CROSS.COM",
+        "🇺🇸 美国+纽约市DigitalOcean云公司",
+        "🇨🇴 亚美尼亚+V2CROSS.COM 2",
+        "🇷🇺 俄罗斯+V2CROSS.COM",
+        "🇺🇸 美国+V2CROSS.COM",
+        "🇯🇵 日本+V2CROSS.COM",
+        "🇷🇺 俄罗斯+V2CROSS.COM 2",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 江苏省+移动"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇨🇴 亚美尼亚+V2CROSS.COM",
+        "🇨🇴 中国+V2CROSS.COM",
+        "🇺🇸 美国+纽约市DigitalOcean云公司",
+        "🇨🇴 亚美尼亚+V2CROSS.COM 2",
+        "🇷🇺 俄罗斯+V2CROSS.COM",
+        "🇺🇸 美国+V2CROSS.COM",
+        "🇯🇵 日本+V2CROSS.COM",
+        "🇷🇺 俄罗斯+V2CROSS.COM 2",
+        "吉林省 移动(全省通用)",
+        "🇨🇳 江苏省+移动"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇨🇴 亚美尼亚+V2CROSS.COM",
+      "type": "trojan",
+      "server": "188.164.159.214",
+      "server_port": 2083,
+      "password": "Aimer",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "epmk.ambercc.filegear-sg.me"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "epmk.ambercc.filegear-sg.me"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇴 中国+V2CROSS.COM",
+      "type": "trojan",
+      "server": "103.248.229.29",
+      "server_port": 1531,
+      "password": "a0f7a422-7867-469c-946b-190d8fbc2a5d",
+      "tls": {
+        "enabled": true,
+        "insecure": true
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+纽约市DigitalOcean云公司",
+      "type": "trojan",
+      "server": "us.blazeppn.info",
+      "server_port": 443,
+      "password": "xxoo",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "us.blazeppn.info"
+      }
+    },
+    {
+      "tag": "🇨🇴 亚美尼亚+V2CROSS.COM 2",
+      "type": "trojan",
+      "server": "188.164.159.234",
+      "server_port": 2083,
+      "password": "Aimer",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "epml.ambercc.filegear-sg.me"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "epml.ambercc.filegear-sg.me"
+        }
+      }
+    },
+    {
+      "tag": "🇷🇺 俄罗斯+V2CROSS.COM",
+      "type": "trojan",
+      "server": "46.254.93.243",
+      "server_port": 8443,
+      "password": "Aimer",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "epmk.ambercc.filegear-sg.me"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "epmk.ambercc.filegear-sg.me"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM",
+      "type": "trojan",
+      "server": "199.34.228.50",
+      "server_port": 2053,
+      "password": "Aimer",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "epml.ambercc.filegear-sg.me"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "epml.ambercc.filegear-sg.me"
+        }
+      }
+    },
+    {
+      "tag": "🇯🇵 日本+V2CROSS.COM",
+      "type": "trojan",
+      "server": "43.203.122.115",
+      "server_port": 6668,
+      "password": "1a17b19d-4896-4531-af79-6e91d8ef8228",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "baidu.com"
+      }
+    },
+    {
+      "tag": "🇷🇺 俄罗斯+V2CROSS.COM 2",
+      "type": "shadowsocks",
+      "server": "213.156.138.138",
+      "server_port": 31348,
+      "method": "chacha20-ietf-poly1305",
+      "password": "oVfvPkqJFCjOEbBsbmOtIiAuqgmEFOEf332F26C8lwEwQng9"
+    },
+    {
+      "tag": "吉林省 移动(全省通用)",
+      "type": "vmess",
+      "server": "111.26.109.79",
+      "server_port": 30828,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ocbc.com"
+        },
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇨🇳 江苏省+移动",
+      "type": "trojan",
+      "server": "36.151.251.29",
+      "server_port": 53067,
+      "password": "d0d08cddacc3190ea81b1b792e1b5fde",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.baidu.com"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
