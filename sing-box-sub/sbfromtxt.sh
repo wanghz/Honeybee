@@ -23,6 +23,7 @@ done
 
 links=(
         "https://raw.githubusercontent.com/Alvin9999/pac2/master/hysteria2/config.json"
+        "https://chromego-sub.netlify.app/sub/base64.txt"
         "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" 
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
         "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/nodes/clashmeta.txt"
@@ -31,8 +32,10 @@ links=(
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/trojan.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/trojan.txt"
-        "https://raw.githubusercontent.com/V2RAYCONFIGSPOOL/V2RAY_SUB/refs/heads/main/v2ray_configs.txt"
         "https://raw.githubusercontent.com/kSLAWIASCA/actions/refs/heads/main/Clash.yml"
+        "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
+        "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
+        "https://raw.githubusercontent.com/pachangcheng/mianfeijiedian/refs/heads/main/should.txt"
 )
 counter=60
 for file in "${links[@]}"; do
