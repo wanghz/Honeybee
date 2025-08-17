@@ -1,0 +1,566 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "rules": [
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "server": "local"
+      },
+      {
+        "clash_mode": "direct",
+        "server": "local"
+      },
+      {
+        "clash_mode": "proxy",
+        "server": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "server": "block"
+      },
+      {
+        "outbound": [
+          "any"
+        ],
+        "server": "query"
+      }
+    ],
+    "servers": [
+      {
+        "tag": "remote",
+        "type": "https",
+        "server": "1.1.1.1",
+        "server_port": 443,
+        "path": "/dns-query",
+        "detour": "proxy"
+      },
+      {
+        "tag": "query",
+        "type": "https",
+        "server": "1.1.1.1",
+        "server_port": 443,
+        "path": "/dns-query",
+        "detour": "proxy"
+      },
+      {
+        "tag": "local",
+        "type": "https",
+        "server": "123.125.81.6",
+        "server_port": 443,
+        "path": "/dns-query"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 🇫🇷_FR_法国->🇺🇸_US_美国",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国",
+        "🇩🇰 _DK_丹麦->🇨🇳_CN_中国",
+        "未知",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+        "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国",
+        "🇺🇸 🇮🇷_IR_伊朗->🇺🇸_US_美国",
+        "🇺🇸 🇺🇦_UA_乌克兰->🇺🇸_US_美国",
+        "🇺🇸 _US_美国_1",
+        "🇺🇸 _US_美国_2",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_1",
+        "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国",
+        "🇲🇩 _MD_摩尔多瓦",
+        "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国_1",
+        "🇩🇪 _DE_德国",
+        "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国_1",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3",
+        "🇩🇰 _DK_丹麦",
+        "🇺🇸 _US_美国->🇨🇳_CN_中国",
+        "🇺🇸 🇧🇬_BG_保加利亚->🇺🇸_US_美国",
+        "🇺🇸 _US_美国_3",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_2"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 🇫🇷_FR_法国->🇺🇸_US_美国",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国",
+        "🇩🇰 _DK_丹麦->🇨🇳_CN_中国",
+        "未知",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+        "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国",
+        "🇺🇸 🇮🇷_IR_伊朗->🇺🇸_US_美国",
+        "🇺🇸 🇺🇦_UA_乌克兰->🇺🇸_US_美国",
+        "🇺🇸 _US_美国_1",
+        "🇺🇸 _US_美国_2",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_1",
+        "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国",
+        "🇲🇩 _MD_摩尔多瓦",
+        "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国_1",
+        "🇩🇪 _DE_德国",
+        "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国_1",
+        "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3",
+        "🇩🇰 _DK_丹麦",
+        "🇺🇸 _US_美国->🇨🇳_CN_中国",
+        "🇺🇸 🇧🇬_BG_保加利亚->🇺🇸_US_美国",
+        "🇺🇸 _US_美国_3",
+        "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_2"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "1m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 🇫🇷_FR_法国->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "45.80.110.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "89.116.180.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "96.43.101.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇩🇰 _DK_丹麦->🇨🇳_CN_中国",
+      "type": "vmess",
+      "server": "fastcup.net",
+      "server_port": 80,
+      "uuid": "7577254b-c576-48cd-bbd0-69872aa3a9c9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/profile/telegram@ssrsub"
+      }
+    },
+    {
+      "tag": "未知",
+      "type": "shadowsocks",
+      "server": "awes35lesl.blhao0o.dpdns.org",
+      "server_port": 12024,
+      "method": "aes-128-gcm",
+      "password": "01721e43-5389-4f97-b21c-900abb2bda9e"
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_1",
+      "type": "vmess",
+      "server": "v33.heduian.link",
+      "server_port": 30833,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "160.153.136.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇮🇷_IR_伊朗->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "dl01.armod.top",
+      "server_port": 443,
+      "uuid": "cd11391b-9f7a-4478-b624-3a1d5d81d426",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 🇺🇦_UA_乌克兰->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "91.124.127.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国_1",
+      "type": "vmess",
+      "server": "192.0.63.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国_2",
+      "type": "vmess",
+      "server": "45.40.144.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_2",
+      "type": "vmess",
+      "server": "v37.heduian.link",
+      "server_port": 30837,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_1",
+      "type": "vmess",
+      "server": "185.148.107.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "45.8.211.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇲🇩 _MD_摩尔多瓦",
+      "type": "shadowsocks",
+      "server": "185.153.197.5",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    },
+    {
+      "tag": "🇺🇸 🇳🇱_NL_荷兰->🇺🇸_US_美国_1",
+      "type": "vmess",
+      "server": "45.131.6.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇩🇪 _DE_德国",
+      "type": "shadowsocks",
+      "server": "193.108.119.230",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    },
+    {
+      "tag": "🇺🇸 🇬🇧_GB_英国->🇺🇸_US_美国_1",
+      "type": "vmess",
+      "server": "45.85.119.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇨🇳_CN_中国->🇺🇸_US_美国_3",
+      "type": "vmess",
+      "server": "v29.heduian.link",
+      "server_port": 30829,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇩🇰 _DK_丹麦",
+      "type": "vmess",
+      "server": "pubg.ac",
+      "server_port": 80,
+      "uuid": "7577254b-c576-48cd-bbd0-69872aa3a9c9",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/profile/telegram@ssrsub"
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国->🇨🇳_CN_中国",
+      "type": "shadowsocks",
+      "server": "154.3.8.151",
+      "server_port": 30067,
+      "method": "aes-256-gcm",
+      "password": "iUB0923RBA"
+    },
+    {
+      "tag": "🇺🇸 🇧🇬_BG_保加利亚->🇺🇸_US_美国",
+      "type": "vmess",
+      "server": "147.78.140.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 _US_美国_3",
+      "type": "vmess",
+      "server": "166.62.106.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 🇱🇹_LT_立陶宛->🇺🇸_US_美国_2",
+      "type": "vmess",
+      "server": "88.216.69.171",
+      "server_port": 8880,
+      "uuid": "bac7eb53-3470-3af0-a69f-b0561333cda1",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "proxy",
+      "default_mode": "rule"
+    }
+  }
+}
