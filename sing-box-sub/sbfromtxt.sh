@@ -35,7 +35,9 @@ links=(
         "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
         "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
         "https://raw.githubusercontent.com/pachangcheng/mianfeijiedian/refs/heads/main/should.txt"
-        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/wireguard.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/ss.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
 )
 counter=60
 for file in "${links[@]}"; do
