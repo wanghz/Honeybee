@@ -23,8 +23,6 @@ echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> local
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >> localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11" >> localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
