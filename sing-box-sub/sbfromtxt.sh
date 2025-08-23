@@ -23,7 +23,6 @@ done
 
 links=(
         "https://raw.githubusercontent.com/Alvin9999/pac2/master/hysteria2/config.json"
-        "https://chromego-sub.netlify.app/sub/base64.txt"
         "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt" 
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
         "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/nodes/clashmeta.txt"
