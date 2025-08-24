@@ -1,6 +1,54 @@
 import json
 import re
 import sys
+import geoip2.database
+import ipaddress
+import socket
+from typing import Tuple, Optional
+
+class GeoIPChecker:
+    def __init__(self, db_path: str):
+        """初始化 GeoIPChecker，加载数据库一次"""
+        self.reader = geoip2.database.Reader(db_path)
+        self.cache = {}  # 可选：缓存查询结果
+
+    def is_iran_ip(self, ip_address: str) -> bool:
+        """检查单个 IP 是否属于伊朗"""
+        try:
+            if ip_address in self.cache:
+                return self.cache[ip_address]
+            response = self.reader.country(ip_address)
+            is_iran = response.country.iso_code == 'IR'
+            self.cache[ip_address] = is_iran
+            return is_iran
+        except Exception as e:
+            #print(f"Error for IP {ip_address}: {e}")
+            return False
+
+    def check_ip(self, ip_address: str) -> Tuple[str, bool]:
+        """检查单个 IP，返回 (IP, 是否伊朗) 的结果"""
+        return (ip_address, self.is_iran_ip(ip_address))
+
+    def resolve_domain(self, domain: str) -> Optional[str]:
+        """解析域名到 IP 地址，返回第一个有效的 IPv4 地址"""
+        try:
+            ip_address = socket.gethostbyname(domain)
+            return ip_address
+        except socket.gaierror as e:
+            #print(f"Error resolving domain {domain}: {e}")
+            return None
+
+    def check_domain(self, domain: str) -> Tuple[str, Optional[str], bool]:
+        """检查域名，返回 (域名, IP地址, 是否伊朗) 的结果"""
+        ip_address = self.resolve_domain(domain)
+        if ip_address:
+            is_iran = self.is_iran_ip(ip_address)
+            return (domain, ip_address, is_iran)
+        return (domain, None, False)
+
+    def __del__(self):
+        """确保程序结束时关闭数据库"""
+        self.reader.close()
 
 def is_url_encoding_valid(encoded_str):
     # 正则表达式匹配 URL 编码格式
@@ -112,6 +160,107 @@ def one_by_one(data):
     data["outbounds"][2]["outbounds"] = [tag for tag in required_tags]
 
     return data
+    
+
+def process_domain(domain: str, checker: GeoIPChecker) -> bool:
+    """另一个函数，调用 checker.check_domain 处理域名"""
+    domain, ip_address, is_iran = checker.check_domain(domain)
+    if is_iran:
+        pass
+        #print(f"Domain {domain} resolved to IP {ip_address}: {'Iran' if is_iran else 'Not Iran'}")
+    else:
+        #print(f"Domain {domain}: Failed to resolve IP")
+        pass
+    return is_iran
+
+
+def process_outbounds_server_ip(data):
+    tag_list = []
+    server_list = []
+    for outbound in data["outbounds"]:
+        if "server" in outbound:
+            try:
+                ipaddress.ip_address(outbound['server'])
+                ip, special_ip = checker.check_ip(outbound['server'])
+                if special_ip:
+                    print(outbound['server'], "Special ip, skip")
+                    tag_list.append(outbound['tag'])
+                    server_list.append(outbound)                
+
+            except ValueError:
+                try:
+                    # 调用 process_domain 函数
+                    special_ip = process_domain(outbound['server'], checker)
+                    #print(outbound['server'])
+                    if special_ip:
+                        print(outbound['server'], "Special ip, skip")
+                        tag_list.append(outbound['tag'])
+                        server_list.append(outbound)
+                        #data["outbounds"].remove(outbound)
+                except ValueError:
+                    pass  # 不是IP，继续判断域名
+
+    Methods = ["aes-128-gcm",
+                "aes-192-gcm",
+                "aes-256-gcm",
+                "chacha20-ietf-poly1305",
+                "xchacha20-ietf-poly1305",
+                "aes-128-ctr",
+                "aes-192-ctr",
+                "aes-256-ctr",
+                "aes-128-cfb",
+                "aes-192-cfb",
+                "aes-256-cfb",
+                "rc4-md5",
+                "chacha20-ietf",
+                "2022-blake3-aes-128-gcm",
+                "2022-blake3-aes-256-gcm",
+                "2022-blake3-chacha20-poly1305"]
+
+    for outbound in data["outbounds"]:
+        if "tls" in outbound and "reality" in outbound["tls"]:
+            try:
+                if outbound["tls"]["reality"]["public_key"] == None:
+                    tag_list.append(outbound['tag'])
+                    server_list.append(outbound)
+                    print("public_key invalid")
+            except ValueError:
+                pass          
+                                       
+        if "transport" in outbound and "path" in outbound["transport"]:
+            try:
+                if outbound["transport"]["path"][0] != "/":
+                    tag_list.append(outbound['tag'])
+                    server_list.append(outbound)
+                    print("tls transport path error", outbound["transport"]["path"])
+            except ValueError:
+                pass 
+
+        if "method" in outbound:
+            if outbound["method"] not in Methods:
+                tag_list.append(outbound['tag'])
+                server_list.append(outbound)
+                print("invalid method", outbound["tag"],outbound["method"])
+
+
+        if "password" in outbound:
+            if len(outbound["password"]) == 44 or len(outbound["password"]) > 64:
+                tag_list.append(outbound['tag'])
+                server_list.append(outbound)
+                print("password too long", outbound["tag"],outbound["password"])
+        
+            
+    data["outbounds"] = [item for item in data["outbounds"] if item not in server_list]
+
+    #data["outbounds"][1]["outbounds"] = [item for item in data["outbounds"][1]["outbounds"] if item not in tag_list]  
+    #data["outbounds"][2]["outbounds"] = [item for item in data["outbounds"][2]["outbounds"] if item not in tag_list]  
+    for item in data["outbounds"]:
+        if "tag" in item and item["tag"] in ["🌏auto", "🌏 !Choose"]:
+            item["outbounds"] = [item for item in item["outbounds"] if item not in tag_list]
+    #print(tag_list)
+        
+    return data, len(tag_list)
+
 
 
 if __name__ == "__main__":
@@ -142,6 +291,10 @@ if __name__ == "__main__":
         new_data = process_outbounds(data, token)
 
     new_data = one_by_one(new_data)   #确保tag匹配
+
+    # 初始化 GeoIPChecker
+    checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
+    new_data, howmany = process_outbounds_server_ip(new_data)
         
     # 写入JSON文件
     write_json(file_path, new_data)
