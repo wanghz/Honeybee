@@ -1,0 +1,362 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "123.125.81.6",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇨🇳 江苏省+移动",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 2",
+        "🇺🇸 美国 加州",
+        "🇭🇰 香港 电讯盈科有限公司",
+        "🇺🇸 美国 V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 3",
+        "🇬🇧 英国+V2CROSS.COM 4",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇭🇰 香港 电讯盈科有限公司 2",
+        "🇺🇸 美国 V2CROSS.COM 2"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇨🇳 江苏省+移动",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 2",
+        "🇺🇸 美国 加州",
+        "🇭🇰 香港 电讯盈科有限公司",
+        "🇺🇸 美国 V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM 3",
+        "🇬🇧 英国+V2CROSS.COM 4",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇭🇰 香港 电讯盈科有限公司 2",
+        "🇺🇸 美国 V2CROSS.COM 2"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "300m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇨🇳 江苏省+移动",
+      "type": "trojan",
+      "server": "36.150.215.141",
+      "server_port": 22006,
+      "password": "253bc477d4e43c209f2d427272968280",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "v1-dy.ixigua.com"
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM",
+      "type": "vless",
+      "server": "25.129.196.213",
+      "server_port": 8880,
+      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "jp.laoyoutiao.link"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 2",
+      "type": "vless",
+      "server": "25.26.27.29",
+      "server_port": 8880,
+      "uuid": "fab7bf9c-ddb9-4563-8a04-fb01ce6c0fbf",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/TelegramU0001F1E8U0001F1F3",
+        "headers": {
+          "Host": "hk.laoyoutiao.link"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 加州",
+      "type": "vmess",
+      "server": "216.24.57.214",
+      "server_port": 8880,
+      "uuid": "d1b75cc3-e618-37c4-9c55-ff11b4ed493b",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "TG.WangCai2.s4.db-link02.top"
+        },
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司",
+      "type": "vmess",
+      "server": "v10.heduian.link",
+      "server_port": 30807,
+      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "baidu.com"
+        },
+        "path": "/oooo"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "199.181.197.60",
+      "server_port": 443,
+      "uuid": "de94cc0a-0592-4969-b1fc-97ea8f0ea0b3",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "farid.1.berozha.ir"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "farid.1.berozha.ir"
+        },
+        "path": "/us.kkp.me.eu.org/aa"
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 3",
+      "type": "vless",
+      "server": "109.176.239.3",
+      "server_port": 8880,
+      "uuid": "b5441b0d-2147-4898-8a6a-9b2c87f58382",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/Telegram",
+        "headers": {
+          "Host": "bitget1.asdasd.click"
+        }
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM 4",
+      "type": "vless",
+      "server": "25.129.197.113",
+      "server_port": 8880,
+      "uuid": "d60fc3c5-9f07-4cdb-b81f-70af27936bdc",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY---VITUREY--- /",
+        "headers": {
+          "Host": "ex.sue.x10.mx"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点",
+      "type": "vmess",
+      "server": "www.speedtest.net",
+      "server_port": 443,
+      "uuid": "e2fb28b8-a457-4bd2-801e-56fdcccbd88e",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "blaze-cana-126.blazeservers1.site"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "blaze-cana-126.blazeservers1.site"
+        },
+        "path": "/linkvkwsss"
+      }
+    },
+    {
+      "tag": "🇭🇰 香港 电讯盈科有限公司 2",
+      "type": "vmess",
+      "server": "hkt.gotochinatown.net",
+      "server_port": 80,
+      "uuid": "93fb69fc-77cf-11ee-85ee-f23c91369f2d",
+      "security": "auto",
+      "alter_id": 2,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 V2CROSS.COM 2",
+      "type": "vmess",
+      "server": "160.79.104.214",
+      "server_port": 8880,
+      "uuid": "d1b75cc3-e618-37c4-9c55-ff11b4ed493b",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "TG.WangCai2.s4.db-link02.top"
+        },
+        "path": "/dabai&Telegram🇨🇳@WangCai2/",
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
