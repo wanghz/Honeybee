@@ -1,6 +1,6 @@
 #!/bin/bash
 all_files=(
-        "htonly.yml"
+        #"htonly.yml"
 )
 
 # 添加find找到的文件到数组
@@ -22,13 +22,7 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
-        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/vmess"
-        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/trojan"
-        "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
-        "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml"
-        "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
         "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt"
-        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
         "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/config.json"
         "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY_BASE64.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/hysteria2.txt"
@@ -37,6 +31,13 @@ links=(
         "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
         "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
         "https://raw.githubusercontent.com/pachangcheng/mianfeijiedian/refs/heads/main/should.txt"
+        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/vmess"
+        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/trojan"
+        "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
+        "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml"
+        "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
+        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
+
 )
 counter=60
 for file in "${links[@]}"; do
