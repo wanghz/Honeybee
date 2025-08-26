@@ -229,7 +229,7 @@ def process_outbounds_server_ip(data):
                                        
         if "transport" in outbound and "path" in outbound["transport"]:
             try:
-                if outbound["transport"]["path"][0] == "%":
+                if len(outbound["transport"]["path"]) >0 and outbound["transport"]["path"][0] == "%":
                     tag_list.append(outbound['tag'])
                     server_list.append(outbound)
                     print("tls transport path error", outbound["transport"]["path"])
