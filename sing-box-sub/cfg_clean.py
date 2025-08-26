@@ -280,14 +280,22 @@ def remove_duplicates_from_outbound_lists(data):
 
 if __name__ == "__main__":
     # 检查命令行参数数量
-    if len(sys.argv) <= 3:
-        print("用法: python script.py <文件名> <字符串>")
-    else:
-        # 获取命令行参数
-        file_path = sys.argv[1]
-        token = sys.argv[2]
+    # Check if the correct number of arguments is provided (script name + 3 arguments)
+    if len(sys.argv) != 4:
+        print("用法: python script.py <文件名> <字符串> <数字>")
+        sys.exit(1)
+    
+    # Get command-line arguments
+    file_path = sys.argv[1]
+    token = sys.argv[2]
+    
+    # Validate and convert the number argument
+    try:
         number = int(sys.argv[3])
-
+    except ValueError:
+        print(f"错误: 第三个参数 '{sys.argv[3]}' 必须是一个有效的整数")
+        sys.exit(1)
+        
     # 读取JSON文件
     data = read_json(file_path)
     print("读取的JSON数据:", file_path)
