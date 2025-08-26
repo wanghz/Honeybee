@@ -261,7 +261,22 @@ def process_outbounds_server_ip(data):
         
     return data, len(tag_list)
 
-
+def remove_duplicates_from_outbound_lists(data):
+    # Collect all valid tags that have 'server'
+    valid_tags = {ob['tag'] for ob in data.get("outbounds", []) if "server" in ob}
+    
+    for outbound in data.get("outbounds", []):
+        if "tag" in outbound and outbound["tag"] in ["🌏 !Choose", "🌏auto"]:
+            if "outbounds" in outbound and isinstance(outbound["outbounds"], list):
+                # Remove duplicates while preserving order, and filter only existing valid tags
+                unique_outbounds = []
+                seen = set()
+                for tag in outbound["outbounds"]:
+                    if tag not in seen and tag in valid_tags:
+                        unique_outbounds.append(tag)
+                        seen.add(tag)
+                outbound["outbounds"] = unique_outbounds
+    return data
 
 if __name__ == "__main__":
     # 检查命令行参数数量
@@ -290,6 +305,7 @@ if __name__ == "__main__":
     else: 
         new_data = process_outbounds(data, token)
 
+    new_data = remove_duplicates_from_outbound_lists(new_data)
     new_data = one_by_one(new_data)   #确保tag匹配
 
     # 初始化 GeoIPChecker
