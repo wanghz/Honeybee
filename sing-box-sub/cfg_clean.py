@@ -297,11 +297,11 @@ if __name__ == "__main__":
     data = one_by_one(data)   #确保tag匹配
     # 初始化 GeoIPChecker
     checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
-    data, howmany = process_outbounds_server_ip(data)
+    new_data, howmany = process_outbounds_server_ip(data)
         
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
-        new_data, tag_list = process_outbounds_method(data)         
+        new_data, tag_list = process_outbounds_method(new_data)         
         for tag in tag_list:
             new_data = process_outbounds(new_data, tag)
     elif token == "index":
@@ -310,17 +310,16 @@ if __name__ == "__main__":
             number = int(sys.argv[3])
             if number not in (None, ''):
                 if isinstance(number, numbers.Number):
-                    new_data = process_outbounds_index(data, number)
+                    new_data = process_outbounds_index(new_data, number)
         except ValueError:
             print(f"错误: 第三个参数 '{sys.argv[3]}' index 不存在")
             #sys.exit(1)
             pass        
 
     elif token == "check":
-        new_data = data
         pass
     else: 
-        new_data = process_outbounds(data, token)
+        new_data = process_outbounds(new_data, token)
 
 
     # 写入JSON文件
