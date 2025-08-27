@@ -10,11 +10,13 @@ urls=(
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/trojan.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vless.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vmess.txt"
-  "https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/refs/heads/master/collected-proxies/clash-meta/all.yaml"
-  "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/ss.txt"
-  "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vless.txt"
+  #"https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/refs/heads/master/collected-proxies/clash-meta/all.yaml"
+  #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/ss.txt"
+  #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vless.txt"
+  "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/refs/heads/master/list.txt"
+  "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt"
   "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vmess.txt"
-  "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
+  #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
 )
 
 cd ./sub
