@@ -289,14 +289,8 @@ if __name__ == "__main__":
     # Get command-line arguments
     file_path = sys.argv[1]
     token = sys.argv[2]
-    
-    # Validate and convert the number argument
-    try:
-        number = int(sys.argv[3])
-    except ValueError:
-        print(f"错误: 第三个参数 '{sys.argv[3]}' 必须是一个有效的整数")
-        #sys.exit(1)
-        pass
+
+    data = remove_duplicates_from_outbound_lists(data)
         
     # 读取JSON文件
     data = read_json(file_path)
@@ -308,16 +302,24 @@ if __name__ == "__main__":
         for tag in tag_list:
             new_data = process_outbounds(new_data, tag)
     elif token == "index":
-        if number not in (None, ''):
-            if isinstance(number, numbers.Number):
-                new_data = process_outbounds_index(data, number)
+        # Validate and convert the number argument
+        try:
+            number = int(sys.argv[3])
+            if number not in (None, ''):
+                if isinstance(number, numbers.Number):
+                    new_data = process_outbounds_index(data, number)
+        except ValueError:
+            print(f"错误: 第三个参数 '{sys.argv[3]}' index 不存在")
+            #sys.exit(1)
+            pass        
+
     elif token == "check":
         new_data = data
         pass
     else: 
         new_data = process_outbounds(data, token)
 
-    new_data = remove_duplicates_from_outbound_lists(new_data)
+
     new_data = one_by_one(new_data)   #确保tag匹配
 
     # 初始化 GeoIPChecker
