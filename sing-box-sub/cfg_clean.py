@@ -5,6 +5,7 @@ import geoip2.database
 import ipaddress
 import socket
 from typing import Tuple, Optional
+import numbers
 
 class GeoIPChecker:
     def __init__(self, db_path: str):
@@ -294,7 +295,8 @@ if __name__ == "__main__":
         number = int(sys.argv[3])
     except ValueError:
         print(f"错误: 第三个参数 '{sys.argv[3]}' 必须是一个有效的整数")
-        sys.exit(1)
+        #sys.exit(1)
+        pass
         
     # 读取JSON文件
     data = read_json(file_path)
@@ -306,7 +308,8 @@ if __name__ == "__main__":
         for tag in tag_list:
             new_data = process_outbounds(new_data, tag)
     elif token == "index":
-        new_data = process_outbounds_index(data, number)
+        if isinstance(number, numbers.Number)：
+            new_data = process_outbounds_index(data, number)
     elif token == "check":
         new_data = data
         pass
