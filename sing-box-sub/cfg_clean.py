@@ -289,12 +289,11 @@ if __name__ == "__main__":
     # Get command-line arguments
     file_path = sys.argv[1]
     token = sys.argv[2]
-
-    data = remove_duplicates_from_outbound_lists(data)
         
     # 读取JSON文件
     data = read_json(file_path)
     print("读取的JSON数据:", file_path)
+    data = remove_duplicates_from_outbound_lists(data)
 
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
