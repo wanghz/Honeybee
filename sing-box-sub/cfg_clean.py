@@ -308,8 +308,9 @@ if __name__ == "__main__":
         for tag in tag_list:
             new_data = process_outbounds(new_data, tag)
     elif token == "index":
-        if isinstance(number, numbers.Number):
-            new_data = process_outbounds_index(data, number)
+        if number not in (None, ''):
+            if isinstance(number, numbers.Number):
+                new_data = process_outbounds_index(data, number)
     elif token == "check":
         new_data = data
         pass
