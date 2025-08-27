@@ -295,7 +295,10 @@ if __name__ == "__main__":
     print("读取的JSON数据:", file_path)
     data = remove_duplicates_from_outbound_lists(data)
     data = one_by_one(data)   #确保tag匹配
-
+    # 初始化 GeoIPChecker
+    checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
+    data, howmany = process_outbounds_server_ip(data)
+        
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
         new_data, tag_list = process_outbounds_method(data)         
@@ -319,10 +322,7 @@ if __name__ == "__main__":
     else: 
         new_data = process_outbounds(data, token)
 
-    # 初始化 GeoIPChecker
-    checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
-    new_data, howmany = process_outbounds_server_ip(new_data)
-        
+
     # 写入JSON文件
     write_json(file_path, new_data)
     print("数据已写入",file_path)
