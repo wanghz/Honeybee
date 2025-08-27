@@ -294,6 +294,7 @@ if __name__ == "__main__":
     data = read_json(file_path)
     print("读取的JSON数据:", file_path)
     data = remove_duplicates_from_outbound_lists(data)
+    data = one_by_one(data)   #确保tag匹配
 
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
@@ -317,9 +318,6 @@ if __name__ == "__main__":
         pass
     else: 
         new_data = process_outbounds(data, token)
-
-
-    new_data = one_by_one(new_data)   #确保tag匹配
 
     # 初始化 GeoIPChecker
     checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
