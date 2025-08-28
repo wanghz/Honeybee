@@ -21,8 +21,6 @@ echo "" >> localurl.txt
 # 添加一些
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
-echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/vmess" >> localurl.txt
-echo "https://raw.githubusercontent.com/Huibq/TrojanLinks/master/links/trojan" >> localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
@@ -36,6 +34,7 @@ echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/ref
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
 echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
+echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml">>localurl.txt
 #echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
@@ -63,6 +62,8 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/\/mai19950/d' \
        -e '/zhlx2835/d' \
        -e '/Roywaller/d' \
+       -e '/Ruk1ng001/d' \
+       -e '/shahidbhutta/d' \
        -e '/Ruk1ng001/d' \
        -e '/\/leetomlee123/d' \
        -e '/\/snakem982\/proxypool\/refs\/heads\/main\/source\/v2ray\.txt/d' \
