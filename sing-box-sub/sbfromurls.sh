@@ -82,8 +82,8 @@ echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/proxies.yaml">
 echo "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v2">> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >>localurl.txt
-echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >>localurl.txt
-echo "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/mixed">>localurl.txt
+#echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >>localurl.txt
+#echo "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/mixed">>localurl.txt
 #echo "https://raw.githubusercontent.com/ts-sf/fly/main/v2">> localurl.txt
 #echo "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
