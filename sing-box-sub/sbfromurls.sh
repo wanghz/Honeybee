@@ -16,9 +16,22 @@ cat snakem982url1.txt>>localurl.txt
 echo "" >> localurl.txt
 cat snakem982url2.txt>>localurl.txt
 echo "" >> localurl.txt
-cat url3.txt>>localurl.txt
+#cat url3.txt>>localurl.txt
 echo "" >> localurl.txt
 # 添加一些
+echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/ss.txt">> localurl.txt
+echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/vless.txt">> localurl.txt
+echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/vmess.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/jikelonglie/meskell/main/meskell">> localurl.txt
+echo "https://raw.githubusercontent.com/iwxf/free-v2ray/master/index.html">> localurl.txt
+echo "https://raw.githubusercontent.com/aiboboxx/v2rayfree/main/v2">> localurl.txt
+echo "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub">> localurl.txt
+echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/ReaJason/Clash-Butler/master/clash.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node">> localurl.txt
+echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node%202">> localurl.txt
+echo "https://raw.githubusercontent.com/mermeroo/QX/refs/heads/main/Nodes">> localurl.txt
+echo "https://raw.githubusercontent.com/mermeroo/Loon/refs/heads/main/all.nodes.txt">> localurl.txt
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
 echo "https://raw.githubusercontent.com/MhdiTaheri/V2rayCollector/refs/heads/main/sub/mix" >> localurl.txt
@@ -35,6 +48,26 @@ echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collecto
 echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml">>localurl.txt
+echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/yudou66.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodefree.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/nodev2ray.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/clashmeta.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/v2rayshare.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/wenode.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/clash.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/list.yml">> localurl.txt
+echo "https://raw.githubusercontent.com/mfuu/v2ray/master/clash.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/mgit0001/test_clash/main/heima.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/mgit0001/test_clash/refs/heads/main/heima.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Pawdroid/Free-servers/refs/heads/main/sub">> localurl.txt
+echo "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml">> localurl.txt
+echo "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash">> localurl.txt
+echo "https://raw.githubusercontent.com/vxiaov/free_proxies/main/clash/clash.provider.yaml">> localurl.txt
+echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidounode.txt">> localurl.txt
 #echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
