@@ -233,7 +233,7 @@ def process_outbounds_server_ip(data):
                 if len(outbound["transport"]["path"]) >0 and outbound["transport"]["path"][0] == "%":
                     tag_list.append(outbound['tag'])
                     server_list.append(outbound)
-                    print("tls transport path error", outbound["transport"]["path"])
+                    print("tls transport path error")
             except ValueError:
                 pass 
 
