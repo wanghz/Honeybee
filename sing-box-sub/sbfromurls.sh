@@ -68,6 +68,13 @@ echo "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml">> l
 echo "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash">> localurl.txt
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/main/clash/clash.provider.yaml">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidounode.txt">> localurl.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/France/config.txt">>localurls.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/Germany/config.txt">>localurls.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/Singapore/config.txt">>localurls.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/Japan/config.txt">>localurls.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/refs/heads/main/sub/United%20States/config.txt">>localurls.txt
+echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/refs/heads/main/sub/Hong%20Kong/config.txt">>localurls.txt
+
 #echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
