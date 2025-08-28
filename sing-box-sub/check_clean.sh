@@ -8,6 +8,9 @@ split_program="python3 ../sing-box-sub/large_config_split.py"
 
 # 遍历以 f 和 k 开头的 JSON 文件
 for json_file in f*.json k*.json; do
+    # 记录开始时间（纳秒级）
+    start=$(date +%s%N)
+    
     if [[ -f "$json_file" ]]; then
         echo "Processing file: $json_file"
         max_attempts=100
@@ -46,6 +49,16 @@ for json_file in f*.json k*.json; do
         if [ "$outbounds_length" -gt 2000 ]; then
             $split_program "$json_file" "1000"
         fi
+    
+    # 记录结束时间
+    end=$(date +%s%N)
+    # 计算耗时并转换为毫秒
+    duration=$((end - start))
+    milliseconds=$(echo "scale=3; $duration / 1000000" | bc)
+    
+    echo "处理 $json_file 完成，耗时: $milliseconds 毫秒"
+    echo "----------------------------------------"
+        
     else
         echo "No matching JSON files found"
     fi
