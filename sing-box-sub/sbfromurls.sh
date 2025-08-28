@@ -30,16 +30,16 @@ echo "https://raw.githubusercontent.com/ReaJason/Clash-Butler/master/clash.yaml"
 echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node">> localurl.txt
 echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node%202">> localurl.txt
 echo "https://raw.githubusercontent.com/mermeroo/QX/refs/heads/main/Nodes">> localurl.txt
-echo "https://raw.githubusercontent.com/mermeroo/Loon/refs/heads/main/all.nodes.txt">> localurl.txt
+#echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
+#echo "https://raw.githubusercontent.com/mermeroo/Loon/refs/heads/main/all.nodes.txt">> localurl.txt
 echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
-\echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
+echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
 echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
-echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml">> localurl.txt
@@ -74,7 +74,6 @@ echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/h
 echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/heads/main/sublinks/b64trojan.txt">> localurl.txt
 echo "https://mxlsub.me/newfull">> localurl.txt
 echo "https://proxypool.link/vmess/sub">> localurl.txt
-echo "https://raw.githubusercontent.com/ts-sf/fly/main/v2">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidounode.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray/v2rayshare.txt">> localurl.txt
@@ -84,14 +83,15 @@ echo "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v2">> localurl
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >>localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >>localurl.txt
-echo "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/mixed">>localurl.txt
+#echo "https://raw.githubusercontent.com/ts-sf/fly/main/v2">> localurl.txt
+#echo "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY.txt">>localurl.txt
+#echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
 #echo "https://hideshots.eu/sub.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-1.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-3.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/sevcator/5ubscrpt10n/main/mini/m1n1-5ub-4.txt">>localurl.txt
 #echo "https://raw.githubusercontent.com/qianlima8888/autoClashProxy/refs/heads/main/list.yaml">>localurl.txt
-echo "https://raw.githubusercontent.com/SamanGho/v2ray_collector/refs/heads/main/last_150.txt">>localurl.txt
 #echo "https://xray.abvpn.ru/vless/37208d52-8823-412d-944e-0a8ef08a5079/6397639568.json#abvpn">>localurl.txt
 #echo "https://istanbulsydneyhotel.com/blogs/site/sni.php?security=reality">>localurl.txt
 #echo "https://istanbulsydneyhotel.com/blogs/site/sni.php">>localurl.txt
@@ -119,10 +119,12 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Ruk1ng001/d' \
        -e '/shahidbhutta/d' \
        -e '/Ruk1ng001/d' \
+       -e '/crazygeeky/d' \
        -e '/\/leetomlee123/d' \
        -e '/airport/d' \
        -e '/a2470982985/d' \
        -e '/space-00/d' \
+       -e '/eu\.org/d' \
        -e '/crossxx/d' \
        -e '/yudou66\.top/d' \
        -e '/mxlsub\.me\/newfull/d' \
