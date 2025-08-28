@@ -111,6 +111,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/^https:\/\/dy9\.baipiaoyes\.com\/api\/v1\/client\/subscribe/d' \
        -e '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' \
        -e '/\/mai19950/d' \
+       -e '/mheidari98/d' \
        -e '/4n0nymou3/d' \
        -e '/zhlx2835/d' \
        -e '/soroushmirzaei/d' \
