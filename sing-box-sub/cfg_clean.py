@@ -301,16 +301,16 @@ if __name__ == "__main__":
 
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
-        new_data, tag_list = process_outbounds_method(new_data)         
+        new_data, tag_list = process_outbounds_method(data)         
         for tag in tag_list:
-            new_data = process_outbounds(new_data, tag)
+            new_data = process_outbounds(data, tag)
     elif token == "index":
         # Validate and convert the number argument
         try:
             number = int(sys.argv[3])
             if number not in (None, ''):
                 if isinstance(number, numbers.Number):
-                    new_data = process_outbounds_index(new_data, number)
+                    new_data = process_outbounds_index(data, number)
         except ValueError:
             print(f"错误: 第三个参数 '{sys.argv[3]}' index 不存在")
             #sys.exit(1)
