@@ -126,7 +126,7 @@ def name_too_long(data):
 def one_by_one(data):
     # 确定固定的 valid_tags
     invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
-    valid_types = ["trojan", "shadowsocks", "trojan", "ws", "socks","vmess","vless","hysteria","hysteria2"]
+    valid_types = ["trojan", "shadowsocks", "trojan", "ws","tuic", "socks","vmess","vless","hysteria","hysteria2"]
 
     #去重。 将字典序列化为字符串
     str_list = [json.dumps(d, sort_keys=True) for d in data["outbounds"]]
