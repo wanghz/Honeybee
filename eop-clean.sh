@@ -13,8 +13,6 @@ urls=(
   #"https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/refs/heads/master/collected-proxies/clash-meta/all.yaml"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/ss.txt"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vless.txt"
-  "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/refs/heads/master/list.txt"
-  "https://raw.githubusercontent.com/free18/v2ray/refs/heads/main/v.txt"
   "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vmess.txt"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
 )
@@ -61,7 +59,7 @@ download_and_filter() {
         echo "Error: Failed to split file" >&2
         return 1
     fi
-
+    echo  "$url"   "$output_prefix"
     # Delete excess files
     local files=("$output_prefix"*)
     if [[ ${#files[@]} -gt 10 ]]; then
