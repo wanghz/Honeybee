@@ -249,7 +249,12 @@ def process_outbounds_server_ip(data):
                 tag_list.append(outbound['tag'])
                 server_list.append(outbound)
                 print("password too long", outbound["tag"],outbound["password"])
-        
+                
+        if "plugin" in outbound:
+            if outbound["plugin"] == "v2ray-plugin" :
+                tag_list.append(outbound['tag'])
+                server_list.append(outbound)
+                print("v2ray-plugin: unknown mode")        
             
     data["outbounds"] = [item for item in data["outbounds"] if item not in server_list]
 
@@ -317,8 +322,7 @@ if __name__ == "__main__":
         checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
         new_data, howmany = process_outbounds_server_ip(data)
     else: 
-        new_data = process_outbounds(new_data, token)
-
+        new_data = process_outbounds(data, token)
 
     # 写入JSON文件
     write_json(file_path, new_data)
