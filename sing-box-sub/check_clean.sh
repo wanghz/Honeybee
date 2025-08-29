@@ -6,6 +6,28 @@ program="../sing-box-sub/sing-box check -c"
 second_program="python3 ../sing-box-sub/cfg_clean.py"
 split_program="python3 ../sing-box-sub/large_config_split.py"
 
+# 预处理以 f 和 k 开头的 JSON 文件
+for json_file in f*.json k*.json; do
+    # 记录开始时间（纳秒级）
+    start=$(date +%s%N)
+    
+    if [[ -f "$json_file" ]]; then
+        echo "预处理 file: $json_file"
+        # 清理潜在的不合规配置
+        $second_program "$json_file" "check" 000\
+        # 记录结束时间
+        end=$(date +%s%N)
+        # 计算耗时并转换为毫秒
+        duration=$((end - start))
+        milliseconds=$(echo "scale=3; $duration / 1000000" | bc)
+        
+        echo "预处理 $json_file 完成，耗时: $milliseconds 毫秒"
+        echo "----------------------------------------"
+    else
+        echo "No matching JSON files found"
+    fi
+done
+
 # 遍历以 f 和 k 开头的 JSON 文件
 for json_file in f*.json k*.json; do
     # 记录开始时间（纳秒级）
@@ -42,8 +64,6 @@ for json_file in f*.json k*.json; do
                 break
             fi
         done
-        # 清理潜在的不合规配置
-        $second_program "$json_file" "check" 000\
         # 拆分过大的配置
         outbounds_length=$(jq '.outbounds | length' "$json_file")
         if [ "$outbounds_length" -gt 2000 ]; then
