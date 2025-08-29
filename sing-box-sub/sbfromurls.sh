@@ -19,27 +19,11 @@ echo "" >> localurl.txt
 #cat url3.txt>>localurl.txt
 echo "" >> localurl.txt
 # 添加一些
-echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/ss.txt">> localurl.txt
-echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/vless.txt">> localurl.txt
-echo "https://github.com/barry-far/V2ray-Configs/raw/main/Splitted-By-Protocol/vmess.txt">> localurl.txt
-echo "https://raw.githubusercontent.com/jikelonglie/meskell/main/meskell">> localurl.txt
-echo "https://raw.githubusercontent.com/iwxf/free-v2ray/master/index.html">> localurl.txt
+
 echo "https://raw.githubusercontent.com/ripaojiedian/freenode/main/sub">> localurl.txt
-echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/ReaJason/Clash-Butler/master/clash.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node">> localurl.txt
-echo "https://raw.githubusercontent.com/mermeroo/Loon/main/node%202">> localurl.txt
-echo "https://raw.githubusercontent.com/mermeroo/QX/refs/heads/main/Nodes">> localurl.txt
-#echo "https://raw.githubusercontent.com/mermeroo/V2RAY-CLASH-BASE64-Subscription.Links/refs/heads/main/SUB%20LINKS">>localurl.txt
-#echo "https://raw.githubusercontent.com/mermeroo/Loon/refs/heads/main/all.nodes.txt">> localurl.txt
-echo "https://raw.gitmirror.com/Memory2314/VMesslinks/main/links/vmess" >> localurl.txt
-echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml" >> localurl.txt
-echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
-echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
+#echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/VLESS/VL100.txt" >> localurl.txt
+#echo "https://raw.githubusercontent.com/lagzian/SS-Collector/refs/heads/main/SS/Trinity.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/zhangkaiitugithub/passcro/main/speednodes.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/vxiaov/free_proxies/refs/heads/main/clash/clash.provider.yaml">>localurl.txt
-echo "https://raw.githubusercontent.com/4n0nymou3/multi-proxy-config-fetcher/refs/heads/main/configs/proxy_configs.txt">>localurl.txt
-echo "https://raw.githubusercontent.com/soroushmirzaei/telegram-configs-collector/refs/heads/main/subscription%20links.json">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/v2ray.txt">>localurl.txt
 echo "https://raw.githubusercontent.com/snakem982/proxypool/refs/heads/main/source/clash-meta.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/ermaozi/get_subscribe/main/subscribe/clash.yml">> localurl.txt
@@ -50,18 +34,11 @@ echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/ndnode.txt
 echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/clashmeta.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/v2rayshare.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Barabama/FreeNodes/main/nodes/wenode.txt">> localurl.txt
-echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/clash.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/barry-far/V2ray-Configs/main/All_Configs_Sub.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/chengaopan/AutoMergePublicNodes/master/list.yml">> localurl.txt
 echo "https://raw.githubusercontent.com/mfuu/v2ray/master/clash.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/mgit0001/test_clash/main/heima.txt">> localurl.txt
-echo "https://raw.githubusercontent.com/mgit0001/test_clash/refs/heads/main/heima.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Pawdroid/Free-servers/refs/heads/main/sub">> localurl.txt
 echo "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.yml">> localurl.txt
 echo "https://raw.githubusercontent.com/ripaojiedian/freenode/main/clash">> localurl.txt
-echo "https://raw.githubusercontent.com/vxiaov/free_proxies/main/clash/clash.provider.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidounode.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/France/config.txt">>localurls.txt
 echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/Germany/config.txt">>localurls.txt
 echo "https://raw.githubusercontent.com/Epodonios/bulk-xray-v2ray-vless-vmess-...-configs/main/sub/Singapore/config.txt">>localurls.txt
@@ -112,6 +89,9 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/^https:\/\/raw\.githubusercontent\.com\/Memory2314\/VMesslinks\/refs\/heads\/main\/links\/vmess/d' \
        -e '/\/mai19950/d' \
        -e '/mheidari98/d' \
+       -e '/mermeroo/d' \
+       -e '/Huibq/d' \
+       -e '/mheidari98/d' \
        -e '/4n0nymou3/d' \
        -e '/zhlx2835/d' \
        -e '/soroushmirzaei/d' \
@@ -121,7 +101,6 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Ruk1ng001/d' \
        -e '/crazygeeky/d' \
        -e '/\/leetomlee123/d' \
-       -e '/airport/d' \
        -e '/a2470982985/d' \
        -e '/space-00/d' \
        -e '/eu\.org/d' \
