@@ -293,12 +293,7 @@ if __name__ == "__main__":
     # 读取JSON文件
     data = read_json(file_path)
     print("读取的JSON数据:", file_path)
-    data = remove_duplicates_from_outbound_lists(data)
-    data = one_by_one(data)   #确保tag匹配
-    # 初始化 GeoIPChecker
-    checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
-    new_data, howmany = process_outbounds_server_ip(data)
-        
+
     if token == 'method':
         # 先把method不对的去掉，要把相关tag的代理都去掉
         new_data, tag_list = process_outbounds_method(new_data)         
@@ -315,9 +310,12 @@ if __name__ == "__main__":
             print(f"错误: 第三个参数 '{sys.argv[3]}' index 不存在")
             #sys.exit(1)
             pass        
-
     elif token == "check":
-        pass
+        data = remove_duplicates_from_outbound_lists(data)
+        data = one_by_one(data)   #确保tag匹配
+        # 初始化 GeoIPChecker
+        checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
+        new_data, howmany = process_outbounds_server_ip(data)
     else: 
         new_data = process_outbounds(new_data, token)
 
