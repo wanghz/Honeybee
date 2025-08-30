@@ -8,7 +8,6 @@ while IFS= read -r file; do
     all_files+=("$file")
 done < <(find /home/runner/work/Honeybee/Honeybee/sub -type f -mmin -60 -name "split*" -printf "%f\n")
 
-
 counter=1
 for file in "${all_files[@]}"; do
     # 在这里添加您的提取逻辑
@@ -22,22 +21,14 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
-        "https://raw.githubusercontent.com/peasoft/NoMoreWalls/master/list.txt"
-        "https://raw.githubusercontent.com/Barabama/FreeNodes/refs/heads/main/config.json"
-        "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY_BASE64.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/hysteria2.txt"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/trojan.txt"
-        "https://raw.githubusercontent.com/kSLAWIASCA/actions/refs/heads/main/Clash.yml"
         "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
         "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
         "https://raw.githubusercontent.com/pachangcheng/mianfeijiedian/refs/heads/main/should.txt"
-        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/vmess"
-        "https://raw.githubusercontent.com/Huibq/TrojanLinks/refs/heads/master/links/trojan"
         "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
-        "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml"
         "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
-
 )
 counter=60
 for file in "${links[@]}"; do
