@@ -126,49 +126,46 @@ def name_too_long(data):
 import json
 
 def one_by_one(data):
-    # Define valid and invalid types as sets for faster lookup
-    invalid_types = {"direct", "auto", "selector", "block", "dns", "urltest"}
-    valid_types = {"trojan", "shadowsocks", "ws", "tuic", "socks", "vmess", "vless", "hysteria", "hysteria2"}
+    # 确定固定的 valid_tags
+    invalid_types = ["direct", "auto", "selector", "block", "dns","urltest"]
+    valid_types = ["trojan", "shadowsocks", "trojan", "ws","tuic", "socks","vmess","vless","hysteria","hysteria2"]
+
+    #去重。 将字典序列化为字符串
+    #str_list = [json.dumps(d, sort_keys=True) for d in data["outbounds"]]
+    #unique_strs = list(dict.fromkeys(str_list))
+    # 将字符串反序列化为字典
+    #data["outbounds"] = [json.loads(s) for s in unique_strs]
 
     # Deduplicate outbounds using a set for efficiency
     str_list = {json.dumps(d, sort_keys=True) for d in data["outbounds"]}
     data["outbounds"] = [json.loads(s) for s in str_list]
-
-    # Filter out invalid outbounds in a single pass
-    def is_valid_outbound(item):
-        return (
-            not ("method" in item and "add" in item.get("method", ""))
-            and not ("method" in item and item.get("method") == "ss")
-            and not ("plugin" in item and "obfs" in item.get("plugin", ""))
-            and not (
-                "tls" in item 
-                and "reality" in item.get("tls", {}) 
-                and "public_key" in item["tls"].get("reality", {}) 
-                and item["tls"]["reality"].get("public_key") is not None
-            )
-            and not (
-                "transport" in item 
-                and "path" in item.get("transport", {}) 
-                and item["transport"].get("type") == "ws" 
-                and not is_url_encoding_valid(item["transport"].get("path"))
-            )
-        )
-
-    data["outbounds"] = [item for item in data["outbounds"] if is_valid_outbound(item)]
-
-    # Collect valid tags in a single pass
-    required_tags = [
-        tag for outbound in data.get("outbounds", [])
-        if (tag := outbound.get("tag"))
-        and isinstance(tag, str)
-        and len(tag) <= 200
-        and "server" in outbound
-        and outbound.get("type", "").lower() in valid_types
+    
+    # 删除 method 不对的代理
+    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method"))]
+    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and  item.get("method") == "ss")]
+    data["outbounds"] = [item for item in data["outbounds"] if not ("plugin" in item and 'obfs"' in item.get("plugin"))]
+    data["outbounds"] = [item for item in data["outbounds"] if not ('tls' in item and 'reality' in item['tls'] and 'public_key' in item['tls']['reality'] and 'public_key' != None)] 
+    # 过滤 outbounds 错误的path
+    data["outbounds"] = [
+        item for item in data["outbounds"]
+        if not ("transport" in item and 'path' in item["transport"] and item["transport"].get("type") == 'ws' and not is_url_encoding_valid(item["transport"].get('path')))
     ]
+    
+    # 合并这两个列表，获取需要保留的 tag 集合
+    required_tags = []
+    for outbound in data.get("outbounds", []):  # 提供默认值以防止缺失
+        tag = outbound.get("tag")
+        if (
+            "server" in outbound 
+            and outbound.get("type").lower() in valid_types 
+            and isinstance(tag, str)  # 确保 tag 是字符串
+            and len(tag) <= 200
+        ):
+            required_tags.append(tag)
 
-    # Update outbounds lists for indices 1 and 2
-    for idx in (1, 2):
-        data["outbounds"][idx]["outbounds"] = required_tags
+    # 更新 "🌏 !cn" 和 "auto" 的 outbounds 列表，移除不存在的 tag
+    data["outbounds"][1]["outbounds"] = [tag for tag in required_tags]
+    data["outbounds"][2]["outbounds"] = [tag for tag in required_tags]
 
     return data
 
