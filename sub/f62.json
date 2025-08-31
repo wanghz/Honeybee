@@ -1,422 +1,397 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇺🇸 美国1 | ⬇️ 3.3MB/s",
-        "🇺🇸 美国2 | ⬇️ 3.9MB/s",
-        "🇺🇸 美国3 | ⬇️ 3.6MB/s",
-        "🇺🇸 美国4 | ⬇️ 2.8MB/s",
-        "🇯🇵 日本1 | ⬇️ 2.1MB/s",
-        "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
-        "🌀其他1-未识别 | ⬇️ 1.6MB/s",
-        "🌀其他2-未识别 | ⬇️ 1.2MB/s",
-        "🇩🇪 德国1 | ⬇️ 3.0MB/s",
-        "🇩🇪 德国2 | ⬇️ 3.4MB/s",
-        "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
-        "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇺🇸 美国1 | ⬇️ 3.3MB/s",
-        "🇺🇸 美国2 | ⬇️ 3.9MB/s",
-        "🇺🇸 美国3 | ⬇️ 3.6MB/s",
-        "🇺🇸 美国4 | ⬇️ 2.8MB/s",
-        "🇯🇵 日本1 | ⬇️ 2.1MB/s",
-        "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
-        "🌀其他1-未识别 | ⬇️ 1.6MB/s",
-        "🌀其他2-未识别 | ⬇️ 1.2MB/s",
-        "🇩🇪 德国1 | ⬇️ 3.0MB/s",
-        "🇩🇪 德国2 | ⬇️ 3.4MB/s",
-        "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
-        "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇺🇸 美国1 | ⬇️ 3.3MB/s",
-      "type": "hysteria2",
-      "server": "p1.3dfigures.ir",
-      "server_port": 20971,
-      "password": "y0b0F707xv",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "p1.3dfigures.ir",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "31khbqfou1njilgv2qoih"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国2 | ⬇️ 3.9MB/s",
-      "type": "hysteria2",
-      "server": "p1.3dfigures.ir",
-      "server_port": 11726,
-      "password": "y0b0F707xv",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "p1.3dfigures.ir",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "qilebcibeMO3IVBnfqal3i"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国3 | ⬇️ 3.6MB/s",
-      "type": "hysteria2",
-      "server": "p1.3dfigures.ir",
-      "server_port": 501,
-      "password": "y0b0F707xv",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "p1.3dfigures.ir",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "Djxsjduwue"
-      }
-    },
-    {
-      "tag": "🇺🇸 美国4 | ⬇️ 2.8MB/s",
-      "type": "hysteria2",
-      "server": "p1.3dfigures.ir",
-      "server_port": 18646,
-      "password": "y0b0F707xv",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "p1.3dfigures.ir",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "ywfihi3ohyg9iun3gvu"
-      }
-    },
-    {
-      "tag": "🇯🇵 日本1 | ⬇️ 2.1MB/s",
-      "type": "hysteria2",
-      "server": "45.11.1.62",
-      "server_port": 50000,
-      "password": "8a46b81f-4cf7-4be7-af2c-04fc4920d6b6",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.microsoft.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
-      "type": "vless",
-      "server": "104.21.3.219",
-      "server_port": 8443,
-      "uuid": "57ba2ab1-a283-42eb-82ee-dc3561a805b8",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "ovhwuxian.pai50288.uk",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/57ba2ab1",
-        "headers": {
-          "Host": "ovhwuxian.pai50288.uk"
-        }
-      }
-    },
-    {
-      "tag": "🌀其他1-未识别 | ⬇️ 1.6MB/s",
-      "type": "trojan",
-      "server": "losv6cdn.bm04.xyz",
-      "server_port": 2053,
-      "password": "94cf288d-f764-4ce9-a547-a7228144f056",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "alpn": [
-          "h3",
-          "h2",
-          "http/1.1"
-        ],
-        "server_name": "losv6cdn.bm04.xyz",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      }
-    },
-    {
-      "tag": "🌀其他2-未识别 | ⬇️ 1.2MB/s",
-      "type": "vless",
-      "server": "eng14.netliberated.org",
-      "server_port": 443,
-      "uuid": "0bb6dff2-0029-4b81-8c81-4fc70fae1ed9",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.halfords.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "BhTJ3phnq-Z-10aFKSsj1lzhA8mULR4L6leE4-0WTAs"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 德国1 | ⬇️ 3.0MB/s",
-      "type": "vless",
-      "server": "63.141.128.16",
-      "server_port": 80,
-      "uuid": "232445dd-df97-4807-99ec-2695a09b3988",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Join-ZEDMODEON-ZEDMODEON-ZEDMODEON-bia-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON",
-        "headers": {
-          "Host": "e.jOin.zEdMoDeOn.oNl."
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 德国2 | ⬇️ 3.4MB/s",
-      "type": "vless",
-      "server": "172.66.40.99",
-      "server_port": 443,
-      "uuid": "TELEGRAM-CONFiGLiNE",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "he136.khameneie.online",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE",
-        "headers": {
-          "Host": "he136.khameneie.online"
+        {
+            "outbounds": [
+                "🇺🇸 美国1 | ⬇️ 3.3MB/s",
+                "🇺🇸 美国2 | ⬇️ 3.9MB/s",
+                "🇺🇸 美国3 | ⬇️ 3.6MB/s",
+                "🇺🇸 美国4 | ⬇️ 2.8MB/s",
+                "🇯🇵 日本1 | ⬇️ 2.1MB/s",
+                "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
+                "🌀其他1-未识别 | ⬇️ 1.6MB/s",
+                "🇩🇪 德国1 | ⬇️ 3.0MB/s",
+                "🇩🇪 德国2 | ⬇️ 3.4MB/s",
+                "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
+                "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
-      "type": "vless",
-      "server": "172.67.72.39",
-      "server_port": 2082,
-      "uuid": "cb93debf-77f5-4a26-af9e-f6b67c0d294d",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420",
-        "headers": {
-          "Host": "s6.inFo.laLezaRanegomaNandish.suB420-mohaMad.OnlinE."
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇺🇸 美国1 | ⬇️ 3.3MB/s",
+                "🇺🇸 美国2 | ⬇️ 3.9MB/s",
+                "🇺🇸 美国3 | ⬇️ 3.6MB/s",
+                "🇺🇸 美国4 | ⬇️ 2.8MB/s",
+                "🇯🇵 日本1 | ⬇️ 2.1MB/s",
+                "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
+                "🌀其他1-未识别 | ⬇️ 1.6MB/s",
+                "🇩🇪 德国1 | ⬇️ 3.0MB/s",
+                "🇩🇪 德国2 | ⬇️ 3.4MB/s",
+                "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
+                "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2080
-      }
-    },
-    {
-      "tag": "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s",
-      "type": "hysteria2",
-      "server": "putin.fizikade.ir",
-      "server_port": 44666,
-      "password": "aa517d88689b1b650345d07018329624",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "putin.fizikade.ir",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "jahhahyy7766HTft6tH655"
-      }
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "31khbqfou1njilgv2qoih",
+                "type": "salamander"
+            },
+            "password": "y0b0F707xv",
+            "server": "p1.3dfigures.ir",
+            "server_port": 20971,
+            "tag": "🇺🇸 美国1 | ⬇️ 3.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "p1.3dfigures.ir"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "qilebcibeMO3IVBnfqal3i",
+                "type": "salamander"
+            },
+            "password": "y0b0F707xv",
+            "server": "p1.3dfigures.ir",
+            "server_port": 11726,
+            "tag": "🇺🇸 美国2 | ⬇️ 3.9MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "p1.3dfigures.ir"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "Djxsjduwue",
+                "type": "salamander"
+            },
+            "password": "y0b0F707xv",
+            "server": "p1.3dfigures.ir",
+            "server_port": 501,
+            "tag": "🇺🇸 美国3 | ⬇️ 3.6MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "p1.3dfigures.ir"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "ywfihi3ohyg9iun3gvu",
+                "type": "salamander"
+            },
+            "password": "y0b0F707xv",
+            "server": "p1.3dfigures.ir",
+            "server_port": 18646,
+            "tag": "🇺🇸 美国4 | ⬇️ 2.8MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "p1.3dfigures.ir"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "8a46b81f-4cf7-4be7-af2c-04fc4920d6b6",
+            "server": "45.11.1.62",
+            "server_port": 50000,
+            "tag": "🇯🇵 日本1 | ⬇️ 2.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.microsoft.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.21.3.219",
+            "server_port": 8443,
+            "tag": "🇰🇷 韩国1 | ⬇️ 1.3MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "ovhwuxian.pai50288.uk",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "ovhwuxian.pai50288.uk"
+                },
+                "path": "/57ba2ab1",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "57ba2ab1-a283-42eb-82ee-dc3561a805b8"
+        },
+        {
+            "password": "94cf288d-f764-4ce9-a547-a7228144f056",
+            "server": "losv6cdn.bm04.xyz",
+            "server_port": 2053,
+            "tag": "🌀其他1-未识别 | ⬇️ 1.6MB/s",
+            "tls": {
+                "alpn": [
+                    "h3",
+                    "h2",
+                    "http/1.1"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "losv6cdn.bm04.xyz",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "63.141.128.16",
+            "server_port": 80,
+            "tag": "🇩🇪 德国1 | ⬇️ 3.0MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "e.jOin.zEdMoDeOn.oNl."
+                },
+                "path": "/Join-ZEDMODEON-ZEDMODEON-ZEDMODEON-bia-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "232445dd-df97-4807-99ec-2695a09b3988"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "172.66.40.99",
+            "server_port": 443,
+            "tag": "🇩🇪 德国2 | ⬇️ 3.4MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "he136.khameneie.online",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "he136.khameneie.online"
+                },
+                "max_early_data": 2048,
+                "path": "/telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE,telegram-CONFiGLiNE",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "TELEGRAM-CONFiGLiNE"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "172.67.72.39",
+            "server_port": 2082,
+            "tag": "🇳🇱 荷兰1 | ⬇️ 3.0MB/s",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "s6.inFo.laLezaRanegomaNandish.suB420-mohaMad.OnlinE."
+                },
+                "max_early_data": 2080,
+                "path": "/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420/Telegram,@EXPRESSVPN_420",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "cb93debf-77f5-4a26-af9e-f6b67c0d294d"
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "jahhahyy7766HTft6tH655",
+                "type": "salamander"
+            },
+            "password": "aa517d88689b1b650345d07018329624",
+            "server": "putin.fizikade.ir",
+            "server_port": 44666,
+            "tag": "🇷🇺 俄罗斯1 | ⬇️ 4.6MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "putin.fizikade.ir"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
