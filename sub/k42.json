@@ -1,240 +1,239 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇹🇼 台湾省+中华电信(HiNet)数据中心",
-        "🇹🇼 台湾省彰化县+中华电信",
-        "🇭🇰 香港 电讯盈科有限公司",
-        "🇹🇼 台湾省彰化县+中华电信 2",
-        "🇨🇳 江苏省 移动",
-        "🇬🇧 英国 V2CROSS.COM"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇹🇼 台湾省+中华电信(HiNet)数据中心",
-        "🇹🇼 台湾省彰化县+中华电信",
-        "🇭🇰 香港 电讯盈科有限公司",
-        "🇹🇼 台湾省彰化县+中华电信 2",
-        "🇨🇳 江苏省 移动",
-        "🇬🇧 英国 V2CROSS.COM"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇹🇼 台湾省+中华电信(HiNet)数据中心",
-      "type": "shadowsocks",
-      "server": "125.228.162.233",
-      "server_port": 10145,
-      "method": "chacha20-ietf-poly1305",
-      "password": "579084fb-9323-4090-b577-639b6a997fde"
-    },
-    {
-      "tag": "🇹🇼 台湾省彰化县+中华电信",
-      "type": "shadowsocks",
-      "server": "1.170.22.205",
-      "server_port": 10082,
-      "method": "chacha20-ietf-poly1305",
-      "password": "182a640c-ca1a-425e-8398-d5ac86bfb096"
-    },
-    {
-      "tag": "🇭🇰 香港 电讯盈科有限公司",
-      "type": "vmess",
-      "server": "v10.heduian.link",
-      "server_port": 30807,
-      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "baidu.com"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "path": "/oooo"
-      }
-    },
-    {
-      "tag": "🇹🇼 台湾省彰化县+中华电信 2",
-      "type": "shadowsocks",
-      "server": "1.170.17.164",
-      "server_port": 10152,
-      "method": "chacha20-ietf-poly1305",
-      "password": "ce7149cd-ea77-4e46-af7d-d4f6930ea541"
-    },
-    {
-      "tag": "🇨🇳 江苏省 移动",
-      "type": "vmess",
-      "server": "v39.heduian.link",
-      "server_port": 30839,
-      "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "baidu.com"
+        {
+            "outbounds": [
+                "🇹🇼 台湾省+中华电信(HiNet)数据中心",
+                "🇹🇼 台湾省彰化县+中华电信",
+                "🇭🇰 香港 电讯盈科有限公司",
+                "🇹🇼 台湾省彰化县+中华电信 2",
+                "🇨🇳 江苏省 移动",
+                "🇬🇧 英国 V2CROSS.COM"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "path": "/oooo"
-      }
-    },
-    {
-      "tag": "🇬🇧 英国 V2CROSS.COM",
-      "type": "vmess",
-      "server": "194.36.55.224",
-      "server_port": 8880,
-      "uuid": "7a61cb1c-e5ea-31ef-b885-0018390eec5e",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "TG.WangCai2.s4.db-link02.top"
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇹🇼 台湾省+中华电信(HiNet)数据中心",
+                "🇹🇼 台湾省彰化县+中华电信",
+                "🇭🇰 香港 电讯盈科有限公司",
+                "🇹🇼 台湾省彰化县+中华电信 2",
+                "🇨🇳 江苏省 移动",
+                "🇬🇧 英国 V2CROSS.COM"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
         },
-        "path": "/dabai&Telegram🇨🇳@WangCai2/",
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "579084fb-9323-4090-b577-639b6a997fde",
+            "server": "125.228.162.233",
+            "server_port": 10145,
+            "tag": "🇹🇼 台湾省+中华电信(HiNet)数据中心",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "182a640c-ca1a-425e-8398-d5ac86bfb096",
+            "server": "1.170.22.205",
+            "server_port": 10082,
+            "tag": "🇹🇼 台湾省彰化县+中华电信",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v10.heduian.link",
+            "server_port": 30807,
+            "tag": "🇭🇰 香港 电讯盈科有限公司",
+            "transport": {
+                "headers": {
+                    "Host": "baidu.com"
+                },
+                "path": "/oooo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484"
+        },
+        {
+            "method": "chacha20-ietf-poly1305",
+            "password": "ce7149cd-ea77-4e46-af7d-d4f6930ea541",
+            "server": "1.170.17.164",
+            "server_port": 10152,
+            "tag": "🇹🇼 台湾省彰化县+中华电信 2",
+            "type": "shadowsocks"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "v39.heduian.link",
+            "server_port": 30839,
+            "tag": "🇨🇳 江苏省 移动",
+            "transport": {
+                "headers": {
+                    "Host": "baidu.com"
+                },
+                "path": "/oooo",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "cbb3f877-d1fb-344c-87a9-d153bffd5484"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "194.36.55.224",
+            "server_port": 8880,
+            "tag": "🇬🇧 英国 V2CROSS.COM",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "TG.WangCai2.s4.db-link02.top"
+                },
+                "max_early_data": 2560,
+                "path": "/dabai&Telegram🇨🇳@WangCai2/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "7a61cb1c-e5ea-31ef-b885-0018390eec5e"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
