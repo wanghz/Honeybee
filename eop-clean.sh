@@ -5,6 +5,8 @@ currentmonths=$(date +%m)
 currentyears=$(date +%Y)
 
 urls=(
+  "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless"
+  "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/main/splitted/mixed"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vless.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vmess.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/trojan.txt"
@@ -13,7 +15,7 @@ urls=(
   #"https://raw.githubusercontent.com/MrMohebi/xray-proxy-grabber-telegram/refs/heads/master/collected-proxies/clash-meta/all.yaml"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/ss.txt"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vless.txt"
-  "https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vmess.txt"
+  #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/vmess.txt"
   #"https://raw.githubusercontent.com/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
 )
 
