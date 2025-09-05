@@ -1,0 +1,288 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇫🇷 法国1 | ⬇️ 1.7MB/s",
+        "🇩🇪 德国1 | ⬇️ 4.0MB/s",
+        "🌀其他1-未识别 | ⬇️ 1.1MB/s",
+        "🇩🇪 德国2 | ⬇️ 3.3MB/s",
+        "🇯🇵 日本1 | ⬇️ 5.6MB/s",
+        "🇸🇰 🌀其他2-SK | ⬇️ 2.4MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇫🇷 法国1 | ⬇️ 1.7MB/s",
+        "🇩🇪 德国1 | ⬇️ 4.0MB/s",
+        "🌀其他1-未识别 | ⬇️ 1.1MB/s",
+        "🇩🇪 德国2 | ⬇️ 3.3MB/s",
+        "🇯🇵 日本1 | ⬇️ 5.6MB/s",
+        "🇸🇰 🌀其他2-SK | ⬇️ 2.4MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇫🇷 法国1 | ⬇️ 1.7MB/s",
+      "type": "hysteria",
+      "server": "195.154.200.40",
+      "server_port": 15010,
+      "up_mbps": 100,
+      "down_mbps": 100,
+      "auth_str": "dongtaiwang.com",
+      "tls": {
+        "enabled": true,
+        "server_name": "apple.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇩🇪 德国1 | ⬇️ 4.0MB/s",
+      "type": "vless",
+      "server": "fr.pixvpn.app",
+      "server_port": 8443,
+      "uuid": "464ec76e-fd60-4ad4-993e-d2c262f88ed1",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "jd.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+          "short_id": "41a4cee2c50c4fc3"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "grpc-jd"
+      }
+    },
+    {
+      "tag": "🌀其他1-未识别 | ⬇️ 1.1MB/s",
+      "type": "vless",
+      "server": "baghdad-happynewyearche.org",
+      "server_port": 443,
+      "uuid": "cd2e9541-3fce-4d95-9bec-919d884f911e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "wuqpn.mark-azyadrafte.info",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/tiger",
+        "headers": {
+          "Host": "wuqpn.mark-azyadrafte.info"
+        }
+      }
+    },
+    {
+      "tag": "🇩🇪 德国2 | ⬇️ 3.3MB/s",
+      "type": "vless",
+      "server": "89.185.85.219",
+      "server_port": 8443,
+      "uuid": "464ec76e-fd60-4ad4-993e-d2c262f88ed1",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "jd.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "SbVKOEMjK0sIlbwg4akyBg5mL5KZwwB-ed4eEE7YnRc",
+          "short_id": "41a4cee2c50c4fc3"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "grpc-jd"
+      }
+    },
+    {
+      "tag": "🇯🇵 日本1 | ⬇️ 5.6MB/s",
+      "type": "vless",
+      "server": "in-sep4th.wimax.cc",
+      "server_port": 443,
+      "uuid": "9f84ed30-e67b-45bb-983f-089c0f7541f7",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "in-sep4th.wimax.cc",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/cat-photos/calico",
+        "headers": {
+          "Host": "in-sep4th.wimax.cc"
+        }
+      }
+    },
+    {
+      "tag": "🇸🇰 🌀其他2-SK | ⬇️ 2.4MB/s",
+      "type": "shadowsocks",
+      "server": "156.146.40.194",
+      "server_port": 989,
+      "method": "aes-256-cfb",
+      "password": "f8f7aCzcPKbsF8p3"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
