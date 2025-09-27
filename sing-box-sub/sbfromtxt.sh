@@ -32,6 +32,11 @@ links=(
         "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
         "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/hy.txt"
         "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/hy2.txt"
+        "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless"
+        
 )
 counter=60
 for file in "${links[@]}"; do
