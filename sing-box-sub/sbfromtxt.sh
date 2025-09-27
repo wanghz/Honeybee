@@ -28,7 +28,7 @@ links=(
         "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
         "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
-        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/rojan.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/trojan.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/ss.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vmess.txt"
         "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
