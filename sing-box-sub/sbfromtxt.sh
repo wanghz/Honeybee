@@ -21,7 +21,6 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
-        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/hysteria2.txt"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/trojan.txt"
         "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
         "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
@@ -29,6 +28,12 @@ links=(
         "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
         "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/rojan.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/ss.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vmess.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/vless.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/hy.txt"
+        "https://raw.githubusercontent.com/gfpcom/free-proxy-list/main/list/hy2.txt"
 )
 counter=60
 for file in "${links[@]}"; do
