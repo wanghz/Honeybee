@@ -5,8 +5,8 @@ currentmonths=$(date +%m)
 currentyears=$(date +%Y)
 
 urls=(
-  "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/vmess.txt"
-  "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/vless.txt"
+  "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vless.txt"
+  "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vmess.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vless.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vmess.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/trojan.txt"
