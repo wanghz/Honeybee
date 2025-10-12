@@ -57,7 +57,7 @@ download_and_filter() {
     mv "$temp_file" "$filename"
 
     # Split file
-    if ! split -l 800 "$filename" "$output_prefix"; then
+    if ! split -l 300 "$filename" "$output_prefix"; then
         echo "Error: Failed to split file" >&2
         return 1
     fi
