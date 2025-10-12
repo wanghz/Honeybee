@@ -1,7 +1,6 @@
 #!/bin/bash
 all_files=(
         #"htonly.yml"
-        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml"
 )
 
 # 添加find找到的文件到数组
@@ -22,6 +21,7 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
+        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml"
         "https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/master/dist/clash_config.yaml"
         "https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/master/dist/clash_config_extra_US.yaml"
         "https://raw.githubusercontent.com/shuaidaoya/FreeNodes/refs/heads/main/nodes/all.yaml"
@@ -32,11 +32,14 @@ links=(
         "https://raw.githubusercontent.com/somemoo/v2rayfree/main/v2rayfree"
         "https://raw.githubusercontent.com/w154594742/free-v2ray-node/refs/heads/master/v2ray.txt"
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml" 
-        "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/ss.txt"
-        "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/trojan.txt"
-        "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/hy.txt"
-        "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/hy2.txt"
-        "https://media.githubusercontent.com/media/gfpcom/free-proxy-list/refs/heads/main/list/tuic.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/ss.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/trojan.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/hy.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/hy2.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/tuic.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vless.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vmess.txt"
+        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/wireguard.txt"
         "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2"
