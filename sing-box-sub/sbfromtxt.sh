@@ -37,8 +37,6 @@ links=(
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/hy.txt"
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/hy2.txt"
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/tuic.txt"
-        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vless.txt"
-        "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vmess.txt"
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/wireguard.txt"
         "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
