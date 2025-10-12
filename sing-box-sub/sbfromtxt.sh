@@ -43,7 +43,6 @@ links=(
         "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2"
-        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless"
 )
 counter=60
 for file in "${links[@]}"; do
