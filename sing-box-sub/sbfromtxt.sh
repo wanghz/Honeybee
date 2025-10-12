@@ -21,6 +21,7 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
+        "https://raw.githubusercontent.com/proxifly/free-proxy-list/refs/heads/main/proxies/protocols/socks5/data.json"
         "https://raw.githubusercontent.com/MatinGhanbari/v2ray-configs/main/subscriptions/filtered/subs/trojan.txt"
         "https://raw.githubusercontent.com/WLget/V2Ray_configs_64/refs/heads/master/ConfigSub_list.txt"
         "https://raw.githubusercontent.com/shaoyouvip/free/refs/heads/main/base64.txt"
