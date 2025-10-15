@@ -261,7 +261,7 @@ def process_outbounds_server_ip(data):
 
 
         if "password" in outbound:
-            if len(outbound["password"]) == 44 or len(outbound["password"]) > 64:
+            if len(outbound["password"]) == 44 or len(outbound["password"]) > 240:
                 tag_list.append(outbound['tag'])
                 server_list.append(outbound)
                 print("password too long", outbound["tag"],outbound["password"])
