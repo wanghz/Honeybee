@@ -80,6 +80,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/\/xiaoji235\/airport-free/d' \
        -e '/^http:\/\/174\.137\.58\.32:12580\/clash\/proxies/d' \
        -e '/^http:\/\/104\.168\.244\.47:12580\/clash\/proxies/d' \
+       -e '/^http:\/\/141\.147/d' \
        -e '/^http:\/\/beetle\.lander\.work\/clash\/proxies/d' \
        -e '/^https:\/\/proxy\.fldhhhhhh\.top\/clash\/proxies/d' \
        -e '/banyunxiaoxi\.icu/d' \
