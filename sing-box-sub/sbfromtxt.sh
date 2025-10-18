@@ -21,7 +21,12 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
-        "https://cdn.jsdelivr.net/gh/proxifly/free-proxy-list@main/proxies/protocols/https/data.json"
+        "https://raw.githubusercontent.com/iboxz/free-v2ray-collector/refs/heads/main/main/mix"
+        "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/shadowsocks.txt"
+        "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/trojan.txt"
+        "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt"
+        "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vmess.txt"
+        
         "https://raw.githubusercontent.com/vakhov/fresh-proxy-list/refs/heads/master/proxylist.json"
         "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/refs/heads/main/splitted-by-protocol/shadowsocks.txt"
         "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/refs/heads/main/splitted-by-protocol/trojan.txt"
@@ -47,6 +52,7 @@ links=(
         "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2"
+        "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/refs/heads/main/sub/merged_proxies_new.yaml"
 )
 counter=60
 for file in "${links[@]}"; do
