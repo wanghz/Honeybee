@@ -21,7 +21,13 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
-        "https://raw.githubusercontent.com/LoneKingCode/free-proxy-db/refs/heads/main/proxies/http.json"
+        "https://raw.githubusercontent.com/mingko3/socks5-clash-proxy/refs/heads/main/proxy.yaml"
+        "https://raw.githubusercontent.com/SnapdragonLee/SystemProxy/refs/heads/master/dist/clash_config_extra.yaml"
+        "https://raw.githubusercontent.com/ember-01/Clash-Aggregator/refs/heads/main/clash.yaml"
+        "https://raw.githubusercontent.com/Firmfox/Proxify/refs/heads/main/v2ray_configs/seperated_by_protocol/other.txt"
+        "https://raw.githubusercontent.com/Firmfox/Proxify/refs/heads/main/v2ray_configs/seperated_by_protocol/trojan.txt"
+        "https://raw.githubusercontent.com/Firmfox/Proxify/refs/heads/main/v2ray_configs/seperated_by_protocol/vless.txt"
+        "https://raw.githubusercontent.com/Firmfox/Proxify/refs/heads/main/v2ray_configs/seperated_by_protocol/vmess.txt"
         "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml"
         "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY.txt"
         "https://raw.githubusercontent.com/T3stAcc/V2Ray/refs/heads/main/All_Configs_Sub.txt"
