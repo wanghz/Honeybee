@@ -21,12 +21,17 @@ for file in "${all_files[@]}"; do
 done
 
 links=(
+        "https://raw.githubusercontent.com/LoneKingCode/free-proxy-db/refs/heads/main/proxies/http.json"
+        "https://raw.githubusercontent.com/PuddinCat/BestClash/refs/heads/main/proxies.yaml"
+        "https://raw.githubusercontent.com/roosterkid/openproxylist/refs/heads/main/V2RAY.txt"
+        "https://raw.githubusercontent.com/T3stAcc/V2Ray/refs/heads/main/All_Configs_Sub.txt"
+        "https://raw.githubusercontent.com/R-the-coder/V2ray-configs/refs/heads/main/config.txt"
+        "https://raw.githubusercontent.com/miguel-b-p/NyxProxy/refs/heads/master/proxies.txt"
         "https://raw.githubusercontent.com/iboxz/free-v2ray-collector/refs/heads/main/main/mix"
         "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/shadowsocks.txt"
         "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/trojan.txt"
         "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vless.txt"
         "https://raw.githubusercontent.com/V2RayRoot/V2RayConfig/refs/heads/main/Config/vmess.txt"
-        
         "https://raw.githubusercontent.com/vakhov/fresh-proxy-list/refs/heads/master/proxylist.json"
         "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/refs/heads/main/splitted-by-protocol/shadowsocks.txt"
         "https://raw.githubusercontent.com/F0rc3Run/F0rc3Run/refs/heads/main/splitted-by-protocol/trojan.txt"
