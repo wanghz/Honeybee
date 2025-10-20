@@ -55,7 +55,7 @@ echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidou
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray/v2rayshare.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/refs/heads/main/clash/naidounode.txt">> localurl.txt
-echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/proxies.yaml">> localurl.txt
+#echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/proxies.yaml">> localurl.txt
 echo "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v2">> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >>localurl.txt
@@ -100,6 +100,7 @@ sed -i -e '/yebekhe\/TelegramV2rayCollector\/main\/sub\/base64\/mix/d' \
        -e '/Ruk1ng001/d' \
        -e '/shahidbhutta/d' \
        -e '/Ruk1ng001/d' \
+       -e '/anaer/d' \
        -e '/crazygeeky/d' \
        -e '/\/leetomlee123/d' \
        -e '/a2470982985/d' \
