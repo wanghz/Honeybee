@@ -83,30 +83,34 @@ def process_outbounds_method(data):
 
 def process_outbounds_index(data, index):
     s = data["outbounds"][index]['tag']
-    data["outbounds"] = [outbound for outbound in data["outbounds"] if not (outbound["tag"] == s)]
+    data["outbounds"] = [outbound for outbound in data["outbounds"] if outbound["tag"] != s]
     print(index, "removed")
     print("Wrong proxy:", s)
     return data
         
 def process_outbounds(data, token):
+    # 合并遍历：先收集要移除的outbounds，然后一次过滤
+    to_remove = set()
     for outbound in data["outbounds"]:
         if "outbounds" in outbound and len(outbound["outbounds"]) > 5 and isinstance(outbound["outbounds"], list):
             try:
                 outbound["outbounds"] = [x for x in outbound["outbounds"] if token not in x]
                 print("消除了 ", token)
-                if outbound["outbounds"][-1].endswith(","):
+                if outbound["outbounds"] and outbound["outbounds"][-1].endswith(","):
                     outbound["outbounds"][-1] = outbound["outbounds"][-1].rstrip(",")            
             except:
                 pass
+        
+        if "tag" in outbound and token in outbound["tag"]:
+            to_remove.add(id(outbound))  # 使用id来唯一标识对象，避免直接比较dict
     
-        if token in outbound["tag"]:
-            data["outbounds"].remove(outbound)
+    data["outbounds"] = [outbound for outbound in data["outbounds"] if id(outbound) not in to_remove]
             
     return data
 
 def name_too_long(data):
-    # 创建一个新的列表来存储有效的 outbounds
-    valid_outbounds = []
+    # 合并遍历：收集要移除的outbounds，同时处理outbounds列表
+    to_remove = set()
     for outbound in data["outbounds"]:
         # 检查 outbound 是否包含 "outbounds" 并且是一个列表
         if "outbounds" in outbound and isinstance(outbound["outbounds"], list):
@@ -119,14 +123,13 @@ def name_too_long(data):
         # 检查 tag 是否存在并且长度是否大于 150
         if "tag" in outbound and len(outbound["tag"]) > 150:
             print('Removing- ', outbound["tag"])
-            data["outbounds"].remove(outbound)
+            to_remove.add(id(outbound))
     
+    data["outbounds"] = [outbound for outbound in data["outbounds"] if id(outbound) not in to_remove]
     return data
 
-import json
-
 def one_by_one(data):
-    # Define valid and invalid types as sets for faster lookup (invalid_types not used but kept for consistency)
+    # Define valid and invalid types as sets for faster lookup
     invalid_types = {"direct", "auto", "selector", "block", "dns", "urltest"}
     valid_types = {"trojan", "shadowsocks", "ws", "tuic", "socks", "vmess", "vless", "hysteria", "hysteria2"}
 
@@ -135,39 +138,32 @@ def one_by_one(data):
     unique_strs = list(dict.fromkeys(str_list))
     data["outbounds"] = [json.loads(s) for s in unique_strs]
 
-    # Apply filters in original order with exact conditions
-    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and 'add"' in item.get("method", ""))]
-    data["outbounds"] = [item for item in data["outbounds"] if not ("method" in item and item.get("method") == "ss")]
-    data["outbounds"] = [item for item in data["outbounds"] if not ("plugin" in item and 'obfs"' in item.get("plugin", ""))]
-    data["outbounds"] = [
-        item for item in data["outbounds"]
-        if not (
-            "tls" in item 
-            and "reality" in item.get("tls", {}) 
-            and "public_key" in item["tls"].get("reality", {})
-        )
-    ]
-    data["outbounds"] = [
-        item for item in data["outbounds"]
-        if not (
-            "transport" in item 
-            and "path" in item.get("transport", {}) 
-            and item["transport"].get("type") == "ws" 
-            and not is_url_encoding_valid(item["transport"].get("path"))
-        )
-    ]
-
-    # Collect required tags exactly as in original
+    # 合并所有过滤条件到一个遍历中
+    filtered_outbounds = []
     required_tags = []
-    for outbound in data.get("outbounds", []):
-        tag = outbound.get("tag")
+    for item in data["outbounds"]:
         if (
-            "server" in outbound 
-            and outbound.get("type", "").lower() in valid_types 
+            ("method" in item and 'add"' in item.get("method", "")) or
+            ("method" in item and item.get("method") == "ss") or
+            ("plugin" in item and 'obfs"' in item.get("plugin", "")) or
+            ("tls" in item and "reality" in item.get("tls", {}) and "public_key" in item["tls"].get("reality", {})) or
+            ("transport" in item and "path" in item.get("transport", {}) and item["transport"].get("type") == "ws" and not is_url_encoding_valid(item["transport"].get("path")))
+        ):
+            continue  # 跳过无效的
+
+        filtered_outbounds.append(item)
+
+        # Collect required tags
+        tag = item.get("tag")
+        if (
+            "server" in item 
+            and item.get("type", "").lower() in valid_types 
             and isinstance(tag, str) 
             and len(tag) <= 200
         ):
             required_tags.append(tag)
+
+    data["outbounds"] = filtered_outbounds
 
     # Update outbounds for indices 1 and 2
     if len(data["outbounds"]) > 1:
@@ -176,8 +172,6 @@ def one_by_one(data):
         data["outbounds"][2]["outbounds"] = required_tags[:]
 
     return data
-
-
 
 def process_domain(domain: str, checker: GeoIPChecker) -> bool:
     """另一个函数，调用 checker.check_domain 处理域名"""
@@ -190,98 +184,94 @@ def process_domain(domain: str, checker: GeoIPChecker) -> bool:
         pass
     return is_iran
 
-
-def process_outbounds_server_ip(data):
+def process_outbounds_server_ip(data, checker):
     tag_list = []
-    server_list = []
-    for outbound in data["outbounds"]:
-        if "server" in outbound:
-            try:
-                ipaddress.ip_address(outbound['server'])
-                ip, special_ip = checker.check_ip(outbound['server'])
-                if special_ip:
-                    print(outbound['server'], "Special ip, skip")
-                    tag_list.append(outbound['tag'])
-                    server_list.append(outbound)                
+    Methods = {
+        "aes-128-gcm",
+        "aes-192-gcm",
+        "aes-256-gcm",
+        "chacha20-ietf-poly1305",
+        "xchacha20-ietf-poly1305",
+        "aes-128-ctr",
+        "aes-192-ctr",
+        "aes-256-ctr",
+        "aes-128-cfb",
+        "aes-192-cfb",
+        "aes-256-cfb",
+        "rc4-md5",
+        "chacha20-ietf",
+        "2022-blake3-aes-128-gcm",
+        "2022-blake3-aes-256-gcm",
+        "2022-blake3-chacha20-poly1305"
+    }
 
+    # 合并所有检查到一个遍历中
+    to_remove_tags = set()
+    for outbound in data["outbounds"]:
+        remove = False
+
+        if "server" in outbound:
+            server = outbound['server']
+            try:
+                ipaddress.ip_address(server)
+                _, special_ip = checker.check_ip(server)
+                if special_ip:
+                    print(server, "Special ip, skip")
+                    remove = True
             except ValueError:
                 try:
-                    # 调用 process_domain 函数
-                    special_ip = process_domain(outbound['server'], checker)
-                    #print(outbound['server'])
+                    special_ip = process_domain(server, checker)
                     if special_ip:
-                        print(outbound['server'], "Special ip, skip")
-                        tag_list.append(outbound['tag'])
-                        server_list.append(outbound)
-                        #data["outbounds"].remove(outbound)
+                        print(server, "Special ip, skip")
+                        remove = True
                 except ValueError:
-                    pass  # 不是IP，继续判断域名
+                    pass
 
-    Methods = ["aes-128-gcm",
-                "aes-192-gcm",
-                "aes-256-gcm",
-                "chacha20-ietf-poly1305",
-                "xchacha20-ietf-poly1305",
-                "aes-128-ctr",
-                "aes-192-ctr",
-                "aes-256-ctr",
-                "aes-128-cfb",
-                "aes-192-cfb",
-                "aes-256-cfb",
-                "rc4-md5",
-                "chacha20-ietf",
-                "2022-blake3-aes-128-gcm",
-                "2022-blake3-aes-256-gcm",
-                "2022-blake3-chacha20-poly1305"]
+        if not remove:
+            if "tls" in outbound and "reality" in outbound["tls"]:
+                try:
+                    if outbound["tls"]["reality"]["public_key"] is None:
+                        print("public_key invalid")
+                        remove = True
+                except KeyError:
+                    pass          
 
-    for outbound in data["outbounds"]:
-        if "tls" in outbound and "reality" in outbound["tls"]:
-            try:
-                if outbound["tls"]["reality"]["public_key"] == None:
-                    tag_list.append(outbound['tag'])
-                    server_list.append(outbound)
-                    print("public_key invalid")
-            except ValueError:
-                pass          
-                                       
-        if "transport" in outbound and "path" in outbound["transport"]:
-            try:
-                if len(outbound["transport"]["path"]) >0 and outbound["transport"]["path"][0] == "%":
-                    tag_list.append(outbound['tag'])
-                    server_list.append(outbound)
-                    print("tls transport path error")
-            except ValueError:
-                pass 
+            if "transport" in outbound and "path" in outbound["transport"]:
+                try:
+                    path = outbound["transport"]["path"]
+                    if len(path) > 0 and path[0] == "%":
+                        print("tls transport path error")
+                        remove = True
+                except KeyError:
+                    pass 
 
-        if "method" in outbound:
-            if outbound["method"] not in Methods:
-                tag_list.append(outbound['tag'])
-                server_list.append(outbound)
-                print("invalid method", outbound["tag"],outbound["method"])
+            if "method" in outbound:
+                if outbound["method"] not in Methods:
+                    print("invalid method", outbound["tag"], outbound["method"])
+                    remove = True
 
+            if "password" in outbound:
+                if len(outbound["password"]) == 44 or len(outbound["password"]) > 480:
+                    print("password too long", outbound["tag"], outbound["password"])
+                    remove = True
+                    
+            if "plugin" in outbound:
+                if outbound["plugin"] == "v2ray-plugin":
+                    print("v2ray-plugin: unknown mode")        
+                    remove = True
 
-        if "password" in outbound:
-            if len(outbound["password"]) == 44 or len(outbound["password"]) > 240:
-                tag_list.append(outbound['tag'])
-                server_list.append(outbound)
-                print("password too long", outbound["tag"],outbound["password"])
-                
-        if "plugin" in outbound:
-            if outbound["plugin"] == "v2ray-plugin" :
-                tag_list.append(outbound['tag'])
-                server_list.append(outbound)
-                print("v2ray-plugin: unknown mode")        
-            
-    data["outbounds"] = [item for item in data["outbounds"] if item not in server_list]
+        if remove:
+            to_remove_tags.add(outbound['tag'])
 
-    #data["outbounds"][1]["outbounds"] = [item for item in data["outbounds"][1]["outbounds"] if item not in tag_list]  
-    #data["outbounds"][2]["outbounds"] = [item for item in data["outbounds"][2]["outbounds"] if item not in tag_list]  
+    # 一次性过滤outbounds
+    data["outbounds"] = [item for item in data["outbounds"] if item['tag'] not in to_remove_tags]
+
+    # 更新selector/auto的outbounds
     for item in data["outbounds"]:
         if "tag" in item and item["tag"] in ["🌏auto", "🌏 !Choose"]:
-            item["outbounds"] = [item for item in item["outbounds"] if item not in tag_list]
-    #print(tag_list)
+            item["outbounds"] = [sub_tag for sub_tag in item["outbounds"] if sub_tag not in to_remove_tags]
         
-    return data, len(tag_list)
+    return data, len(to_remove_tags)
 
 def remove_duplicates_from_outbound_lists(data):
     # Collect all valid tags that have 'server'
@@ -319,7 +309,7 @@ if __name__ == "__main__":
         # 先把method不对的去掉，要把相关tag的代理都去掉
         new_data, tag_list = process_outbounds_method(data)         
         for tag in tag_list:
-            new_data = process_outbounds(data, tag)
+            new_data = process_outbounds(new_data, tag)  # 注意这里用new_data
     elif token == "index":
         # Validate and convert the number argument
         try:
@@ -336,7 +326,7 @@ if __name__ == "__main__":
         data = one_by_one(data)   #确保tag匹配
         # 初始化 GeoIPChecker
         checker = GeoIPChecker('/home/runner/work/Honeybee/Honeybee/sing-box-sub/GeoLite2-Country.mmdb')
-        new_data, howmany = process_outbounds_server_ip(data)
+        new_data, howmany = process_outbounds_server_ip(data, checker)  # 传入checker
     else: 
         new_data = process_outbounds(data, token)
 
