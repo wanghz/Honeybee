@@ -9,6 +9,7 @@ urls=(
   "https://raw.githubusercontent.com/mheidari98/.proxy/main/all"
   "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vless.txt"
   "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vmess.txt"
+  "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/proxies.yaml"
   #"https://raw.githubusercontent.com/ebrasha/free-v2ray-public-list/refs/heads/main/all_extracted_configs.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vless.txt"
   #"https://raw.githubusercontent.com/Epodonios/v2ray-configs/refs/heads/main/Splitted-By-Protocol/vmess.txt"
