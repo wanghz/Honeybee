@@ -61,7 +61,8 @@ links=(
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/tuic.txt"
         "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/wireguard.txt"
         "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
-        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/a11"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/tr"
+        "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/v2"
         "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2"
         "https://raw.githubusercontent.com/Misaka-blog/chromego_merge/refs/heads/main/sub/merged_proxies_new.yaml"
 )
