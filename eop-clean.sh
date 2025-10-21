@@ -5,6 +5,7 @@ currentmonths=$(date +%m)
 currentyears=$(date +%Y)
 
 urls=(
+  "https://raw.githubusercontent.com/Surfboardv2ray/TGParse/refs/heads/main/splitted/mixed"
   "https://raw.githubusercontent.com/kismetpro/NodeSuber/refs/heads/main/out/All_Configs_Sub.txt"
   "https://raw.githubusercontent.com/mheidari98/.proxy/main/all"
   "https://raw.githubusercontent.com/wiki/gfpcom/free-proxy-list/lists/vless.txt"
