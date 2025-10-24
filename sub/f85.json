@@ -1,0 +1,367 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇸🇬 SG_1|4.3MB/s",
+        "🇯🇵 JP_1|1.5MB/s",
+        "🇭🇰 HK_1|2.4MB/s",
+        "🇭🇰 HK_2|2.0MB/s",
+        "🇭🇰 HK_3|2.3MB/s",
+        "🇭🇰 HK_4|1.9MB/s",
+        "🇭🇰 HK_5|2.1MB/s",
+        "🇭🇰 HK_6|1.7MB/s",
+        "🇭🇰 HK_7|2.1MB/s",
+        "🇭🇰 HK_8|2.6MB/s",
+        "🇭🇰 HK_9|1.9MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇸🇬 SG_1|4.3MB/s",
+        "🇯🇵 JP_1|1.5MB/s",
+        "🇭🇰 HK_1|2.4MB/s",
+        "🇭🇰 HK_2|2.0MB/s",
+        "🇭🇰 HK_3|2.3MB/s",
+        "🇭🇰 HK_4|1.9MB/s",
+        "🇭🇰 HK_5|2.1MB/s",
+        "🇭🇰 HK_6|1.7MB/s",
+        "🇭🇰 HK_7|2.1MB/s",
+        "🇭🇰 HK_8|2.6MB/s",
+        "🇭🇰 HK_9|1.9MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇸🇬 SG_1|4.3MB/s",
+      "type": "vless",
+      "server": "freemobitel.theekshana.site",
+      "server_port": 8443,
+      "uuid": "206bfe76-912c-4e1a-801e-526d7e8f226c",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "free.theekshana.site",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "free.theekshana.site"
+        }
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_1|1.5MB/s",
+      "type": "hysteria2",
+      "server": "jp01.xn--9kq85xcu6b.com",
+      "server_port": 65534,
+      "password": "fde82f41-08af-4f06-ac8f-a40e9cfbbd20",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.yahoo.co.jp",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_1|2.4MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "06b28a92-ad0a-4048-bf24-e1d06c4396bd",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_2|2.0MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "93073513-828b-4e32-97fb-bcaf7ba6ed88",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_3|2.3MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "31cfa08c-e431-4476-91b6-b535bc651494",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_4|1.9MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "82ae7e9b-bb31-4274-a6f2-42f5db127af4",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_5|2.1MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "30585750-f3e8-4de8-af72-3a9d642cbb02",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_6|1.7MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "f91730a3-23be-4668-958d-727f9f8c5af7",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_7|2.1MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "0d36b0c6-dfb9-4459-91e1-c91b3b9f6200",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_8|2.6MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "24417143-1ddf-4207-82de-f725b9daa415",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_9|1.9MB/s",
+      "type": "hysteria2",
+      "server": "cn.eans.top",
+      "server_port": 7009,
+      "password": "888884a4-695f-4718-bfe2-0c5329f41b7a",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "h.eans.top",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
