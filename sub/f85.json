@@ -1,266 +1,217 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
-    ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇯🇵 JP_1|2.6MB/s",
-        "🇮🇳 IN_1|3.0MB/s",
-        "🇯🇵 JP_2|3.6MB/s",
-        "🇳🇱 NL_1|2.3MB/s",
-        "🇩🇪 DE_1|5.6MB/s",
-        "🇰🇿 KZ_1|2.0MB/s",
-        "🇮🇶 IQ_1|6.2MB/s"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇯🇵 JP_1|2.6MB/s",
-        "🇮🇳 IN_1|3.0MB/s",
-        "🇯🇵 JP_2|3.6MB/s",
-        "🇳🇱 NL_1|2.3MB/s",
-        "🇩🇪 DE_1|5.6MB/s",
-        "🇰🇿 KZ_1|2.0MB/s",
-        "🇮🇶 IQ_1|6.2MB/s"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇯🇵 JP_1|2.6MB/s",
-      "type": "shadowsocks",
-      "server": "jpaz05.fjk.wtf",
-      "server_port": 13759,
-      "method": "rc4-md5",
-      "password": "554c010ce4"
-    },
-    {
-      "tag": "🇮🇳 IN_1|3.0MB/s",
-      "type": "shadowsocks",
-      "server": "in06.fjk.wtf",
-      "server_port": 13759,
-      "method": "rc4-md5",
-      "password": "554c010ce4"
-    },
-    {
-      "tag": "🇯🇵 JP_2|3.6MB/s",
-      "type": "shadowsocks",
-      "server": "jpaz06.fjk.wtf",
-      "server_port": 13759,
-      "method": "rc4-md5",
-      "password": "554c010ce4"
-    },
-    {
-      "tag": "🇳🇱 NL_1|2.3MB/s",
-      "type": "hysteria2",
-      "server": "191.96.11.107",
-      "server_port": 48361,
-      "password": "JOh7tQHdp8",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "alpn": [
-          "h3"
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
         ]
-      }
     },
-    {
-      "tag": "🇩🇪 DE_1|5.6MB/s",
-      "type": "vless",
-      "server": "de.gpairnetwork369.de",
-      "server_port": 3020,
-      "uuid": "f6b74f9a-0ac7-43f0-a4cc-5cee6f1eaf7f",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.refersion.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        },
-        "reality": {
-          "enabled": true,
-          "public_key": "NVjEaDFrdzaFQHvMt8BPORsLFR3iD8NA31Dpn-1HRFk",
-          "short_id": "ecd8d10c1518fb7b"
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
         }
-      }
-    },
-    {
-      "tag": "🇰🇿 KZ_1|2.0MB/s",
-      "type": "vless",
-      "server": "www.speedtest.net",
-      "server_port": 80,
-      "uuid": "be38fcfb-6bef-4bad-b0ec-3bfd0a8d6265",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/vless/?JoinBede--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY",
-        "headers": {
-          "Host": "3h-kAzakhStan1.09vPn.cOm."
+    ],
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇮🇶 IQ_1|6.2MB/s",
-      "type": "vless",
-      "server": "93.94.51.9",
-      "server_port": 28813,
-      "uuid": "3d71e4dd-5e4b-473c-8d1c-28aefa14cdb5",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "yandex.ru",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "outbounds": [
+                "🇯🇵 JP_1|2.6MB/s",
+                "🇮🇳 IN_1|3.0MB/s",
+                "🇯🇵 JP_2|3.6MB/s",
+                "🇳🇱 NL_1|2.3MB/s",
+                "🇰🇿 KZ_1|2.0MB/s"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "_4MQ6e6Z3IPdExI9HbGz8xqKL83Uv8YZHNs0hVET2FE",
-          "short_id": "daf1198a669f3b60"
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇯🇵 JP_1|2.6MB/s",
+                "🇮🇳 IN_1|3.0MB/s",
+                "🇯🇵 JP_2|3.6MB/s",
+                "🇳🇱 NL_1|2.3MB/s",
+                "🇰🇿 KZ_1|2.0MB/s"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
+        },
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "554c010ce4",
+            "server": "jpaz05.fjk.wtf",
+            "server_port": 13759,
+            "tag": "🇯🇵 JP_1|2.6MB/s",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "554c010ce4",
+            "server": "in06.fjk.wtf",
+            "server_port": 13759,
+            "tag": "🇮🇳 IN_1|3.0MB/s",
+            "type": "shadowsocks"
+        },
+        {
+            "method": "rc4-md5",
+            "password": "554c010ce4",
+            "server": "jpaz06.fjk.wtf",
+            "server_port": 13759,
+            "tag": "🇯🇵 JP_2|3.6MB/s",
+            "type": "shadowsocks"
+        },
+        {
+            "down_mbps": 100,
+            "password": "JOh7tQHdp8",
+            "server": "191.96.11.107",
+            "server_port": 48361,
+            "tag": "🇳🇱 NL_1|2.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "www.speedtest.net",
+            "server_port": 80,
+            "tag": "🇰🇿 KZ_1|2.0MB/s",
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "3h-kAzakhStan1.09vPn.cOm."
+                },
+                "max_early_data": 2560,
+                "path": "/vless/?JoinBede--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY--ELiV2RAY",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "be38fcfb-6bef-4bad-b0ec-3bfd0a8d6265"
         }
-      }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
