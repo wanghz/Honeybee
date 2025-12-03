@@ -1,752 +1,726 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇭🇰 HK_1|1.4MB/s",
-        "🇫🇷 FR_1|1.1MB/s",
-        "🇭🇰 HK_2|1.1MB/s",
-        "🇭🇰 HK_3|1.3MB/s",
-        "🇭🇰 HK_4|1.1MB/s",
-        "🇭🇰 HK_5|2.3MB/s",
-        "🇭🇰 HK_6|1.3MB/s",
-        "🇭🇰 HK_7|1.2MB/s",
-        "🇭🇰 HK_8|2.1MB/s",
-        "🇭🇰 HK_9|1.8MB/s",
-        "🇭🇰 HK_10|1.0MB/s",
-        "🇭🇰 HK_11|1.7MB/s",
-        "🇭🇰 HK_12|1.9MB/s",
-        "🇭🇰 HK_13|1.5MB/s",
-        "🇭🇰 HK_14|1.7MB/s",
-        "🇭🇰 HK_15|1.1MB/s",
-        "🇭🇰 HK_16|1.4MB/s",
-        "🇭🇰 HK_17|1.0MB/s",
-        "🇭🇰 HK_18|1.1MB/s",
-        "🇭🇰 HK_19|1.8MB/s",
-        "🇰🇷 KR_1|1.0MB/s",
-        "🇸🇬 SG_1|1.3MB/s",
-        "🇭🇰 HK_20|1.6MB/s",
-        "🇺🇸 US_1|2.0MB/s",
-        "🇭🇰 HK_21|1.4MB/s",
-        "🇩🇪 DE_1|1.4MB/s",
-        "🇩🇪 DE_2|1.3MB/s",
-        "🇫🇷 FR_2|1.6MB/s",
-        "🇩🇪 DE_3|1.6MB/s",
-        "🇩🇪 DE_4|1.8MB/s",
-        "🇻🇳 VN_1|1.1MB/s"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇭🇰 HK_1|1.4MB/s",
-        "🇫🇷 FR_1|1.1MB/s",
-        "🇭🇰 HK_2|1.1MB/s",
-        "🇭🇰 HK_3|1.3MB/s",
-        "🇭🇰 HK_4|1.1MB/s",
-        "🇭🇰 HK_5|2.3MB/s",
-        "🇭🇰 HK_6|1.3MB/s",
-        "🇭🇰 HK_7|1.2MB/s",
-        "🇭🇰 HK_8|2.1MB/s",
-        "🇭🇰 HK_9|1.8MB/s",
-        "🇭🇰 HK_10|1.0MB/s",
-        "🇭🇰 HK_11|1.7MB/s",
-        "🇭🇰 HK_12|1.9MB/s",
-        "🇭🇰 HK_13|1.5MB/s",
-        "🇭🇰 HK_14|1.7MB/s",
-        "🇭🇰 HK_15|1.1MB/s",
-        "🇭🇰 HK_16|1.4MB/s",
-        "🇭🇰 HK_17|1.0MB/s",
-        "🇭🇰 HK_18|1.1MB/s",
-        "🇭🇰 HK_19|1.8MB/s",
-        "🇰🇷 KR_1|1.0MB/s",
-        "🇸🇬 SG_1|1.3MB/s",
-        "🇭🇰 HK_20|1.6MB/s",
-        "🇺🇸 US_1|2.0MB/s",
-        "🇭🇰 HK_21|1.4MB/s",
-        "🇩🇪 DE_1|1.4MB/s",
-        "🇩🇪 DE_2|1.3MB/s",
-        "🇫🇷 FR_2|1.6MB/s",
-        "🇩🇪 DE_3|1.6MB/s",
-        "🇩🇪 DE_4|1.8MB/s",
-        "🇻🇳 VN_1|1.1MB/s"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇭🇰 HK_1|1.4MB/s",
-      "type": "vmess",
-      "server": "611f8a8f-t6r5s0-tkgk4w-1fvdh.hkt.gotochinatown.net",
-      "server_port": 80,
-      "uuid": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "611f8a8f-t6r5s0-tkgk4w-1fvdh.hkt.gotochinatown.net"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_1|1.1MB/s",
-      "type": "hysteria",
-      "server": "195.154.200.40",
-      "server_port": 15010,
-      "up_mbps": 100,
-      "down_mbps": 100,
-      "auth_str": "",
-      "tls": {
-        "enabled": true,
-        "server_name": "apple.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_2|1.1MB/s",
-      "type": "vmess",
-      "server": "cfea7a92-t6r5s0-tonrqx-1khwf.hkt.gotochinatown.net",
-      "server_port": 80,
-      "uuid": "92bd8c68-6434-11ee-b644-f23c91cfbbc9",
-      "security": "auto",
-      "alter_id": 2,
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "headers": {
-          "Host": "cfea7a92-t6r5s0-tonrqx-1khwf.hkt.gotochinatown.net"
+        {
+            "outbounds": [
+                "🇭🇰 HK_1|1.4MB/s",
+                "🇫🇷 FR_1|1.1MB/s",
+                "🇭🇰 HK_2|1.1MB/s",
+                "🇭🇰 HK_3|1.3MB/s",
+                "🇭🇰 HK_4|1.1MB/s",
+                "🇭🇰 HK_5|2.3MB/s",
+                "🇭🇰 HK_6|1.3MB/s",
+                "🇭🇰 HK_7|1.2MB/s",
+                "🇭🇰 HK_8|2.1MB/s",
+                "🇭🇰 HK_9|1.8MB/s",
+                "🇭🇰 HK_10|1.0MB/s",
+                "🇭🇰 HK_11|1.7MB/s",
+                "🇭🇰 HK_12|1.9MB/s",
+                "🇭🇰 HK_13|1.5MB/s",
+                "🇭🇰 HK_14|1.7MB/s",
+                "🇭🇰 HK_15|1.1MB/s",
+                "🇭🇰 HK_16|1.4MB/s",
+                "🇭🇰 HK_17|1.0MB/s",
+                "🇭🇰 HK_18|1.1MB/s",
+                "🇭🇰 HK_19|1.8MB/s",
+                "🇰🇷 KR_1|1.0MB/s",
+                "🇸🇬 SG_1|1.3MB/s",
+                "🇭🇰 HK_20|1.6MB/s",
+                "🇺🇸 US_1|2.0MB/s",
+                "🇭🇰 HK_21|1.4MB/s",
+                "🇩🇪 DE_1|1.4MB/s",
+                "🇩🇪 DE_2|1.3MB/s",
+                "🇫🇷 FR_2|1.6MB/s",
+                "🇩🇪 DE_3|1.6MB/s",
+                "🇻🇳 VN_1|1.1MB/s"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "path": "/"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_3|1.3MB/s",
-      "type": "hysteria2",
-      "server": "1ba53387-t6t0g0-tnnrly-g43g.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "6ddb6a68-d5f5-ca30-3943-cf0c9876d50c",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "1ba53387-t6t0g0-tnnrly-g43g.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_4|1.1MB/s",
-      "type": "hysteria2",
-      "server": "22d6f82f-t6t0g0-tkgk4w-1fvdh.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "22d6f82f-t6t0g0-tkgk4w-1fvdh.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_5|2.3MB/s",
-      "type": "hysteria2",
-      "server": "f296790c-t57ls0-t76x2i-wj6v.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "847c03b2-0a9d-11eb-a8bf-f23c91cfbbc9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "f296790c-t57ls0-t76x2i-wj6v.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_6|1.3MB/s",
-      "type": "hysteria2",
-      "server": "cc6195f2-t6r5s0-tkgk4w-1fvdh.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "cc6195f2-t6r5s0-tkgk4w-1fvdh.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_7|1.2MB/s",
-      "type": "hysteria2",
-      "server": "5811f27b-t6pb40-t7k911-1gxvd.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "398e0d38-8649-11ef-959c-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "5811f27b-t6pb40-t7k911-1gxvd.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_8|2.1MB/s",
-      "type": "hysteria2",
-      "server": "a72b4e9b-t6t0g0-t7c05o-n09f.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "89b0ea8c-806b-11ed-94ba-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "a72b4e9b-t6t0g0-t7c05o-n09f.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_9|1.8MB/s",
-      "type": "hysteria2",
-      "server": "e7bd5038-t6r5s0-tonrqx-1khwf.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "92bd8c68-6434-11ee-b644-f23c91cfbbc9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "e7bd5038-t6r5s0-tonrqx-1khwf.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_10|1.0MB/s",
-      "type": "hysteria2",
-      "server": "ea74117f-t6ngg0-thd0h1-1rz5s.hk1.hyhuawei.com",
-      "server_port": 443,
-      "password": "40e084d6-0316-11f0-90e2-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "ea74117f-t6ngg0-thd0h1-1rz5s.hk1.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_11|1.7MB/s",
-      "type": "hysteria2",
-      "server": "85232aec-t6t0g0-tb592v-4lg6.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "a4c9b7cc-a816-11ed-9f65-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "85232aec-t6t0g0-tb592v-4lg6.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_12|1.9MB/s",
-      "type": "hysteria2",
-      "server": "60a7e15e-t6pb40-t7r6w5-1ppvf.hk1.hyhuawei.com",
-      "server_port": 443,
-      "password": "8da5616c-8566-11ee-9a21-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "60a7e15e-t6pb40-t7r6w5-1ppvf.hk1.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_13|1.5MB/s",
-      "type": "hysteria2",
-      "server": "38a8754f-t6pb40-tmynyz-1s3mx.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "b58095f0-52dc-11ef-bc74-f23c91cfbbc9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "38a8754f-t6pb40-tmynyz-1s3mx.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_14|1.7MB/s",
-      "type": "hysteria2",
-      "server": "8a9d2453-t6t0g0-t9hghw-1sdoq.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "7c077572-6da9-11ef-b786-f23c91cfbbc9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "8a9d2453-t6t0g0-t9hghw-1sdoq.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_15|1.1MB/s",
-      "type": "hysteria2",
-      "server": "2c77f18a-t6t0g0-tbac1z-1j3zm.hk1.hyhuawei.com",
-      "server_port": 443,
-      "password": "6ce63b80-8b5b-11ef-b635-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "2c77f18a-t6t0g0-tbac1z-1j3zm.hk1.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_16|1.4MB/s",
-      "type": "hysteria2",
-      "server": "7ae29732-t6t0g0-tkp3tl-1s09x.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "62b7824e-47dc-11ef-9f2d-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "7ae29732-t6t0g0-tkp3tl-1s09x.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_17|1.0MB/s",
-      "type": "hysteria2",
-      "server": "f92321f2-t6r5s0-t7vzvm-1j0a4.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "4eedcde6-d16a-11ef-973a-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "f92321f2-t6r5s0-t7vzvm-1j0a4.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_18|1.1MB/s",
-      "type": "hysteria2",
-      "server": "3cc0e81a-t6t0g0-t7wiup-1teuc.hk1.hyhuawei.com",
-      "server_port": 443,
-      "password": "a5a81a34-f257-11ef-ba82-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "3cc0e81a-t6t0g0-t7wiup-1teuc.hk1.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_19|1.8MB/s",
-      "type": "hysteria2",
-      "server": "a6c5cdee-t6pb40-tc5odo-1mh85.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "cf7331fa-bfeb-11ed-a807-f23c913c8d2b",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "a6c5cdee-t6pb40-tc5odo-1mh85.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇰🇷 KR_1|1.0MB/s",
-      "type": "vless",
-      "server": "121.178.121.161",
-      "server_port": 50001,
-      "uuid": "78fc9ba9-9c68-4b49-891f-ea9e38bd3b56",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "ak.suoni.nyc.mn",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "random"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/proxyip=sjc.o00o.ooo",
-        "headers": {
-          "Host": "ak.suoni.nyc.mn"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_1|1.3MB/s",
-      "type": "vless",
-      "server": "20.247.137.183",
-      "server_port": 443,
-      "uuid": "78fc9ba9-9c68-4b49-891f-ea9e38bd3b56",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "ak.suoni.nyc.mn",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "random"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/proxyip=sjc.o00o.ooo",
-        "headers": {
-          "Host": "ak.suoni.nyc.mn"
-        }
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_20|1.6MB/s",
-      "type": "hysteria2",
-      "server": "a8e86605-t6t0g0-tbpkla-1otc2.hk2.hyhuawei.com",
-      "server_port": 443,
-      "password": "0114339c-488d-11ee-8792-f23c9164ca5d",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "a8e86605-t6t0g0-tbpkla-1otc2.hk2.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇺🇸 US_1|2.0MB/s",
-      "type": "hysteria2",
-      "server": "134.195.101.191",
-      "server_port": 35000,
-      "password": "02fe8dae-73b7-4f1d-a992-f0e226a98f27",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "www.apple.com",
-        "insecure": true,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_21|1.4MB/s",
-      "type": "hysteria2",
-      "server": "9bc9db69-t6t0g0-tee612-2r82.hk1.hyhuawei.com",
-      "server_port": 443,
-      "password": "03573f46-e944-11eb-a8bf-f23c91cfbbc9",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "9bc9db69-t6t0g0-tee612-2r82.hk1.hyhuawei.com",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_1|1.4MB/s",
-      "type": "hysteria2",
-      "server": "dg.jgpyjc.top",
-      "server_port": 40000,
-      "password": "8658eece-d245-4698-a4a4-1312faa1f10c",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "dg.jgpyjc.top",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "ZDQxZDhjZDk4ZjAwYjIwNA=="
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_2|1.3MB/s",
-      "type": "hysteria2",
-      "server": "dg.jgpyjc.top",
-      "server_port": 40000,
-      "password": "f7a21a9e-f3e9-4f66-983e-1852376f3960",
-      "up_mbps": 10,
-      "down_mbps": 100,
-      "tls": {
-        "enabled": true,
-        "server_name": "dg.jgpyjc.top",
-        "insecure": false,
-        "alpn": [
-          "h3"
-        ]
-      },
-      "obfs": {
-        "type": "salamander",
-        "password": "ZDQxZDhjZDk4ZjAwYjIwNA=="
-      }
-    },
-    {
-      "tag": "🇫🇷 FR_2|1.6MB/s",
-      "type": "vless",
-      "server": "141.227.172.96",
-      "server_port": 56089,
-      "uuid": "2d535288-d08e-4de4-b674-fd8cb3c6e4d3",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "grpc",
-        "service_name": "ZEDMODEON-ZEDMODEON-bia-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON"
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_3|1.6MB/s",
-      "type": "vless",
-      "server": "usaa.fastlynew.hosting-ip.com",
-      "server_port": 80,
-      "uuid": "667376ba-5ac1-4d12-eed3-4fe0e6f7d460",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "mojhsjd.global.ssl.fastly.net"
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_4|1.8MB/s",
-      "type": "vless",
-      "server": "194.87.71.191",
-      "server_port": 443,
-      "uuid": "b32b15ca-fc96-42f9-955d-2d50cdbb479e",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "noda1.mcqueenconnection.ru",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇭🇰 HK_1|1.4MB/s",
+                "🇫🇷 FR_1|1.1MB/s",
+                "🇭🇰 HK_2|1.1MB/s",
+                "🇭🇰 HK_3|1.3MB/s",
+                "🇭🇰 HK_4|1.1MB/s",
+                "🇭🇰 HK_5|2.3MB/s",
+                "🇭🇰 HK_6|1.3MB/s",
+                "🇭🇰 HK_7|1.2MB/s",
+                "🇭🇰 HK_8|2.1MB/s",
+                "🇭🇰 HK_9|1.8MB/s",
+                "🇭🇰 HK_10|1.0MB/s",
+                "🇭🇰 HK_11|1.7MB/s",
+                "🇭🇰 HK_12|1.9MB/s",
+                "🇭🇰 HK_13|1.5MB/s",
+                "🇭🇰 HK_14|1.7MB/s",
+                "🇭🇰 HK_15|1.1MB/s",
+                "🇭🇰 HK_16|1.4MB/s",
+                "🇭🇰 HK_17|1.0MB/s",
+                "🇭🇰 HK_18|1.1MB/s",
+                "🇭🇰 HK_19|1.8MB/s",
+                "🇰🇷 KR_1|1.0MB/s",
+                "🇸🇬 SG_1|1.3MB/s",
+                "🇭🇰 HK_20|1.6MB/s",
+                "🇺🇸 US_1|2.0MB/s",
+                "🇭🇰 HK_21|1.4MB/s",
+                "🇩🇪 DE_1|1.4MB/s",
+                "🇩🇪 DE_2|1.3MB/s",
+                "🇫🇷 FR_2|1.6MB/s",
+                "🇩🇪 DE_3|1.6MB/s",
+                "🇻🇳 VN_1|1.1MB/s"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "z68alxxqxPVzTnKwMA85cFIB4ZXqesP99TQ1QP0H2h8",
-          "short_id": "b6df918b5f3f1481"
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "611f8a8f-t6r5s0-tkgk4w-1fvdh.hkt.gotochinatown.net",
+            "server_port": 80,
+            "tag": "🇭🇰 HK_1|1.4MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "611f8a8f-t6r5s0-tkgk4w-1fvdh.hkt.gotochinatown.net"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b"
+        },
+        {
+            "auth_str": "",
+            "down_mbps": 100,
+            "server": "195.154.200.40",
+            "server_port": 15010,
+            "tag": "🇫🇷 FR_1|1.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "apple.com"
+            },
+            "type": "hysteria",
+            "up_mbps": 100
+        },
+        {
+            "alter_id": 2,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "cfea7a92-t6r5s0-tonrqx-1khwf.hkt.gotochinatown.net",
+            "server_port": 80,
+            "tag": "🇭🇰 HK_2|1.1MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "cfea7a92-t6r5s0-tonrqx-1khwf.hkt.gotochinatown.net"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vmess",
+            "uuid": "92bd8c68-6434-11ee-b644-f23c91cfbbc9"
+        },
+        {
+            "down_mbps": 100,
+            "password": "6ddb6a68-d5f5-ca30-3943-cf0c9876d50c",
+            "server": "1ba53387-t6t0g0-tnnrly-g43g.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_3|1.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "1ba53387-t6t0g0-tnnrly-g43g.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b",
+            "server": "22d6f82f-t6t0g0-tkgk4w-1fvdh.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_4|1.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "22d6f82f-t6t0g0-tkgk4w-1fvdh.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "847c03b2-0a9d-11eb-a8bf-f23c91cfbbc9",
+            "server": "f296790c-t57ls0-t76x2i-wj6v.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_5|2.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "f296790c-t57ls0-t76x2i-wj6v.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "9e1ddc04-073b-11ed-bd7c-f23c913c8d2b",
+            "server": "cc6195f2-t6r5s0-tkgk4w-1fvdh.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_6|1.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "cc6195f2-t6r5s0-tkgk4w-1fvdh.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "398e0d38-8649-11ef-959c-f23c9164ca5d",
+            "server": "5811f27b-t6pb40-t7k911-1gxvd.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_7|1.2MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "5811f27b-t6pb40-t7k911-1gxvd.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "89b0ea8c-806b-11ed-94ba-f23c913c8d2b",
+            "server": "a72b4e9b-t6t0g0-t7c05o-n09f.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_8|2.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "a72b4e9b-t6t0g0-t7c05o-n09f.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "92bd8c68-6434-11ee-b644-f23c91cfbbc9",
+            "server": "e7bd5038-t6r5s0-tonrqx-1khwf.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_9|1.8MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "e7bd5038-t6r5s0-tonrqx-1khwf.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "40e084d6-0316-11f0-90e2-f23c913c8d2b",
+            "server": "ea74117f-t6ngg0-thd0h1-1rz5s.hk1.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_10|1.0MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "ea74117f-t6ngg0-thd0h1-1rz5s.hk1.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "a4c9b7cc-a816-11ed-9f65-f23c9164ca5d",
+            "server": "85232aec-t6t0g0-tb592v-4lg6.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_11|1.7MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "85232aec-t6t0g0-tb592v-4lg6.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "8da5616c-8566-11ee-9a21-f23c9164ca5d",
+            "server": "60a7e15e-t6pb40-t7r6w5-1ppvf.hk1.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_12|1.9MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "60a7e15e-t6pb40-t7r6w5-1ppvf.hk1.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "b58095f0-52dc-11ef-bc74-f23c91cfbbc9",
+            "server": "38a8754f-t6pb40-tmynyz-1s3mx.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_13|1.5MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "38a8754f-t6pb40-tmynyz-1s3mx.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "7c077572-6da9-11ef-b786-f23c91cfbbc9",
+            "server": "8a9d2453-t6t0g0-t9hghw-1sdoq.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_14|1.7MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "8a9d2453-t6t0g0-t9hghw-1sdoq.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "6ce63b80-8b5b-11ef-b635-f23c9164ca5d",
+            "server": "2c77f18a-t6t0g0-tbac1z-1j3zm.hk1.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_15|1.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "2c77f18a-t6t0g0-tbac1z-1j3zm.hk1.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "62b7824e-47dc-11ef-9f2d-f23c9164ca5d",
+            "server": "7ae29732-t6t0g0-tkp3tl-1s09x.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_16|1.4MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "7ae29732-t6t0g0-tkp3tl-1s09x.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "4eedcde6-d16a-11ef-973a-f23c913c8d2b",
+            "server": "f92321f2-t6r5s0-t7vzvm-1j0a4.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_17|1.0MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "f92321f2-t6r5s0-t7vzvm-1j0a4.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "a5a81a34-f257-11ef-ba82-f23c913c8d2b",
+            "server": "3cc0e81a-t6t0g0-t7wiup-1teuc.hk1.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_18|1.1MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "3cc0e81a-t6t0g0-t7wiup-1teuc.hk1.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "cf7331fa-bfeb-11ed-a807-f23c913c8d2b",
+            "server": "a6c5cdee-t6pb40-tc5odo-1mh85.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_19|1.8MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "a6c5cdee-t6pb40-tc5odo-1mh85.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "121.178.121.161",
+            "server_port": 50001,
+            "tag": "🇰🇷 KR_1|1.0MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "ak.suoni.nyc.mn",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "random"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "ak.suoni.nyc.mn"
+                },
+                "path": "/proxyip=sjc.o00o.ooo",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "78fc9ba9-9c68-4b49-891f-ea9e38bd3b56"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "20.247.137.183",
+            "server_port": 443,
+            "tag": "🇸🇬 SG_1|1.3MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "ak.suoni.nyc.mn",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "random"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "ak.suoni.nyc.mn"
+                },
+                "path": "/proxyip=sjc.o00o.ooo",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "78fc9ba9-9c68-4b49-891f-ea9e38bd3b56"
+        },
+        {
+            "down_mbps": 100,
+            "password": "0114339c-488d-11ee-8792-f23c9164ca5d",
+            "server": "a8e86605-t6t0g0-tbpkla-1otc2.hk2.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_20|1.6MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "a8e86605-t6t0g0-tbpkla-1otc2.hk2.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "02fe8dae-73b7-4f1d-a992-f0e226a98f27",
+            "server": "134.195.101.191",
+            "server_port": 35000,
+            "tag": "🇺🇸 US_1|2.0MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.apple.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "password": "03573f46-e944-11eb-a8bf-f23c91cfbbc9",
+            "server": "9bc9db69-t6t0g0-tee612-2r82.hk1.hyhuawei.com",
+            "server_port": 443,
+            "tag": "🇭🇰 HK_21|1.4MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "9bc9db69-t6t0g0-tee612-2r82.hk1.hyhuawei.com"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "ZDQxZDhjZDk4ZjAwYjIwNA==",
+                "type": "salamander"
+            },
+            "password": "8658eece-d245-4698-a4a4-1312faa1f10c",
+            "server": "dg.jgpyjc.top",
+            "server_port": 40000,
+            "tag": "🇩🇪 DE_1|1.4MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "dg.jgpyjc.top"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "down_mbps": 100,
+            "obfs": {
+                "password": "ZDQxZDhjZDk4ZjAwYjIwNA==",
+                "type": "salamander"
+            },
+            "password": "f7a21a9e-f3e9-4f66-983e-1852376f3960",
+            "server": "dg.jgpyjc.top",
+            "server_port": 40000,
+            "tag": "🇩🇪 DE_2|1.3MB/s",
+            "tls": {
+                "alpn": [
+                    "h3"
+                ],
+                "enabled": true,
+                "insecure": false,
+                "server_name": "dg.jgpyjc.top"
+            },
+            "type": "hysteria2",
+            "up_mbps": 10
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "141.227.172.96",
+            "server_port": 56089,
+            "tag": "🇫🇷 FR_2|1.6MB/s",
+            "transport": {
+                "service_name": "ZEDMODEON-ZEDMODEON-bia-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON-ZEDMODEON",
+                "type": "grpc"
+            },
+            "type": "vless",
+            "uuid": "2d535288-d08e-4de4-b674-fd8cb3c6e4d3"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "usaa.fastlynew.hosting-ip.com",
+            "server_port": 80,
+            "tag": "🇩🇪 DE_3|1.6MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "mojhsjd.global.ssl.fastly.net"
+                },
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "667376ba-5ac1-4d12-eed3-4fe0e6f7d460"
+        },
+        {
+            "method": "aes-256-cfb",
+            "password": "Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV",
+            "server": "103.186.155.204",
+            "server_port": 38388,
+            "tag": "🇻🇳 VN_1|1.1MB/s",
+            "type": "shadowsocks"
         }
-      }
-    },
-    {
-      "tag": "🇻🇳 VN_1|1.1MB/s",
-      "type": "shadowsocks",
-      "server": "103.186.155.204",
-      "server_port": 38388,
-      "method": "aes-256-cfb",
-      "password": "Xn8jKdmDM00IeO%#$#fJAMtsEAEUOpH/YWYtYqDFnT0SV"
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
