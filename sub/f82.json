@@ -1,419 +1,363 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
-        "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
-        "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
-        "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
-        "🇷🇺 🇳🇱NL²_2|1.0MB/s|0%|GPT|GM|YT-RU|NF|X|KeepHistory",
-        "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
-        "🇩🇪 DE²_1|5.7MB/s|8%|GPT⁺|YT|TK|NF|X|KeepSucceed",
-        "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇸🇬 SG²_2|1.9MB/s|0%|GPT⁺|GM|YT|TK|NF|X|KeepHistory"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
-        "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
-        "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
-        "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
-        "🇷🇺 🇳🇱NL²_2|1.0MB/s|0%|GPT|GM|YT-RU|NF|X|KeepHistory",
-        "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
-        "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-        "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
-        "🇩🇪 DE²_1|5.7MB/s|8%|GPT⁺|YT|TK|NF|X|KeepSucceed",
-        "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed",
-        "🇸🇬 SG²_2|1.9MB/s|0%|GPT⁺|GM|YT|TK|NF|X|KeepHistory"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
-      "type": "trojan",
-      "server": "112.118.116.127",
-      "server_port": 443,
-      "password": "76d630f2af6619c4a5de0ef953df3c6a",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.nintendogames.net"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.30.120",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.25.20",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
-    },
-    {
-      "tag": "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
-      "type": "vless",
-      "server": "www.speedtest.net",
-      "server_port": 2083,
-      "uuid": "a47338c5-c793-4da3-acd8-c583fb6f344d",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "golestan.hajalwi.ir.",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN",
-        "headers": {
-          "Host": "golestan.hajalwi.ir."
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 8080
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.53.174",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me/ripaojiedian"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
-      "type": "shadowsocks",
-      "server": "103.149.182.86",
-      "server_port": 8388,
-      "method": "chacha20-ietf",
-      "password": "asd123456"
-    },
-    {
-      "tag": "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "219.78.209.224",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me/ripaojiedian"
-      }
-    },
-    {
-      "tag": "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
-      "type": "socks",
-      "version": "5",
-      "udp_over_tcp": {},
-      "server": "213.35.126.34",
-      "server_port": 10808
-    },
-    {
-      "tag": "🇷🇺 🇳🇱NL²_2|1.0MB/s|0%|GPT|GM|YT-RU|NF|X|KeepHistory",
-      "type": "vless",
-      "server": "89.23.101.203",
-      "server_port": 443,
-      "uuid": "d5f7970e-121f-4e6f-9acf-250effc0715b",
-      "packet_encoding": "xudp",
-      "flow": "xtls-rprx-vision",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "www.vk.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "outbounds": [
+                "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
+                "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
+                "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
+                "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
+                "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "lJscl0GgEiVZtTVrMVI6O0-zSJTgmug9Cs-KJqpxWw0",
-          "short_id": "f6fb0261a102c0c8"
-        }
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.25.20",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me%2Fripaojiedian"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
-      "type": "trojan",
-      "server": "112.118.116.127",
-      "server_port": 443,
-      "password": "76d630f2af6619c4a5de0ef953df3c6a",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "www.nintendogames.net"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
-      "type": "trojan",
-      "server": "58.152.30.120",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.25.242",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me%252Fripaojiedian"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
-      "type": "trojan",
-      "server": "58.152.53.174",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me/ripaojiedian"
-      }
-    },
-    {
-      "tag": "🇩🇪 DE²_1|5.7MB/s|8%|GPT⁺|YT|TK|NF|X|KeepSucceed",
-      "type": "vless",
-      "server": "91.98.92.70",
-      "server_port": 3060,
-      "uuid": "Telegram--SRCVPN--",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "miro.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
+                "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
+                "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
+                "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
+                "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
+                "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
+                "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
         },
-        "reality": {
-          "enabled": true,
-          "public_key": "LnDnwg2lFWruzisAY8t6ouWZ3JoQ_47XAl-jUx8tJx0",
-          "short_id": "acd96c5fc628f1"
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "password": "76d630f2af6619c4a5de0ef953df3c6a",
+            "server": "112.118.116.127",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_1|1.2MB/s|2%|YT|NF|D+|X|KeepSucceed",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "www.nintendogames.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.30.120",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_2|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.25.20",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_3|0.6MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "trojan"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "www.speedtest.net",
+            "server_port": 2083,
+            "tag": "🇺🇸 🇳🇱NL²_1|0.5MB/s|GPT⁺|YT-US|X|KeepSucceed",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "golestan.hajalwi.ir.",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "golestan.hajalwi.ir."
+                },
+                "max_early_data": 8080,
+                "path": "/---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN---Golestanv_VPN",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "a47338c5-c793-4da3-acd8-c583fb6f344d"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.53.174",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_4|0.8MB/s|2%|YT|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me/ripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "method": "chacha20-ietf",
+            "password": "asd123456",
+            "server": "103.149.182.86",
+            "server_port": 8388,
+            "tag": "🇭🇰 HK²_5|9.1MB/s|X|KeepHistory",
+            "type": "shadowsocks"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "219.78.209.224",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_6|0.9MB/s|2%|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me/ripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "server": "213.35.126.34",
+            "server_port": 10808,
+            "tag": "🇸🇬 SG²_1|6.2MB/s|0%|GPT⁺|GM|YT|X|KeepSucceed",
+            "type": "socks",
+            "udp_over_tcp": {},
+            "version": "5"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.25.20",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_7|0.5MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me%2Fripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "76d630f2af6619c4a5de0ef953df3c6a",
+            "server": "112.118.116.127",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_8|1.0MB/s|2%|YT|NF|D+|X|KeepSucceed",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "www.nintendogames.net"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.30.120",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_9|0.7MB/s|2%|YT-CN|NF|D+|X|KeepSucceed",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.25.242",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_10|0.7MB/s|2%|YT-CN|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me%252Fripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.53.174",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_11|0.5MB/s|2%|NF|D+|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me/ripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "password": "BxceQaOe",
+            "server": "58.152.53.174",
+            "server_port": 443,
+            "tag": "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed",
+            "tls": {
+                "enabled": true,
+                "insecure": true,
+                "server_name": "t.me/ripaojiedian"
+            },
+            "type": "trojan"
+        },
+        {
+            "server": "36.110.143.55",
+            "server_port": 8080,
+            "tag": "🇸🇬 SG²_2|1.9MB/s|0%|GPT⁺|GM|YT|TK|NF|X|KeepHistory",
+            "tls": {
+                "enabled": true,
+                "insecure": true
+            },
+            "type": "http"
         }
-      },
-      "transport": {
-        "type": "grpc",
-        "service_name": "-@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN---@SRCVPN"
-      }
-    },
-    {
-      "tag": "🇭🇰 HK²_12|0.6MB/s|2%|YT|NF|D+|X|KeepSucceed",
-      "type": "trojan",
-      "server": "58.152.53.174",
-      "server_port": 443,
-      "password": "BxceQaOe",
-      "tls": {
-        "enabled": true,
-        "insecure": true,
-        "server_name": "t.me/ripaojiedian"
-      }
-    },
-    {
-      "tag": "🇸🇬 SG²_2|1.9MB/s|0%|GPT⁺|GM|YT|TK|NF|X|KeepHistory",
-      "type": "http",
-      "server": "36.110.143.55",
-      "server_port": 8080,
-      "tls": {
-        "enabled": true,
-        "insecure": true
-      }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
