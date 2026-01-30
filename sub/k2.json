@@ -1,0 +1,286 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇨🇴 西班牙+V2CROSS.COM",
+        "🇬🇧 英国 V2CROSS.COM",
+        "🇯🇵 日本 V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇨🇴 荷兰+V2CROSS.COM",
+        "🇹🇼 台湾省台中市+中华电信",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇨🇴 伊朗 V2CROSS.COM",
+        "广东省湛江市 移动"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇨🇴 西班牙+V2CROSS.COM",
+        "🇬🇧 英国 V2CROSS.COM",
+        "🇯🇵 日本 V2CROSS.COM",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇨🇴 荷兰+V2CROSS.COM",
+        "🇹🇼 台湾省台中市+中华电信",
+        "🇺🇸 美国 CloudFlare节点",
+        "🇨🇴 伊朗 V2CROSS.COM",
+        "广东省湛江市 移动"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇨🇴 西班牙+V2CROSS.COM",
+      "type": "trojan",
+      "server": "80.173.230.196",
+      "server_port": 26279,
+      "password": "a5inYFE=JGV89+hjxIqgDp1tcWBd6",
+      "tls": {
+        "enabled": true,
+        "insecure": false
+      }
+    },
+    {
+      "tag": "🇬🇧 英国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "82.198.246.97",
+      "server_port": 180,
+      "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇯🇵 日本 V2CROSS.COM",
+      "type": "vmess",
+      "server": "160.191.245.48",
+      "server_port": 58623,
+      "uuid": "8d74803e-aa74-47ef-e3ae-23eeaa96f89d",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "141.95.106.215",
+      "server_port": 11201,
+      "method": "chacha20-ietf-poly1305",
+      "password": "cbbcbfd5330475d1"
+    },
+    {
+      "tag": "🇨🇴 荷兰+V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "admin.c2.havij.co",
+      "server_port": 443,
+      "method": "chacha20-ietf-poly1305",
+      "password": "kaQH3hGdcP80XEDI"
+    },
+    {
+      "tag": "🇹🇼 台湾省台中市+中华电信",
+      "type": "trojan",
+      "server": "green2.cdntencentmusic.com",
+      "server_port": 31102,
+      "password": "3891775d-f1ba-43e6-97c1-f72b300b8975",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "green2.cdntencentmusic.com"
+      }
+    },
+    {
+      "tag": "🇺🇸 美国 CloudFlare节点",
+      "type": "vmess",
+      "server": "cf.090227.xyz",
+      "server_port": 443,
+      "uuid": "290cc691-3ac6-4387-98a1-25c8eb8ca2ea",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "sgal.dagrate.eu.org"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "sgal.dagrate.eu.org"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇨🇴 伊朗 V2CROSS.COM",
+      "type": "vmess",
+      "server": "95.81.123.15",
+      "server_port": 40956,
+      "uuid": "e1cc26b3-df0b-477b-afb0-53659a25e978",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "imafake.locker",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "imafake.locker"
+        },
+        "path": "/speedtest"
+      }
+    },
+    {
+      "tag": "广东省湛江市 移动",
+      "type": "vmess",
+      "server": "tunnel2.qqa678.com",
+      "server_port": 47084,
+      "uuid": "9f8c122d-5b86-4c19-af87-64f458a88223",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
