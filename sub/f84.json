@@ -1,550 +1,549 @@
 {
-  "log": {
-    "level": "error",
-    "timestamp": true
-  },
-  "dns": {
-    "servers": [
-      {
-        "type": "https",
-        "server": "1.1.1.1",
-        "detour": "Proxy",
-        "tag": "remote"
-      },
-      {
-        "type": "https",
-        "server": "223.5.5.5",
-        "tag": "local"
-      },
-      {
-        "type": "hosts",
-        "path": [],
-        "predefined": {},
-        "tag": "block"
-      },
-      {
-        "type": "local"
-      }
-    ],
-    "strategy": "prefer_ipv4"
-  },
-  "route": {
-    "auto_detect_interface": true,
-    "default_domain_resolver": {
-      "server": "local",
-      "rewrite_ttl": 60,
-      "client_subnet": "1.1.1.1/24",
-      "strategy": "prefer_ipv4"
+    "log": {
+        "level": "error",
+        "timestamp": true
     },
-    "rules": [
-      {
-        "action": "sniff"
-      },
-      {
-        "protocol": "dns",
-        "action": "hijack-dns"
-      },
-      {
-        "clash_mode": "direct",
-        "outbound": "direct"
-      },
-      {
-        "clash_mode": "proxy",
-        "outbound": "Proxy"
-      },
-      {
-        "domain_suffix": [
-          ".xiangqi.com"
+    "dns": {
+        "servers": [
+            {
+                "type": "https",
+                "server": "1.1.1.1",
+                "detour": "Proxy",
+                "tag": "remote"
+            },
+            {
+                "type": "https",
+                "server": "223.5.5.5",
+                "tag": "local"
+            },
+            {
+                "type": "hosts",
+                "path": [],
+                "predefined": {},
+                "tag": "block"
+            },
+            {
+                "type": "local"
+            }
         ],
-        "outbound": "direct"
-      },
-      {
+        "strategy": "prefer_ipv4"
+    },
+    "route": {
+        "auto_detect_interface": true,
+        "default_domain_resolver": {
+            "server": "local",
+            "rewrite_ttl": 60,
+            "client_subnet": "1.1.1.1/24",
+            "strategy": "prefer_ipv4"
+        },
+        "rules": [
+            {
+                "action": "sniff"
+            },
+            {
+                "protocol": "dns",
+                "action": "hijack-dns"
+            },
+            {
+                "clash_mode": "direct",
+                "outbound": "direct"
+            },
+            {
+                "clash_mode": "proxy",
+                "outbound": "Proxy"
+            },
+            {
+                "domain_suffix": [
+                    ".xiangqi.com"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "geosite-cn"
+                ],
+                "outbound": "direct"
+            },
+            {
+                "ip_is_private": true,
+                "outbound": "direct"
+            },
+            {
+                "rule_set": [
+                    "category-ads-all"
+                ],
+                "action": "reject"
+            }
+        ],
         "rule_set": [
-          "geosite-cn"
-        ],
-        "outbound": "direct"
-      },
-      {
-        "ip_is_private": true,
-        "outbound": "direct"
-      },
-      {
-        "rule_set": [
-          "category-ads-all"
-        ],
-        "action": "reject"
-      }
+            {
+                "tag": "geosite-cn",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+                "download_detour": "direct"
+            },
+            {
+                "tag": "category-ads-all",
+                "type": "remote",
+                "format": "binary",
+                "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+                "download_detour": "direct"
+            }
+        ]
+    },
+    "inbounds": [
+        {
+            "domain_strategy": "prefer_ipv4",
+            "listen": "127.0.0.1",
+            "listen_port": 7890,
+            "set_system_proxy": true,
+            "sniff": true,
+            "sniff_override_destination": true,
+            "tag": "mixed-in",
+            "type": "mixed",
+            "users": []
+        }
     ],
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
-        "download_detour": "direct"
-      },
-      {
-        "tag": "category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
-        "download_detour": "direct"
-      }
-    ]
-  },
-  "inbounds": [
-    {
-      "domain_strategy": "prefer_ipv4",
-      "listen": "127.0.0.1",
-      "listen_port": 7890,
-      "set_system_proxy": true,
-      "sniff": true,
-      "sniff_override_destination": true,
-      "tag": "mixed-in",
-      "type": "mixed",
-      "users": []
-    }
-  ],
-  "outbounds": [
-    {
-      "tag": "Proxy",
-      "type": "selector",
-      "outbounds": [
-        "🌏auto",
-        "🌏 !Choose",
-        "direct"
-      ]
-    },
-    {
-      "tag": "🌏 !Choose",
-      "type": "selector",
-      "outbounds": [
-        "direct",
-        "🇩🇪 DE_1|1.5MB/s",
-        "🇩🇪 DE_2|1.7MB/s",
-        "🇨🇦 CA_1|1.5MB/s",
-        "🇯🇵 JP_1|1.4MB/s",
-        "🇺🇸 US_1|1.2MB/s",
-        "🇸🇬 SG_1|1.3MB/s",
-        "🇸🇬 SG_2|1.3MB/s",
-        "🇸🇬 SG_3|1.4MB/s",
-        "🇭🇰 HK_1|2.5MB/s",
-        "🇮🇳 IN_1|2.2MB/s",
-        "🇦🇺 AU_1|1.5MB/s",
-        "🇭🇰 HK_2|2.0MB/s",
-        "🇭🇰 HK_3|1.9MB/s",
-        "🇺🇸 US_2|1.3MB/s",
-        "🇸🇬 SG_4|1.3MB/s",
-        "🇯🇵 JP_2|1.3MB/s",
-        "🇦🇺 AU_2|1.2MB/s",
-        "🇸🇬 SG_5|1.4MB/s",
-        "🇭🇰 HK_4|1.6MB/s",
-        "🇭🇰 HK_5|2.0MB/s",
-        "🇺🇸 US_3|1.1MB/s",
-        "🇺🇸 US_4|1.2MB/s",
-        "🇯🇵 JP_3|1.6MB/s",
-        "🇭🇰 HK_6|3.2MB/s",
-        "🇺🇸 US_5|2.1MB/s",
-        "🇮🇳 IN_2|2.4MB/s"
-      ]
-    },
-    {
-      "tag": "🌏auto",
-      "type": "urltest",
-      "outbounds": [
-        "🇩🇪 DE_1|1.5MB/s",
-        "🇩🇪 DE_2|1.7MB/s",
-        "🇨🇦 CA_1|1.5MB/s",
-        "🇯🇵 JP_1|1.4MB/s",
-        "🇺🇸 US_1|1.2MB/s",
-        "🇸🇬 SG_1|1.3MB/s",
-        "🇸🇬 SG_2|1.3MB/s",
-        "🇸🇬 SG_3|1.4MB/s",
-        "🇭🇰 HK_1|2.5MB/s",
-        "🇮🇳 IN_1|2.2MB/s",
-        "🇦🇺 AU_1|1.5MB/s",
-        "🇭🇰 HK_2|2.0MB/s",
-        "🇭🇰 HK_3|1.9MB/s",
-        "🇺🇸 US_2|1.3MB/s",
-        "🇸🇬 SG_4|1.3MB/s",
-        "🇯🇵 JP_2|1.3MB/s",
-        "🇦🇺 AU_2|1.2MB/s",
-        "🇸🇬 SG_5|1.4MB/s",
-        "🇭🇰 HK_4|1.6MB/s",
-        "🇭🇰 HK_5|2.0MB/s",
-        "🇺🇸 US_3|1.1MB/s",
-        "🇺🇸 US_4|1.2MB/s",
-        "🇯🇵 JP_3|1.6MB/s",
-        "🇭🇰 HK_6|3.2MB/s",
-        "🇺🇸 US_5|2.1MB/s",
-        "🇮🇳 IN_2|2.4MB/s"
-      ],
-      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
-      "interval": "30m",
-      "tolerance": 500
-    },
-    {
-      "type": "direct",
-      "tag": "direct"
-    },
-    {
-      "tag": "🇩🇪 DE_1|1.5MB/s",
-      "type": "vless",
-      "server": "104.18.32.47",
-      "server_port": 80,
-      "uuid": "1e35b4bf-b270-4c0b-918d-62746eedd2ad",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/?ed",
-        "headers": {
-          "Host": "everlasting-finance439p1sxxhy.sportland.company."
-        }
-      }
-    },
-    {
-      "tag": "🇩🇪 DE_2|1.7MB/s",
-      "type": "vless",
-      "server": "104.18.32.47",
-      "server_port": 80,
-      "uuid": "a5712440-3cec-4a1b-82e8-767c54acd83a",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/?ed",
-        "headers": {
-          "Host": "authENTIC-cABinEtgqc4XfW2ud.spORTLAND.COmPAny."
-        }
-      }
-    },
-    {
-      "tag": "🇨🇦 CA_1|1.5MB/s",
-      "type": "vless",
-      "server": "104.18.32.47",
-      "server_port": 80,
-      "uuid": "4a8d4562-7192-4e83-8a24-75515a1666a3",
-      "packet_encoding": "xudp",
-      "transport": {
-        "type": "ws",
-        "path": "/?ed",
-        "headers": {
-          "Host": "fit-academyw21824ac8c.ecotouriss.co.uk."
-        }
-      }
-    },
-    {
-      "tag": "🇯🇵 JP_1|1.4MB/s",
-      "type": "vless",
-      "server": "mobile.twitter.now.cc",
-      "server_port": 443,
-      "uuid": "4c642cae-1a6d-4e51-a1c3-fa5892437aa3",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "5465765525.ccfly.tech",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/",
-        "headers": {
-          "Host": "5465765525.ccfly.tech"
+    "outbounds": [
+        {
+            "outbounds": [
+                "🌏auto",
+                "🌏 !Choose",
+                "direct"
+            ],
+            "tag": "Proxy",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2048
-      }
-    },
-    {
-      "tag": "🇺🇸 US_1|1.2MB/s",
-      "type": "vless",
-      "server": "74.211.96.225",
-      "server_port": 8443,
-      "uuid": "6202b230-417c-4d8e-b624-0f71afa9c75d",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "sni.111000.indevs.in"
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/?ed=2560&Telegram🇨🇳 @WangCai2",
-        "headers": {
-          "Host": "sni.111000.indevs.in"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_1|1.3MB/s",
-      "type": "vless",
-      "server": "v2.dabache.top",
-      "server_port": 2053,
-      "uuid": "a2a396c3-f40e-4dee-bdbb-b1201f12dc1c",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "snippet.fgfw.de5.net",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/danfeng",
-        "headers": {
-          "Host": "snippet.fgfw.de5.net"
+        {
+            "outbounds": [
+                "🇩🇪 DE_1|1.5MB/s",
+                "🇩🇪 DE_2|1.7MB/s",
+                "🇨🇦 CA_1|1.5MB/s",
+                "🇯🇵 JP_1|1.4MB/s",
+                "🇺🇸 US_1|1.2MB/s",
+                "🇸🇬 SG_1|1.3MB/s",
+                "🇸🇬 SG_2|1.3MB/s",
+                "🇸🇬 SG_3|1.4MB/s",
+                "🇭🇰 HK_1|2.5MB/s",
+                "🇮🇳 IN_1|2.2MB/s",
+                "🇦🇺 AU_1|1.5MB/s",
+                "🇭🇰 HK_2|2.0MB/s",
+                "🇭🇰 HK_3|1.9MB/s",
+                "🇺🇸 US_2|1.3MB/s",
+                "🇸🇬 SG_4|1.3MB/s",
+                "🇯🇵 JP_2|1.3MB/s",
+                "🇦🇺 AU_2|1.2MB/s",
+                "🇸🇬 SG_5|1.4MB/s",
+                "🇭🇰 HK_4|1.6MB/s",
+                "🇭🇰 HK_5|2.0MB/s",
+                "🇺🇸 US_3|1.1MB/s",
+                "🇺🇸 US_4|1.2MB/s",
+                "🇯🇵 JP_3|1.6MB/s",
+                "🇭🇰 HK_6|3.2MB/s",
+                "🇺🇸 US_5|2.1MB/s",
+                "🇮🇳 IN_2|2.4MB/s"
+            ],
+            "tag": "🌏 !Choose",
+            "type": "selector"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_2|1.3MB/s",
-      "type": "vless",
-      "server": "v2.dabache.top",
-      "server_port": 2096,
-      "uuid": "6202b230-417c-4d8e-b624-0f71afa9c75d",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "sni.111000.indevs.in",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/?ed=2560&Telegram🇨🇳@WangCai2",
-        "headers": {
-          "Host": "sni.111000.indevs.in"
-        }
-      }
-    },
-    {
-      "tag": "🇸🇬 SG_3|1.4MB/s",
-      "type": "vless",
-      "server": "1357900.xyz",
-      "server_port": 2053,
-      "uuid": "a2a396c3-f40e-4dee-bdbb-b1201f12dc1c",
-      "packet_encoding": "xudp",
-      "tls": {
-        "enabled": true,
-        "insecure": false,
-        "server_name": "snippet.danfeng.gleeze.com",
-        "utls": {
-          "enabled": true,
-          "fingerprint": "chrome"
-        }
-      },
-      "transport": {
-        "type": "ws",
-        "path": "/danfeng",
-        "headers": {
-          "Host": "snippet.danfeng.gleeze.com"
+        {
+            "interval": "30m",
+            "outbounds": [
+                "🇩🇪 DE_1|1.5MB/s",
+                "🇩🇪 DE_2|1.7MB/s",
+                "🇨🇦 CA_1|1.5MB/s",
+                "🇯🇵 JP_1|1.4MB/s",
+                "🇺🇸 US_1|1.2MB/s",
+                "🇸🇬 SG_1|1.3MB/s",
+                "🇸🇬 SG_2|1.3MB/s",
+                "🇸🇬 SG_3|1.4MB/s",
+                "🇭🇰 HK_1|2.5MB/s",
+                "🇮🇳 IN_1|2.2MB/s",
+                "🇦🇺 AU_1|1.5MB/s",
+                "🇭🇰 HK_2|2.0MB/s",
+                "🇭🇰 HK_3|1.9MB/s",
+                "🇺🇸 US_2|1.3MB/s",
+                "🇸🇬 SG_4|1.3MB/s",
+                "🇯🇵 JP_2|1.3MB/s",
+                "🇦🇺 AU_2|1.2MB/s",
+                "🇸🇬 SG_5|1.4MB/s",
+                "🇭🇰 HK_4|1.6MB/s",
+                "🇭🇰 HK_5|2.0MB/s",
+                "🇺🇸 US_3|1.1MB/s",
+                "🇺🇸 US_4|1.2MB/s",
+                "🇯🇵 JP_3|1.6MB/s",
+                "🇭🇰 HK_6|3.2MB/s",
+                "🇺🇸 US_5|2.1MB/s",
+                "🇮🇳 IN_2|2.4MB/s"
+            ],
+            "tag": "🌏auto",
+            "tolerance": 500,
+            "type": "urltest",
+            "url": "http://connectivitycheck.platform.hicloud.com/generate_204"
         },
-        "early_data_header_name": "Sec-WebSocket-Protocol",
-        "max_early_data": 2560
-      }
-    },
-    {
-      "tag": "🇭🇰 HK_1|2.5MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35214,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇮🇳 IN_1|2.2MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35223,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇦🇺 AU_1|1.5MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35220,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK_2|2.0MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22226,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK_3|1.9MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22003,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 US_2|1.3MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22000,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇸🇬 SG_4|1.3MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22231,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇯🇵 JP_2|1.3MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35218,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇦🇺 AU_2|1.2MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22237,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇸🇬 SG_5|1.4MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35217,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK_4|1.6MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35212,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK_5|2.0MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22224,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 US_3|1.1MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22002,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 US_4|1.2MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35208,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇯🇵 JP_3|1.6MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22235,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇭🇰 HK_6|3.2MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35213,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇺🇸 US_5|2.1MB/s",
-      "type": "vmess",
-      "server": "dzgz.tcity8.monster",
-      "server_port": 35209,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
-    },
-    {
-      "tag": "🇮🇳 IN_2|2.4MB/s",
-      "type": "vmess",
-      "server": "jzgz.tcity8.monster",
-      "server_port": 22238,
-      "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef",
-      "security": "auto",
-      "alter_id": 0,
-      "packet_encoding": "xudp"
+        {
+            "tag": "direct",
+            "type": "direct"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.18.32.47",
+            "server_port": 80,
+            "tag": "🇩🇪 DE_1|1.5MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "everlasting-finance439p1sxxhy.sportland.company."
+                },
+                "path": "/?ed",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "1e35b4bf-b270-4c0b-918d-62746eedd2ad"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.18.32.47",
+            "server_port": 80,
+            "tag": "🇩🇪 DE_2|1.7MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "authENTIC-cABinEtgqc4XfW2ud.spORTLAND.COmPAny."
+                },
+                "path": "/?ed",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "a5712440-3cec-4a1b-82e8-767c54acd83a"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "104.18.32.47",
+            "server_port": 80,
+            "tag": "🇨🇦 CA_1|1.5MB/s",
+            "transport": {
+                "headers": {
+                    "Host": "fit-academyw21824ac8c.ecotouriss.co.uk."
+                },
+                "path": "/?ed",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "4a8d4562-7192-4e83-8a24-75515a1666a3"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "mobile.twitter.now.cc",
+            "server_port": 443,
+            "tag": "🇯🇵 JP_1|1.4MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "5465765525.ccfly.tech",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "5465765525.ccfly.tech"
+                },
+                "max_early_data": 2048,
+                "path": "/",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "4c642cae-1a6d-4e51-a1c3-fa5892437aa3"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "74.211.96.225",
+            "server_port": 8443,
+            "tag": "🇺🇸 US_1|1.2MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "sni.111000.indevs.in"
+            },
+            "transport": {
+                "headers": {
+                    "Host": "sni.111000.indevs.in"
+                },
+                "path": "/?ed=2560&Telegram🇨🇳 @WangCai2",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "6202b230-417c-4d8e-b624-0f71afa9c75d"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "v2.dabache.top",
+            "server_port": 2053,
+            "tag": "🇸🇬 SG_1|1.3MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "snippet.fgfw.de5.net",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "snippet.fgfw.de5.net"
+                },
+                "max_early_data": 2560,
+                "path": "/danfeng",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "a2a396c3-f40e-4dee-bdbb-b1201f12dc1c"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "v2.dabache.top",
+            "server_port": 2096,
+            "tag": "🇸🇬 SG_2|1.3MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "sni.111000.indevs.in",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "headers": {
+                    "Host": "sni.111000.indevs.in"
+                },
+                "path": "/?ed=2560&Telegram🇨🇳@WangCai2",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "6202b230-417c-4d8e-b624-0f71afa9c75d"
+        },
+        {
+            "packet_encoding": "xudp",
+            "server": "1357900.xyz",
+            "server_port": 2053,
+            "tag": "🇸🇬 SG_3|1.4MB/s",
+            "tls": {
+                "enabled": true,
+                "insecure": false,
+                "server_name": "snippet.danfeng.gleeze.com",
+                "utls": {
+                    "enabled": true,
+                    "fingerprint": "chrome"
+                }
+            },
+            "transport": {
+                "early_data_header_name": "Sec-WebSocket-Protocol",
+                "headers": {
+                    "Host": "snippet.danfeng.gleeze.com"
+                },
+                "max_early_data": 2560,
+                "path": "/danfeng",
+                "type": "ws"
+            },
+            "type": "vless",
+            "uuid": "a2a396c3-f40e-4dee-bdbb-b1201f12dc1c"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35214,
+            "tag": "🇭🇰 HK_1|2.5MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35223,
+            "tag": "🇮🇳 IN_1|2.2MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35220,
+            "tag": "🇦🇺 AU_1|1.5MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22226,
+            "tag": "🇭🇰 HK_2|2.0MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22003,
+            "tag": "🇭🇰 HK_3|1.9MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22000,
+            "tag": "🇺🇸 US_2|1.3MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22231,
+            "tag": "🇸🇬 SG_4|1.3MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35218,
+            "tag": "🇯🇵 JP_2|1.3MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22237,
+            "tag": "🇦🇺 AU_2|1.2MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35217,
+            "tag": "🇸🇬 SG_5|1.4MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35212,
+            "tag": "🇭🇰 HK_4|1.6MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22224,
+            "tag": "🇭🇰 HK_5|2.0MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22002,
+            "tag": "🇺🇸 US_3|1.1MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35208,
+            "tag": "🇺🇸 US_4|1.2MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22235,
+            "tag": "🇯🇵 JP_3|1.6MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35213,
+            "tag": "🇭🇰 HK_6|3.2MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "dzgz.tcity8.monster",
+            "server_port": 35209,
+            "tag": "🇺🇸 US_5|2.1MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        },
+        {
+            "alter_id": 0,
+            "packet_encoding": "xudp",
+            "security": "auto",
+            "server": "jzgz.tcity8.monster",
+            "server_port": 22238,
+            "tag": "🇮🇳 IN_2|2.4MB/s",
+            "type": "vmess",
+            "uuid": "84374d98-e52f-4bdc-9b50-6ff3777ec8ef"
+        }
+    ],
+    "experimental": {
+        "cache_file": {
+            "enabled": true
+        },
+        "clash_api": {
+            "external_controller": "0.0.0.0:9090",
+            "external_ui": "metacubexd",
+            "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+            "external_ui_download_detour": "Proxy",
+            "default_mode": "rule"
+        }
     }
-  ],
-  "experimental": {
-    "cache_file": {
-      "enabled": true
-    },
-    "clash_api": {
-      "external_controller": "0.0.0.0:9090",
-      "external_ui": "metacubexd",
-      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
-      "external_ui_download_detour": "Proxy",
-      "default_mode": "rule"
-    }
-  }
 }
