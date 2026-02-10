@@ -1,0 +1,540 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇩🇪 DE_1|2.0MB/s",
+        "🇺🇸 US_1|1.7MB/s",
+        "🇫🇮 FI_1|2.4MB/s",
+        "🇳🇱 NL_1|1.1MB/s",
+        "🇷🇺 RU_1|1.2MB/s",
+        "🇫🇷 FR_1|2.4MB/s",
+        "🇺🇸 US_2|1.3MB/s",
+        "🇫🇷 FR_2|1.9MB/s",
+        "🇫🇷 FR_3|2.2MB/s",
+        "🇭🇺 HU_1|1.0MB/s",
+        "🇦🇹 AT_1|1.5MB/s",
+        "🇷🇺 RU_2|1.5MB/s",
+        "🇺🇸 US_3|1.4MB/s",
+        "🇩🇪 DE_2|1.1MB/s",
+        "🇩🇪 DE_3|2.7MB/s",
+        "🇪🇸 ES_1|1.2MB/s 2",
+        "🇪🇸 ES_1|1.2MB/s 2",
+        "🇺🇸 US_4|1.7MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇩🇪 DE_1|2.0MB/s",
+        "🇺🇸 US_1|1.7MB/s",
+        "🇫🇮 FI_1|2.4MB/s",
+        "🇳🇱 NL_1|1.1MB/s",
+        "🇷🇺 RU_1|1.2MB/s",
+        "🇫🇷 FR_1|2.4MB/s",
+        "🇺🇸 US_2|1.3MB/s",
+        "🇫🇷 FR_2|1.9MB/s",
+        "🇫🇷 FR_3|2.2MB/s",
+        "🇭🇺 HU_1|1.0MB/s",
+        "🇦🇹 AT_1|1.5MB/s",
+        "🇷🇺 RU_2|1.5MB/s",
+        "🇺🇸 US_3|1.4MB/s",
+        "🇩🇪 DE_2|1.1MB/s",
+        "🇩🇪 DE_3|2.7MB/s",
+        "🇪🇸 ES_1|1.2MB/s 2",
+        "🇪🇸 ES_1|1.2MB/s 2",
+        "🇺🇸 US_4|1.7MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇩🇪 DE_1|2.0MB/s",
+      "type": "vless",
+      "server": "192.200.160.228",
+      "server_port": 2083,
+      "uuid": "9f846e5c-56f9-4670-8be2-5b00d2a107c0",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "de.elterido.ir",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/api03",
+        "headers": {
+          "Host": "de.elterido.ir"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_1|1.7MB/s",
+      "type": "vless",
+      "server": "104.16.244.232",
+      "server_port": 80,
+      "uuid": "b00d9e6d-227d-4944-8ffd-b1a806196356",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/%2F%3Fed%3D2048",
+        "headers": {
+          "Host": "neuroonvpn.mamadjacki83.workers.dev"
+        }
+      }
+    },
+    {
+      "tag": "🇫🇮 FI_1|2.4MB/s",
+      "type": "vless",
+      "server": "hamrahconf.ir",
+      "server_port": 8443,
+      "uuid": "ccff8398-3291-4ae5-b24d-26ea70d82df8",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "hm222.hamrahconf.ir",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "hm222.hamrahconf.ir"
+        }
+      }
+    },
+    {
+      "tag": "🇳🇱 NL_1|1.1MB/s",
+      "type": "vless",
+      "server": "172.67.180.92",
+      "server_port": 443,
+      "uuid": "dd0cfef0-fda9-47ec-8a65-49d7bc004f82",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "web.abcallcenter.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/--Telegram---@MiTiVPN/---@MiTiVPN/---@MiTiVPN/---@MiTiVPN",
+        "headers": {
+          "Host": "web.abcallcenter.com"
+        },
+        "early_data_header_name": "Sec-WebSocket-Protocol",
+        "max_early_data": 2560
+      }
+    },
+    {
+      "tag": "🇷🇺 RU_1|1.2MB/s",
+      "type": "vless",
+      "server": "s32.buzzvpn.online",
+      "server_port": 8443,
+      "uuid": "c0afdbe5-e506-4fd4-b838-6f9ee6fc3a5f",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "api-maps.yandex.ru",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "0SzpdO0462wZ7qyy2aasdMVAcd8dtuWPN0aH8DfLY0Y",
+          "short_id": "548cdc"
+        }
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_1|2.4MB/s",
+      "type": "vless",
+      "server": "flowershopsalzburg.de",
+      "server_port": 2083,
+      "uuid": "d94b374a-9584-4a40-9b1d-3e697b5551f4",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "flowershopsalzburg.de",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vlessws",
+        "headers": {
+          "Host": "flowershopsalzburg.de"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_2|1.3MB/s",
+      "type": "vless",
+      "server": "usc.buzzon.shop",
+      "server_port": 443,
+      "uuid": "2ba742a0-5c32-489b-8f05-72fd9b8e2729",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "usc.buzzon.shop",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/V9RZyjTD5QiH08HK8A2L9XMg",
+        "headers": {
+          "Host": "usc.buzzon.shop"
+        }
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_2|1.9MB/s",
+      "type": "vless",
+      "server": "earthplantshop.de",
+      "server_port": 443,
+      "uuid": "216ce5e7-8158-49bc-b6b9-9af7709dfccc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "earthplantshop.de",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vlessws",
+        "headers": {
+          "Host": "earthplantshop.de"
+        }
+      }
+    },
+    {
+      "tag": "🇫🇷 FR_3|2.2MB/s",
+      "type": "vless",
+      "server": "earthplantshop.de",
+      "server_port": 8443,
+      "uuid": "216ce5e7-8158-49bc-b6b9-9af7709dfccc",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "earthplantshop.de",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/vlessws",
+        "headers": {
+          "Host": "earthplantshop.de"
+        }
+      }
+    },
+    {
+      "tag": "🇭🇺 HU_1|1.0MB/s",
+      "type": "vless",
+      "server": "89.169.128.105",
+      "server_port": 443,
+      "uuid": "3c5c4ccc-b502-42cb-8c42-cfa714db4767",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "yandex.ru",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "7zd9mJilgjOrg_ohtw23Vmio-pdnYqeP_r-kiWt87Cg",
+          "short_id": "2715592069f36fe7"
+        }
+      }
+    },
+    {
+      "tag": "🇦🇹 AT_1|1.5MB/s",
+      "type": "vless",
+      "server": "aurout.denditop.site",
+      "server_port": 443,
+      "uuid": "319cf3c5-0b6a-4118-88cd-c2f814d6d26f",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "aurout.denditop.site",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "AYQOZFxjvHN-RIzKYEibwFiFsp03cdlWGdCmyFfuNVc",
+          "short_id": "4fa44664f6a566d3"
+        }
+      }
+    },
+    {
+      "tag": "🇷🇺 RU_2|1.5MB/s",
+      "type": "vless",
+      "server": "91.186.196.64",
+      "server_port": 443,
+      "uuid": "319cf3c5-0b6a-4118-88cd-c2f814d6d26f",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "spb.denditop.site",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "wgoLhL4pRP0y6fu6He4qW_ElohCM_ANWJF3HEoUhNz4",
+          "short_id": "9c2378562188c3cb"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_3|1.4MB/s",
+      "type": "vmess",
+      "server": "mmkio.tc6.ccwu.cc",
+      "server_port": 80,
+      "uuid": "1798b14b-aee0-4008-ba9a-2e53877761b4",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "mmkio.tc6.ccwu.cc"
+        },
+        "path": "/kFK9O5cl8ZycyrxcJWNVFC21"
+      }
+    },
+    {
+      "tag": "🇩🇪 DE_2|1.1MB/s",
+      "type": "vless",
+      "server": "20.79.160.49",
+      "server_port": 443,
+      "uuid": "jina",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "jina-207916049-direct.yektanet.co",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "tag": "🇩🇪 DE_3|2.7MB/s",
+      "type": "vmess",
+      "server": "de2c.buzzon.shop",
+      "server_port": 80,
+      "uuid": "acadd87c-c8b4-4b6b-989b-64263e4d0329",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "de2c.buzzon.shop"
+        },
+        "path": "/q4smKQlj08hW5NThds106"
+      }
+    },
+    {
+      "tag": "🇪🇸 ES_1|1.2MB/s 2",
+      "type": "shadowsocks",
+      "server": "5.188.181.201",
+      "server_port": 9001,
+      "method": "aes-256-cfb",
+      "password": "UkXRsXvR6buDMG2Y"
+    },
+    {
+      "tag": "🇪🇸 ES_1|1.2MB/s 2",
+      "type": "shadowsocks",
+      "server": "5.188.181.201",
+      "server_port": 9001,
+      "method": "aes-256-cfb",
+      "password": "UkXRsXvR6buDMG2Y"
+    },
+    {
+      "tag": "🇺🇸 US_4|1.7MB/s",
+      "type": "shadowsocks",
+      "server": "138.199.42.68",
+      "server_port": 8080,
+      "method": "rc4-md5",
+      "password": "14fFPrbezE3HDZzsMOr6"
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
