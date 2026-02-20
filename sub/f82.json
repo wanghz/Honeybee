@@ -1,0 +1,268 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇲🇩 MD_1|1.2MB/s",
+        "🇰🇷 KR_1|2.4MB/s",
+        "🇬🇧 GB_1|1.0MB/s",
+        "🇹🇷 TR_1|1.2MB/s",
+        "🇯🇵 JP_1|2.6MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇲🇩 MD_1|1.2MB/s",
+        "🇰🇷 KR_1|2.4MB/s",
+        "🇬🇧 GB_1|1.0MB/s",
+        "🇹🇷 TR_1|1.2MB/s",
+        "🇯🇵 JP_1|2.6MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇲🇩 MD_1|1.2MB/s",
+      "type": "vless",
+      "server": "104.18.32.47",
+      "server_port": 2052,
+      "uuid": "5e62ddcf-78c9-4b15-803a-436c8c839ddc",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "oBEDiENt-noiseqJf5ja18yF.wIndLer.CO.UK."
+        }
+      }
+    },
+    {
+      "tag": "🇰🇷 KR_1|2.4MB/s",
+      "type": "vless",
+      "server": "15.165.43.186",
+      "server_port": 15416,
+      "uuid": "399a4aac-e5ed-44b6-ac00-4f0d02f72537",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.lamer.com.sg",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "H0oYX4GJe45zWXvrPdMzSKhmmrd2aqKFEk1Z2Dy9SBM",
+          "short_id": "bd997a55"
+        }
+      }
+    },
+    {
+      "tag": "🇬🇧 GB_1|1.0MB/s",
+      "type": "shadowsocks",
+      "server": "f.sdnlv0.cn",
+      "server_port": 31032,
+      "method": "chacha20-ietf-poly1305",
+      "password": "13df5feb-756e-4627-bcee-497f3c81bab4"
+    },
+    {
+      "tag": "🇹🇷 TR_1|1.2MB/s",
+      "type": "vmess",
+      "server": "dll.avaaaal.ir",
+      "server_port": 8443,
+      "uuid": "725f5fcd-721d-40a0-ba6b-3c7477633110",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "dll.avaaaal.ir"
+      },
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "cdge.avaaaal.ir"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_1|2.6MB/s",
+      "type": "vless",
+      "server": "18.177.142.114",
+      "server_port": 15416,
+      "uuid": "347d3425-11e7-4fb8-96e7-0df08fdb9b8f",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.apple.com.cn",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "H0oYX4GJe45zWXvrPdMzSKhmmrd2aqKFEk1Z2Dy9SBM",
+          "short_id": "bd997a55"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
