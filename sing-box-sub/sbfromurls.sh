@@ -49,14 +49,12 @@ echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/h
 echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/heads/main/sublinks/b64vless.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/heads/main/sublinks/b64vmess.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/Kwinshadow/TelegramV2rayCollector/refs/heads/main/sublinks/b64trojan.txt">> localurl.txt
-echo "https://mxlsub.me/newfull">> localurl.txt
 echo "https://proxypool.link/vmess/sub">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/clash/naidounode.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/main/v2ray/v2rayshare.txt">> localurl.txt
 echo "https://raw.githubusercontent.com/xiaoji235/airport-free/refs/heads/main/clash/naidounode.txt">> localurl.txt
 #echo "https://raw.githubusercontent.com/anaer/Sub/refs/heads/main/proxies.yaml">> localurl.txt
-echo "https://raw.githubusercontent.com/free-nodes/v2rayfree/main/v2">> localurl.txt
 echo "https://raw.githubusercontent.com/a2470982985/getNode/main/clash.yaml">>localurl.txt
 echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/hysteria2" >>localurl.txt
 #echo "https://raw.githubusercontent.com/Leon406/SubCrawler/refs/heads/main/sub/share/vless" >>localurl.txt
