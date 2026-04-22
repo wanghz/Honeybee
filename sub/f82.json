@@ -1,0 +1,438 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇯🇵 JP_1|7.7MB/s",
+        "🇯🇵 JP_2|7.6MB/s",
+        "🇯🇵 JP_3|7.1MB/s",
+        "🇸🇬 SG_1|6.8MB/s",
+        "🇯🇵 JP_4|7.4MB/s",
+        "🇻🇳 VN_1|1.5MB/s",
+        "🇭🇰 HK_1|4.9MB/s",
+        "🇸🇬 SG_2|8.1MB/s",
+        "🇭🇰 HK_2|1.5MB/s",
+        "🇭🇰 HK_3|1.8MB/s",
+        "🇸🇬 SG_3|1.2MB/s",
+        "🇭🇰 HK_4|1.1MB/s",
+        "🇸🇬 SG_4|1.4MB/s",
+        "🇭🇰 HK_5|1.1MB/s",
+        "🇯🇵 JP_5|2.4MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇯🇵 JP_1|7.7MB/s",
+        "🇯🇵 JP_2|7.6MB/s",
+        "🇯🇵 JP_3|7.1MB/s",
+        "🇸🇬 SG_1|6.8MB/s",
+        "🇯🇵 JP_4|7.4MB/s",
+        "🇻🇳 VN_1|1.5MB/s",
+        "🇭🇰 HK_1|4.9MB/s",
+        "🇸🇬 SG_2|8.1MB/s",
+        "🇭🇰 HK_2|1.5MB/s",
+        "🇭🇰 HK_3|1.8MB/s",
+        "🇸🇬 SG_3|1.2MB/s",
+        "🇭🇰 HK_4|1.1MB/s",
+        "🇸🇬 SG_4|1.4MB/s",
+        "🇭🇰 HK_5|1.1MB/s",
+        "🇯🇵 JP_5|2.4MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇯🇵 JP_1|7.7MB/s",
+      "type": "hysteria2",
+      "server": "vpn-jp-003.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-jp-003.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_2|7.6MB/s",
+      "type": "hysteria2",
+      "server": "vpn-jp-004.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-jp-004.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_3|7.1MB/s",
+      "type": "hysteria2",
+      "server": "vpn-jp-001.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-jp-001.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_1|6.8MB/s",
+      "type": "hysteria2",
+      "server": "vpn-sg-003.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-sg-003.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_4|7.4MB/s",
+      "type": "hysteria2",
+      "server": "vpn-jp-002.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-jp-002.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇻🇳 VN_1|1.5MB/s",
+      "type": "hysteria2",
+      "server": "vpn-vn-001.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-vn-001.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_1|4.9MB/s",
+      "type": "hysteria2",
+      "server": "hk.mjhy2.com",
+      "server_port": 1443,
+      "password": "302457f5-6848-4e2b-be16-193131ab6374",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "hk.mjhy2.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_2|8.1MB/s",
+      "type": "hysteria2",
+      "server": "vpn-sg-001.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-sg-001.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_2|1.5MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16632,
+      "uuid": "5b016bd0-6895-418a-8c4a-408ca5a53187",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "8c328c18febd0fcce967e6c52793dee7.mobgslb.tbcache.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_3|1.8MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16632,
+      "uuid": "033db0ca-703e-4484-a717-77b8900acd7b",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "5f34ddd3745456d7ab987287b3f66a2c.mobgslb.tbcache.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_3|1.2MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16618,
+      "uuid": "f365630d-15b5-4bd4-ad55-aa6284d7be30",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "8a687da9458cc46e80abc85ec8d8ada7.mobgslb.tbcache.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_4|1.1MB/s",
+      "type": "vmess",
+      "server": "21820.lite.date.cdn.bilibili-cdn.uk",
+      "server_port": 5436,
+      "uuid": "2bc6a258-6145-425c-b981-5836c3c2d6e2",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇸🇬 SG_4|1.4MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16618,
+      "uuid": "302457f5-6848-4e2b-be16-193131ab6374",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ba411337c4d2d5541e2607d665631571.mobgslb.tbcache.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_5|1.1MB/s",
+      "type": "vmess",
+      "server": "46766.lite.date.cdn.bilibili-cdn.uk",
+      "server_port": 5473,
+      "uuid": "2bc6a258-6145-425c-b981-5836c3c2d6e2",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇯🇵 JP_5|2.4MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16617,
+      "uuid": "d4ab51e4-4dc7-4394-9db2-bd6779586fef",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "ad0df36a3ca39e1a9e3e303f65b45db4.mobgslb.tbcache.com"
+        },
+        "path": "/"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
