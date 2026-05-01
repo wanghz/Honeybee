@@ -1,0 +1,409 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇸🇬 SG_1|1.3MB/s",
+        "🇭🇰 HK_1|1.1MB/s",
+        "🇸🇬 SG_2|1.1MB/s",
+        "🇯🇵 JP_1|1.1MB/s",
+        "🇰🇷 KR_1|1.2MB/s",
+        "🇯🇵 JP_2|2.1MB/s",
+        "🇹🇼 TW_1|1.9MB/s",
+        "🇫🇷 FR_1|1.2MB/s",
+        "🇭🇰 HK_4|1.0MB/s",
+        "🇯🇵 JP_3|1.2MB/s",
+        "🇭🇰 HK_5|1.3MB/s",
+        "🇯🇵 JP_4|1.0MB/s",
+        "🇺🇸 US_1|1.2MB/s"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇸🇬 SG_1|1.3MB/s",
+        "🇭🇰 HK_1|1.1MB/s",
+        "🇸🇬 SG_2|1.1MB/s",
+        "🇯🇵 JP_1|1.1MB/s",
+        "🇰🇷 KR_1|1.2MB/s",
+        "🇯🇵 JP_2|2.1MB/s",
+        "🇹🇼 TW_1|1.9MB/s",
+        "🇫🇷 FR_1|1.2MB/s",
+        "🇭🇰 HK_4|1.0MB/s",
+        "🇯🇵 JP_3|1.2MB/s",
+        "🇭🇰 HK_5|1.3MB/s",
+        "🇯🇵 JP_4|1.0MB/s",
+        "🇺🇸 US_1|1.2MB/s"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇸🇬 SG_1|1.3MB/s",
+      "type": "vmess",
+      "server": "m.cnmjin.net",
+      "server_port": 16618,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "m.cnmjin.net"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_1|1.1MB/s",
+      "type": "vmess",
+      "server": "m.cnmjin.net",
+      "server_port": 16632,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "m.cnmjin.net"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_2|1.1MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16618,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "planb.mojcn.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_1|1.1MB/s",
+      "type": "vmess",
+      "server": "m.cnmjin.net",
+      "server_port": 16617,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "m.cnmjin.net"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇰🇷 KR_1|1.2MB/s",
+      "type": "vmess",
+      "server": "kr02.a0a.xyz",
+      "server_port": 80,
+      "uuid": "5155860e-d07d-46c3-9128-3afbd84626c7",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "kr02.a0a.xyz"
+        },
+        "path": "/cctv13.m3u8"
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_2|2.1MB/s",
+      "type": "hysteria2",
+      "server": "vpn-jp-001.fastervpn.world",
+      "server_port": 443,
+      "password": "qQe1z5kU8kN6SlKnDt9Ru3Qp",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "vpn-jp-001.fastervpn.world",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇹🇼 TW_1|1.9MB/s",
+      "type": "shadowsocks",
+      "server": "ncmrcg000139ss7.cybervena.com",
+      "server_port": 50099,
+      "method": "chacha20-ietf-poly1305",
+      "password": "a9a0d092-6f0e-4701-81ee-454643d6d506"
+    },
+    {
+      "tag": "🇫🇷 FR_1|1.2MB/s",
+      "type": "hysteria2",
+      "server": "163.172.113.118",
+      "server_port": 40022,
+      "password": "dongtaiwang.com",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.microsoft.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_4|1.0MB/s",
+      "type": "vmess",
+      "server": "planb.mojcn.com",
+      "server_port": 16632,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "planb.mojcn.com"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_3|1.2MB/s",
+      "type": "vmess",
+      "server": "t.cnmjcn.cyou",
+      "server_port": 16617,
+      "uuid": "a27d5683-4319-4e0d-b476-708ceac9ae05",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "t.cnmjcn.cyou"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_5|1.3MB/s",
+      "type": "vmess",
+      "server": "gtm1.ktmwan.net",
+      "server_port": 12890,
+      "uuid": "6d5d1d83-b04e-4c5d-873e-b027d59e0b36",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "headers": {
+          "Host": "gtm1.ktmwan.net"
+        },
+        "path": "/"
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_4|1.0MB/s",
+      "type": "vmess",
+      "server": "w12.luoli.de",
+      "server_port": 443,
+      "uuid": "42a99644-b90b-3627-8809-a2d6c4078b59",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "w12.luoli.de"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/v2ws"
+      }
+    },
+    {
+      "tag": "🇺🇸 US_1|1.2MB/s",
+      "type": "vmess",
+      "server": "cg1c02.waimaojd.com",
+      "server_port": 443,
+      "uuid": "6fc84fd2-0442-405f-baa7-6daf66b81a10",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "cg1c02.waimaojd.com"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/api/v1/graphql"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
