@@ -1,0 +1,350 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇬🇧 英国 V2CROSS.COM",
+        "🇨🇴 伊朗+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇨🇴 克罗地亚+V2CROSS.COM",
+        "🇱🇹 立陶宛+V2CROSS.COM",
+        "🇨🇴 南非+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇺🇸 美国+V2CROSS.COM",
+        "🔵@chillguy_vpn",
+        "🇬🇧 英国+V2CROSS.COM"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇬🇧 英国 V2CROSS.COM",
+        "🇨🇴 伊朗+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇨🇴 克罗地亚+V2CROSS.COM",
+        "🇱🇹 立陶宛+V2CROSS.COM",
+        "🇨🇴 南非+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇺🇸 美国+V2CROSS.COM",
+        "🔵@chillguy_vpn",
+        "🇬🇧 英国+V2CROSS.COM"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇬🇧 英国 V2CROSS.COM",
+      "type": "vmess",
+      "server": "82.198.246.37",
+      "server_port": 180,
+      "uuid": "d13fc2f5-3e05-4795-81eb-44143a09e552",
+      "security": "auto",
+      "alter_id": 0,
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇨🇴 伊朗+V2CROSS.COM",
+      "type": "vless",
+      "server": "46.225.155.159",
+      "server_port": 1006,
+      "uuid": "ad356e93-cc14-417d-9f4e-32376d03f5b7",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "yahoo.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "2iijxUyJsanFAkX0ctH6H4RTW1N4mQYnIsaP8qrbbS8",
+          "short_id": "0c3a409c2ba7d083"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点",
+      "type": "vless",
+      "server": "172.65.111.43",
+      "server_port": 22,
+      "uuid": "monacoVPN",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇨🇴 克罗地亚+V2CROSS.COM",
+      "type": "vless",
+      "server": "cdn7-09.vk-cdnvideo.com",
+      "server_port": 8443,
+      "uuid": "931729a8-3c20-4841-89a1-f18dc9ce0a6f",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "cdn7-09.vk-cdnvideo.com"
+      }
+    },
+    {
+      "tag": "🇱🇹 立陶宛+V2CROSS.COM",
+      "type": "vless",
+      "server": "89.116.46.68",
+      "server_port": 443,
+      "uuid": "fc965ad9-bdd7-4815-ad71-b39ec5972dc1",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "octopusss4.com"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/tsghdws",
+        "headers": {
+          "Host": "octopusss4.com"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇴 南非+V2CROSS.COM",
+      "type": "vless",
+      "server": "fr-gt-01.com",
+      "server_port": 8443,
+      "uuid": "a6349c3f-5234-4821-80b4-d99b33f0924d",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "storage.yandex.net",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "1oUeBtHH4DskTM_jCh-6enWRkFMDX9l1OU5kWYl4kxA",
+          "short_id": "f34818a561dfd1fe"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 2",
+      "type": "trojan",
+      "server": "104.20.6.134",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.multiplydose.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM",
+      "type": "vless",
+      "server": "45.131.5.144",
+      "server_port": 8880,
+      "uuid": "Shh-proxy",
+      "packet_encoding": "xudp",
+      "transport": {
+        "type": "ws",
+        "path": "/---@SHH_PROXY/---@SHH_PROXY/---@SHH_PROXY/---@SHH_PROXY/---@SHH_PROXY",
+        "headers": {
+          "Host": "shhp.akbarjoojeh.shop"
+        }
+      }
+    },
+    {
+      "tag": "🔵@chillguy_vpn",
+      "type": "vless",
+      "server": "library2.ketabkhane.dpdns.org",
+      "server_port": 2083,
+      "uuid": "95497965-318f-4c12-81e5-248698de07ed",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "library2.ketabkhane.dpdns.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/api",
+        "headers": {
+          "Host": "library2.ketabkhane.dpdns.org"
+        }
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM",
+      "type": "trojan",
+      "server": "185.126.236.44",
+      "server_port": 443,
+      "password": "BSs5IAVMQdYuykvDsOYZoa6gNPSGBjAbLL",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.mesaly.click"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
