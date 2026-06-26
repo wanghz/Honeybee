@@ -1,0 +1,380 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇨🇴 伊拉克+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇨🇴 罗马尼亚+V2CROSS.COM",
+        "🇨🇴 伊拉克+V2CROSS.COM 2",
+        "🇺🇸 美国+Akamai科技公司CDN网络节点",
+        "🇺🇸 美国+CloudFlare节点 3",
+        "🇺🇸 美国+华盛顿Cogent通信公司",
+        "🇺🇸 美国+CloudFlare节点 4",
+        "🇺🇸 美国+CloudFlare节点 5",
+        "🇨🇴 亚太地区+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 6"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 美国+CloudFlare节点",
+        "🇨🇴 伊拉克+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇨🇴 罗马尼亚+V2CROSS.COM",
+        "🇨🇴 伊拉克+V2CROSS.COM 2",
+        "🇺🇸 美国+Akamai科技公司CDN网络节点",
+        "🇺🇸 美国+CloudFlare节点 3",
+        "🇺🇸 美国+华盛顿Cogent通信公司",
+        "🇺🇸 美国+CloudFlare节点 4",
+        "🇺🇸 美国+CloudFlare节点 5",
+        "🇨🇴 亚太地区+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 6"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点",
+      "type": "vless",
+      "server": "nexusmods.com",
+      "server_port": 443,
+      "uuid": "eeb6823c-b926-4ea2-866a-5542edd26e59",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "t1s1.rittbo.kdns.fr",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "t1s1.rittbo.kdns.fr"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇴 伊拉克+V2CROSS.COM",
+      "type": "shadowsocks",
+      "server": "91.108.254.252",
+      "server_port": 18982,
+      "method": "chacha20-ietf-poly1305",
+      "password": "IIMxFMyq3FwyPd21UGWgmNJCAiYN9m2vOo"
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 2",
+      "type": "trojan",
+      "server": "104.18.152.208",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.ignitelimit.com"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/assignment",
+        "headers": {
+          "Host": "www.ignitelimit.com"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇴 罗马尼亚+V2CROSS.COM",
+      "type": "trojan",
+      "server": "185.137.157.138",
+      "server_port": 443,
+      "password": "dh-Ws-YoJIgTYLZ-A5VljeduVse-vhDl7Q",
+      "tls": {
+        "enabled": true,
+        "insecure": false
+      }
+    },
+    {
+      "tag": "🇨🇴 伊拉克+V2CROSS.COM 2",
+      "type": "shadowsocks",
+      "server": "91.108.254.104",
+      "server_port": 13683,
+      "method": "chacha20-ietf-poly1305",
+      "password": "gWBgmKb8AL1uRK0jZ44AoOPaC5lVTOHZmi"
+    },
+    {
+      "tag": "🇺🇸 美国+Akamai科技公司CDN网络节点",
+      "type": "trojan",
+      "server": "172.235.229.227",
+      "server_port": 443,
+      "password": "zK=0KfL3IG+sNNZL-J7d0Nonu4wFBx8MOy",
+      "tls": {
+        "enabled": true,
+        "insecure": false
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 3",
+      "type": "trojan",
+      "server": "104.17.121.71",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "alpn": [
+          "http/1.1"
+        ],
+        "server_name": "www.calmloud.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/assignment",
+        "headers": {
+          "Host": "www.calmloud.com"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+华盛顿Cogent通信公司",
+      "type": "trojan",
+      "server": "38.60.202.163",
+      "server_port": 443,
+      "password": "ZfhGKkAmGl.hxRfIUI0LUU.MuK3hkQdxed",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "38.60.202.163",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 4",
+      "type": "trojan",
+      "server": "104.16.174.121",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.ignitelimit.com"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/assignment",
+        "headers": {
+          "Host": "www.ignitelimit.com"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 5",
+      "type": "trojan",
+      "server": "104.20.6.134",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.calmloud.com"
+      }
+    },
+    {
+      "tag": "🇨🇴 亚太地区+V2CROSS.COM",
+      "type": "trojan",
+      "server": "103.125.216.68",
+      "server_port": 443,
+      "password": "T9qoEuuxUEa9Dk3KxnTWrs6J8ilng9sCIf",
+      "tls": {
+        "enabled": true,
+        "insecure": false
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 6",
+      "type": "vless",
+      "server": "another-cf.dnsyes.kawaii520.icu",
+      "server_port": 443,
+      "uuid": "7b3c9cec-6a21-4d57-b9c9-383d519e0b27",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "tt86554he5f4jb8ezvry6v8us.another-appleid.ccwu.cc",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/gateway/ws/a8d2f91c",
+        "headers": {
+          "Host": "tt86554he5f4jb8ezvry6v8us.another-appleid.ccwu.cc"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
