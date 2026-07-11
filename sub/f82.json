@@ -1,0 +1,370 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇰🇷 KR_1|2.2MB/s|GPT⁺|YT-KR|NF|GM|2%",
+        "🇩🇪 DE_1|1.4MB/s|GPT⁺|D+|0%",
+        "🇬🇧 GB_1|1.6MB/s|GPT⁺|D+|0%",
+        "🇯🇵 JP_1|5.0MB/s|GPT⁺|YT-JP|NF|D+|GM",
+        "🇯🇵 JP_2|4.6MB/s|GPT⁺|YT-JP|NF|D+|GM",
+        "🇺🇸 US_2|1.9MB/s|GPT⁺|YT-US|NF|GM|4%",
+        "🇩🇪 DE_2|2.9MB/s|GPT⁺|YT-DE|2%",
+        "🇺🇸 US_3|2.6MB/s",
+        "🇳🇱 NL_1|1.1MB/s|GPT⁺|NF|D+|0%"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇰🇷 KR_1|2.2MB/s|GPT⁺|YT-KR|NF|GM|2%",
+        "🇩🇪 DE_1|1.4MB/s|GPT⁺|D+|0%",
+        "🇬🇧 GB_1|1.6MB/s|GPT⁺|D+|0%",
+        "🇯🇵 JP_1|5.0MB/s|GPT⁺|YT-JP|NF|D+|GM",
+        "🇯🇵 JP_2|4.6MB/s|GPT⁺|YT-JP|NF|D+|GM",
+        "🇺🇸 US_2|1.9MB/s|GPT⁺|YT-US|NF|GM|4%",
+        "🇩🇪 DE_2|2.9MB/s|GPT⁺|YT-DE|2%",
+        "🇺🇸 US_3|2.6MB/s",
+        "🇳🇱 NL_1|1.1MB/s|GPT⁺|NF|D+|0%"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇰🇷 KR_1|2.2MB/s|GPT⁺|YT-KR|NF|GM|2%",
+      "type": "hysteria2",
+      "server": "8.148.4.25",
+      "server_port": 55020,
+      "password": "d5m-5bGOsVbFgRlxsEyO3pCF",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "8.148.4.25",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇩🇪 DE_1|1.4MB/s|GPT⁺|D+|0%",
+      "type": "hysteria",
+      "server": "5.83.129.153",
+      "server_port": 20088,
+      "up_mbps": 500,
+      "down_mbps": 1000,
+      "auth_str": "dongtaiwang.com",
+      "tls": {
+        "enabled": true,
+        "server_name": "apple.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇬🇧 GB_1|1.6MB/s|GPT⁺|D+|0%",
+      "type": "vless",
+      "server": "82.40.62.17",
+      "server_port": 443,
+      "uuid": "7499f0a0-3670-4cf6-a31c-ad4cd943cf18",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "pl.hagrid-connected.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "nfkwd9xJCoNuWrvvieBB9VfpcDldsARAdFPL0dF5A1Q",
+          "short_id": "305570274c0c72cc"
+        }
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_1|5.0MB/s|GPT⁺|YT-JP|NF|D+|GM",
+      "type": "vless",
+      "server": "cfd5.466688.xyz",
+      "server_port": 443,
+      "uuid": "4feb7818-dc02-46cd-b985-abf3fdd0cdc5",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "edge-4cb23bf6.pages.dev",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/@https://t.me/QiangLieTuiJian?ed=2048fp=chrome",
+        "headers": {
+          "Host": "edge-4cb23bf6.pages.dev"
+        }
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_2|4.6MB/s|GPT⁺|YT-JP|NF|D+|GM",
+      "type": "vless",
+      "server": "cfd2.466688.xyz",
+      "server_port": 443,
+      "uuid": "4feb7818-dc02-46cd-b985-abf3fdd0cdc5",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "edge-4cb23bf6.pages.dev",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/@https://t.me/QiangLieTuiJian?ed=2048fp=chrome",
+        "headers": {
+          "Host": "edge-4cb23bf6.pages.dev"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_2|1.9MB/s|GPT⁺|YT-US|NF|GM|4%",
+      "type": "vless",
+      "server": "kiss-timazadi-9090.up.railway.app",
+      "server_port": 443,
+      "uuid": "bf912534-d325-5fd6-6f9c-4d0748a4534f",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "kiss-timazadi-9090.up.railway.app",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/ws/bf912534-d325-5fd6-6f9c-4d0748a4534f",
+        "headers": {
+          "Host": "kiss-timazadi-9090.up.railway.app"
+        }
+      }
+    },
+    {
+      "tag": "🇩🇪 DE_2|2.9MB/s|GPT⁺|YT-DE|2%",
+      "type": "vless",
+      "server": "3.121.132.146",
+      "server_port": 22224,
+      "uuid": "e4514801-0d5a-42ba-869f-39bd605aef9e",
+      "packet_encoding": "xudp"
+    },
+    {
+      "tag": "🇺🇸 US_3|2.6MB/s",
+      "type": "vless",
+      "server": "172.64.149.23",
+      "server_port": 443,
+      "uuid": "b9688f5a-a4c3-4c6a-9ab8-5dfeebc590ba",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "remote-tones-attractive-closing.trycloudflare.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/killpv2",
+        "headers": {
+          "Host": "remote-tones-attractive-closing.trycloudflare.com"
+        }
+      }
+    },
+    {
+      "tag": "🇳🇱 NL_1|1.1MB/s|GPT⁺|NF|D+|0%",
+      "type": "vless",
+      "server": "69.46.46.15",
+      "server_port": 443,
+      "uuid": "mi6vpn",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "node-7946883854-bfd146-production.up.railway.app",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/ws/netherlands",
+        "headers": {
+          "Host": "node-7946883854-bfd146-production.up.railway.app"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
