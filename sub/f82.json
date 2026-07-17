@@ -1,0 +1,284 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇸🇬 SG_1|4.5MB/s|YT-SG|NF|D+|GM",
+        "🇭🇰 HK_1|1.0MB/s|GPT⁺|YT-HK|NF|D+",
+        "🇸🇬 SG_2|4.4MB/s|GPT|YT-SG|NF|D+|GM",
+        "🇸🇬 SG_3|4.3MB/s|YT-SG|NF|D+|GM",
+        "🇺🇸 US_1|1.1MB/s|GPT⁺|YT-US|NF|GM|23%"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇸🇬 SG_1|4.5MB/s|YT-SG|NF|D+|GM",
+        "🇭🇰 HK_1|1.0MB/s|GPT⁺|YT-HK|NF|D+",
+        "🇸🇬 SG_2|4.4MB/s|GPT|YT-SG|NF|D+|GM",
+        "🇸🇬 SG_3|4.3MB/s|YT-SG|NF|D+|GM",
+        "🇺🇸 US_1|1.1MB/s|GPT⁺|YT-US|NF|GM|23%"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇸🇬 SG_1|4.5MB/s|YT-SG|NF|D+|GM",
+      "type": "vless",
+      "server": "162.159.6.235",
+      "server_port": 443,
+      "uuid": "7612dd26-d0ce-4fe0-be7c-d093bb8645da",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "cf11.evan00.dpdns.org"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/proxyip=ProxyIP.US.cmliussss.netfp=random",
+        "headers": {
+          "Host": "cf11.evan00.dpdns.org"
+        }
+      }
+    },
+    {
+      "tag": "🇭🇰 HK_1|1.0MB/s|GPT⁺|YT-HK|NF|D+",
+      "type": "vless",
+      "server": "23.133.52.10",
+      "server_port": 2053,
+      "uuid": "f4e91fac-25eb-4d26-a14c-c82c3778a0e4",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "s5gydl.936.us.ci",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/proxyip=tw.william.us.ci?uuid=f4e91fac-25eb-4d26-a14c-c82c3778a0e4",
+        "headers": {
+          "Host": "s5gydl.936.us.ci"
+        }
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_2|4.4MB/s|GPT|YT-SG|NF|D+|GM",
+      "type": "vless",
+      "server": "172.64.146.59",
+      "server_port": 2087,
+      "uuid": "7612dd26-d0ce-4fe0-be7c-d093bb8645da",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "cf11.evan00.dpdns.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/proxyip=ProxyIP.US.cmliussss.net",
+        "headers": {
+          "Host": "cf11.evan00.dpdns.org"
+        }
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_3|4.3MB/s|YT-SG|NF|D+|GM",
+      "type": "trojan",
+      "server": "188.164.248.122",
+      "server_port": 443,
+      "password": "c206d543-023d-46cc-9d5a-1f0f2fc16323",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "space.byu.id.yxls.eu.cc"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/in-pdr",
+        "headers": {
+          "Host": "space.byu.id.yxls.eu.cc"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_1|1.1MB/s|GPT⁺|YT-US|NF|GM|23%",
+      "type": "vless",
+      "server": "162.159.39.192",
+      "server_port": 443,
+      "uuid": "e4dfa054-4b6e-405f-c439-6e4f0b6b700b",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": true,
+        "server_name": "40t1.wxgqlfx.vip"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/TG@wxgqlfx",
+        "headers": {
+          "Host": "40t1.wxgqlfx.vip"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
