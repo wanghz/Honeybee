@@ -1,0 +1,315 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 US_1|3.3MB/s|GPT⁺|YT-CA|NF|GM|39%",
+        "🇺🇸 🇷🇴RO_1|2.0MB/s|GPT⁺|YT-US|NF|GM|0%",
+        "🇷🇺 🇳🇱NL_1|2.2MB/s|GPT⁺|YT-RU|NF|D+|5%",
+        "🇫🇮 FI_1|2.1MB/s|GPT⁺|0%",
+        "🇳🇱 NL_2|1.7MB/s|GPT⁺|NF",
+        "🇺🇸 🇫🇷FR_1|2.6MB/s|GPT⁺|YT-US|NF|GM|38%",
+        "🇸🇬 SG_1|4.8MB/s|GPT⁺|YT-SG|NF|D+|GM"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 US_1|3.3MB/s|GPT⁺|YT-CA|NF|GM|39%",
+        "🇺🇸 🇷🇴RO_1|2.0MB/s|GPT⁺|YT-US|NF|GM|0%",
+        "🇷🇺 🇳🇱NL_1|2.2MB/s|GPT⁺|YT-RU|NF|D+|5%",
+        "🇫🇮 FI_1|2.1MB/s|GPT⁺|0%",
+        "🇳🇱 NL_2|1.7MB/s|GPT⁺|NF",
+        "🇺🇸 🇫🇷FR_1|2.6MB/s|GPT⁺|YT-US|NF|GM|38%",
+        "🇸🇬 SG_1|4.8MB/s|GPT⁺|YT-SG|NF|D+|GM"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 US_1|3.3MB/s|GPT⁺|YT-CA|NF|GM|39%",
+      "type": "hysteria2",
+      "server": "172.245.233.237",
+      "server_port": 8443,
+      "password": "VB92_Ka9qwef143K_L23K1hz3_bF_Hz62uT_Bn1_sC",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "hopp-us.yyuyy.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇺🇸 🇷🇴RO_1|2.0MB/s|GPT⁺|YT-US|NF|GM|0%",
+      "type": "hysteria2",
+      "server": "76.164.202.215",
+      "server_port": 8443,
+      "password": "9Me_Jx935gnHx13_Nx45M_NYXe037js_Be4z",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "mercedes-grape.yyuyy.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇷🇺 🇳🇱NL_1|2.2MB/s|GPT⁺|YT-RU|NF|D+|5%",
+      "type": "hysteria2",
+      "server": "5.129.235.85",
+      "server_port": 443,
+      "password": "gf1%3Agfhysteria2024",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "www.linux.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇫🇮 FI_1|2.1MB/s|GPT⁺|0%",
+      "type": "hysteria2",
+      "server": "musicclips.videolinks.ru",
+      "server_port": 8443,
+      "password": "22j0d00lev7mq0yv",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "musicclips.videolinks.ru",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "8zzng75tz4tf82pj"
+      }
+    },
+    {
+      "tag": "🇳🇱 NL_2|1.7MB/s|GPT⁺|NF",
+      "type": "hysteria2",
+      "server": "86.107.178.66",
+      "server_port": 8443,
+      "password": "Oz_Kx9342gefwJ89x3_M9z32kzf9KJq003_s",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "grape-zet-turbo-nl.yyuyy.com",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      }
+    },
+    {
+      "tag": "🇺🇸 🇫🇷FR_1|2.6MB/s|GPT⁺|YT-US|NF|GM|38%",
+      "type": "hysteria2",
+      "server": "fr2.xiaoliyu.cyou",
+      "server_port": 10086,
+      "password": "f64c72a1-7e1f-4dd1-8929-7e41682542e2",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "fr2.xiaoliyu.cyou",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "T@T*FP7uq=!t"
+      }
+    },
+    {
+      "tag": "🇸🇬 SG_1|4.8MB/s|GPT⁺|YT-SG|NF|D+|GM",
+      "type": "vless",
+      "server": "www.shopify.com",
+      "server_port": 443,
+      "uuid": "a4f61bab-947b-4451-b289-2e09962b9c9e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "hht.hhlldjc.kdns.fr",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "hht.hhlldjc.kdns.fr"
+        }
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
