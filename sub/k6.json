@@ -1,0 +1,390 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇺🇸 美国+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇨🇦 加拿大+V2CROSS.COM",
+        "🇺🇸 美国+V2CROSS.COM 2",
+        "🇺🇸 美国+V2CROSS.COM 3",
+        "🇨🇴 伊朗+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇺🇸 美国+CloudFlare节点 3",
+        "🇬🇧 英国+Technicolor+SA"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇺🇸 美国+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点",
+        "🇬🇧 英国+V2CROSS.COM",
+        "🇨🇦 加拿大+V2CROSS.COM",
+        "🇺🇸 美国+V2CROSS.COM 2",
+        "🇺🇸 美国+V2CROSS.COM 3",
+        "🇨🇴 伊朗+V2CROSS.COM",
+        "🇺🇸 美国+CloudFlare节点 2",
+        "🇺🇸 美国+CloudFlare节点 3",
+        "🇬🇧 英国+Technicolor+SA"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM",
+      "type": "vless",
+      "server": "152.53.127.214",
+      "server_port": 443,
+      "uuid": "711c018e-2692-4aa8-93f3-544d83fcd16c",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.cloudflare.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "HyVSZ2OyySwXT-xRhTAqoiuYflIaj_b0Jxm7S1Iq9hs",
+          "short_id": "7a76f3c4b9dd"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点",
+      "type": "vless",
+      "server": "172.66.44.97",
+      "server_port": 443,
+      "uuid": "4d10c997-4781-4cd9-82c3-15453523e12c",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "support.zoom.us.yxls.eu.cc"
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/sg-melbi",
+        "headers": {
+          "Host": "support.zoom.us.yxls.eu.cc"
+        }
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+V2CROSS.COM",
+      "type": "vless",
+      "server": "31.76.251.127.cdn-one.org",
+      "server_port": 443,
+      "uuid": "4f375fb4-3c95-425f-bc7b-8085487a6f3c",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "31.76.251.127.cdn-one.org",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/10336/2GCOqG7bvA",
+        "headers": {
+          "Host": "31.76.251.127.cdn-one.org"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇦 加拿大+V2CROSS.COM",
+      "type": "vless",
+      "server": "167.17.68.205",
+      "server_port": 443,
+      "uuid": "4e0f4e59-3613-4f0c-b824-7348413d20e6",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.cloudflare.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "UE8hUjH1WYwemxIriq5lvtFCnHTdLF817okXr-u7MGs",
+          "short_id": "250b5976473a"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM 2",
+      "type": "vless",
+      "server": "jdwadgw.cvewfjg.shop",
+      "server_port": 443,
+      "uuid": "711c018e-2692-4aa8-93f3-544d83fcd16c",
+      "packet_encoding": "xudp",
+      "flow": "xtls-rprx-vision",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.cloudflare.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "HyVSZ2OyySwXT-xRhTAqoiuYflIaj_b0Jxm7S1Iq9hs",
+          "short_id": "7a76f3c4b9dd"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+V2CROSS.COM 3",
+      "type": "vless",
+      "server": "45.155.52.231",
+      "server_port": 443,
+      "uuid": "219f9fec-8983-4f6f-af8c-31bd0c6dbf19",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "ru2.skydrgn-online.online",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "6p0aVCkOgd-xaxqSMANYABL6O4Tdbftnxjiy5qcmISQ",
+          "short_id": "0b"
+        }
+      }
+    },
+    {
+      "tag": "🇨🇴 伊朗+V2CROSS.COM",
+      "type": "vless",
+      "server": "217.60.193.1",
+      "server_port": 443,
+      "uuid": "5c192fd7-ef98-4112-a20c-129108fcd7e9",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "ddc-akn.astralweb.tech",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 2",
+      "type": "trojan",
+      "server": "104.17.111.8",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.ignitelimit.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/assignment",
+        "headers": {
+          "Host": "www.ignitelimit.com"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 美国+CloudFlare节点 3",
+      "type": "trojan",
+      "server": "104.16.174.36",
+      "server_port": 443,
+      "password": "humanity",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "www.ignitelimit.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      }
+    },
+    {
+      "tag": "🇬🇧 英国+Technicolor+SA",
+      "type": "trojan",
+      "server": "oplosgru-c.catcat321.com",
+      "server_port": 20088,
+      "password": "41c406e2-12b5-41f2-a329-d0621052d675",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "hk.catxstar.com"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
