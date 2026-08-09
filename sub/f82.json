@@ -1,0 +1,318 @@
+{
+  "log": {
+    "level": "error",
+    "timestamp": true
+  },
+  "dns": {
+    "servers": [
+      {
+        "type": "https",
+        "server": "1.1.1.1",
+        "detour": "Proxy",
+        "tag": "remote"
+      },
+      {
+        "type": "https",
+        "server": "223.5.5.5",
+        "tag": "local"
+      },
+      {
+        "type": "hosts",
+        "path": [],
+        "predefined": {},
+        "tag": "block"
+      },
+      {
+        "type": "local"
+      }
+    ],
+    "strategy": "prefer_ipv4"
+  },
+  "route": {
+    "auto_detect_interface": true,
+    "default_domain_resolver": {
+      "server": "local",
+      "rewrite_ttl": 60,
+      "client_subnet": "1.1.1.1/24",
+      "strategy": "prefer_ipv4"
+    },
+    "rules": [
+      {
+        "action": "sniff"
+      },
+      {
+        "protocol": "dns",
+        "action": "hijack-dns"
+      },
+      {
+        "clash_mode": "direct",
+        "outbound": "direct"
+      },
+      {
+        "clash_mode": "proxy",
+        "outbound": "Proxy"
+      },
+      {
+        "domain_suffix": [
+          ".xiangqi.com"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "rule_set": [
+          "geosite-cn"
+        ],
+        "outbound": "direct"
+      },
+      {
+        "ip_is_private": true,
+        "outbound": "direct"
+      },
+      {
+        "domain_suffix": [
+          "google.com",
+          ".google.com",
+          "googleusercontent.com",
+          ".gstatic.com",
+          "accounts.google.com",
+          "accounts.google.cn",
+          "apis.google.com",
+          "youtube.com",
+          ".youtube.com",
+          "ggpht.com",
+          "googleapis.com"
+        ],
+        "outbound": "remote"
+      },
+      {
+        "rule_set": [
+          "category-ads-all"
+        ],
+        "action": "reject"
+      }
+    ],
+    "rule_set": [
+      {
+        "tag": "geosite-cn",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-cn.srs",
+        "download_detour": "direct"
+      },
+      {
+        "tag": "category-ads-all",
+        "type": "remote",
+        "format": "binary",
+        "url": "https://fastly.jsdelivr.net/gh/SagerNet/sing-geosite@rule-set/geosite-category-ads-all.srs",
+        "download_detour": "direct"
+      }
+    ]
+  },
+  "inbounds": [
+    {
+      "domain_strategy": "prefer_ipv4",
+      "listen": "127.0.0.1",
+      "listen_port": 7890,
+      "set_system_proxy": true,
+      "sniff": true,
+      "sniff_override_destination": true,
+      "tag": "mixed-in",
+      "type": "mixed",
+      "users": []
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "Proxy",
+      "type": "selector",
+      "outbounds": [
+        "🌏auto",
+        "🌏 !Choose",
+        "direct"
+      ]
+    },
+    {
+      "tag": "🌏 !Choose",
+      "type": "selector",
+      "outbounds": [
+        "direct",
+        "🇸🇬 SG_1|5.5MB/s|GPT⁺|YT-SG|NF|GM",
+        "🇺🇸 US_1|3.0MB/s|GPT⁺|YT-US|NF|D+|GM",
+        "🇷🇺 %F0%9F%87%A9%F0%9F%87%AADE_1%7C1.2MB%2Fs%7CGPT%E2%81%BA%7CYT-RU%7CNF%7CD%2B%7C0%25",
+        "🇺🇸 US_2|1.0MB/s|GPT⁺|YT-AU|NF|GM|2%",
+        "🇺🇸 US_3|1.2MB/s|YT-US|NF|D+|GM|19%",
+        "🇯🇵 JP_1|2.5MB/s|GPT⁺|YT-JP|NF|D+|1%"
+      ]
+    },
+    {
+      "tag": "🌏auto",
+      "type": "urltest",
+      "outbounds": [
+        "🇸🇬 SG_1|5.5MB/s|GPT⁺|YT-SG|NF|GM",
+        "🇺🇸 US_1|3.0MB/s|GPT⁺|YT-US|NF|D+|GM",
+        "🇷🇺 %F0%9F%87%A9%F0%9F%87%AADE_1%7C1.2MB%2Fs%7CGPT%E2%81%BA%7CYT-RU%7CNF%7CD%2B%7C0%25",
+        "🇺🇸 US_2|1.0MB/s|GPT⁺|YT-AU|NF|GM|2%",
+        "🇺🇸 US_3|1.2MB/s|YT-US|NF|D+|GM|19%",
+        "🇯🇵 JP_1|2.5MB/s|GPT⁺|YT-JP|NF|D+|1%"
+      ],
+      "url": "http://connectivitycheck.platform.hicloud.com/generate_204",
+      "interval": "30m",
+      "tolerance": 500
+    },
+    {
+      "type": "direct",
+      "tag": "direct"
+    },
+    {
+      "tag": "🇸🇬 SG_1|5.5MB/s|GPT⁺|YT-SG|NF|GM",
+      "type": "vless",
+      "server": "da.mfa.gov.ua",
+      "server_port": 443,
+      "uuid": "47fcef29-ab4e-4aa6-932b-d95a18f28a4e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr"
+        }
+      }
+    },
+    {
+      "tag": "🇺🇸 US_1|3.0MB/s|GPT⁺|YT-US|NF|D+|GM",
+      "type": "vless",
+      "server": "80.251.213.187",
+      "server_port": 443,
+      "uuid": "47fcef29-ab4e-4aa6-932b-d95a18f28a4e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr"
+        }
+      }
+    },
+    {
+      "tag": "🇷🇺 %F0%9F%87%A9%F0%9F%87%AADE_1%7C1.2MB%2Fs%7CGPT%E2%81%BA%7CYT-RU%7CNF%7CD%2B%7C0%25",
+      "type": "tuic",
+      "server": "89.144.35.232",
+      "server_port": 17306,
+      "uuid": "3ebac90b-6977-47c0-bef5-b2e37554432c",
+      "password": "3ebac90b-6977-47c0-bef5-b2e37554432c",
+      "congestion_control": "bbr",
+      "udp_relay_mode": "native",
+      "zero_rtt_handshake": false,
+      "heartbeat": "10s",
+      "tls": {
+        "enabled": true,
+        "alpn": [
+          "h3"
+        ],
+        "insecure": true,
+        "server_name": "www.microsoft.com"
+      }
+    },
+    {
+      "tag": "🇺🇸 US_2|1.0MB/s|GPT⁺|YT-AU|NF|GM|2%",
+      "type": "hysteria2",
+      "server": "137.23.22.155",
+      "server_port": 20000,
+      "password": "b42d90fa667942aebc734d60",
+      "up_mbps": 10,
+      "down_mbps": 100,
+      "tls": {
+        "enabled": true,
+        "server_name": "rmgyvpn.rest",
+        "insecure": true,
+        "alpn": [
+          "h3"
+        ]
+      },
+      "obfs": {
+        "type": "salamander",
+        "password": "b42d90fa667942aebc734d60"
+      }
+    },
+    {
+      "tag": "🇺🇸 US_3|1.2MB/s|YT-US|NF|D+|GM|19%",
+      "type": "vless",
+      "server": "199.193.125.72",
+      "server_port": 443,
+      "uuid": "47fcef29-ab4e-4aa6-932b-d95a18f28a4e",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        }
+      },
+      "transport": {
+        "type": "ws",
+        "path": "/",
+        "headers": {
+          "Host": "0h3qt.oqwt.pl0.hh.vavava.kdns.fr"
+        }
+      }
+    },
+    {
+      "tag": "🇯🇵 JP_1|2.5MB/s|GPT⁺|YT-JP|NF|D+|1%",
+      "type": "vless",
+      "server": "jp5-r.link-t7.com",
+      "server_port": 10035,
+      "uuid": "F5516AD2-22A9-413B-8DBE-60B72D30D31F",
+      "packet_encoding": "xudp",
+      "tls": {
+        "enabled": true,
+        "insecure": false,
+        "server_name": "s0.awsstatic.com",
+        "utls": {
+          "enabled": true,
+          "fingerprint": "chrome"
+        },
+        "reality": {
+          "enabled": true,
+          "public_key": "wOu-BMrXvk9KX23JZrlpUlF4SMjDcejm0vNECdhy5xE",
+          "short_id": "686c0ef0"
+        }
+      },
+      "transport": {
+        "type": "grpc",
+        "service_name": "update"
+      }
+    }
+  ],
+  "experimental": {
+    "cache_file": {
+      "enabled": true
+    },
+    "clash_api": {
+      "external_controller": "0.0.0.0:9090",
+      "external_ui": "metacubexd",
+      "external_ui_download_url": "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip",
+      "external_ui_download_detour": "Proxy",
+      "default_mode": "rule"
+    }
+  }
+}
