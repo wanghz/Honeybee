@@ -73,29 +73,29 @@ jobs:
         run: |
           CONFIG_FILE="${{ github.event.inputs.config_file || 'clash-0001.yaml' }}"
           CLEAN_FILE="${CONFIG_FILE%.yaml}.clean.yaml"
+      
           if [ ! -f "$CLEAN_FILE" ]; then
             echo "Error: Cleaned config file not generated"
             exit 1
           fi
-          
+      
           if cmp -s "$CONFIG_FILE" "$CLEAN_FILE"; then
             echo "✓ No changes needed"
             exit 0
           fi
-          
+      
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      
           mv "$CLEAN_FILE" "$CONFIG_FILE"
           git add "$CONFIG_FILE"
-          git commit -m "chore: clean control characters from $CONFIG_FILE"
-          # Only commit and push if there are changes
-          if git diff --cached --quiet; then
+      
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: clean control characters from $CONFIG_FILE"
+            git push
+          else
             echo "No staged changes to commit"
-            exit 0
           fi
-          
-          git commit -m "chore: clean control characters from $CONFIG_FILE"
-          git push
 
       - name: Upload cleaned config as artifact
         uses: actions/upload-artifact@v4
