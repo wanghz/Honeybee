@@ -57,12 +57,14 @@ jobs:
         id: clean
         run: |
           CONFIG_FILE="${{ github.event.inputs.config_file || 'clash-0001.yaml' }}"
-          python clean_clash_config.py "$CONFIG_FILE" "${CONFIG_FILE%.yaml}.clean.yaml"
+          CLEAN_FILE="sub/${CONFIG_FILE%.yaml}.clean.yaml"
+          #mkdir -p sub
+          python clean_clash_config.py "$CONFIG_FILE" "$CLEAN_FILE"
 
       - name: Show diff
         run: |
           CONFIG_FILE="${{ github.event.inputs.config_file || 'clash-0001.yaml' }}"
-          CLEAN_FILE="${CONFIG_FILE%.yaml}.clean.yaml"
+          CLEAN_FILE="sub/${CONFIG_FILE%.yaml}.clean.yaml"
           if [ -f "$CLEAN_FILE" ]; then
             echo "=== Diff ==="
             diff -u "$CONFIG_FILE" "$CLEAN_FILE" || true
@@ -72,26 +74,25 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           CONFIG_FILE="${{ github.event.inputs.config_file || 'clash-0001.yaml' }}"
-          CLEAN_FILE="${CONFIG_FILE%.yaml}.clean.yaml"
-      
+          CLEAN_FILE="sub/${CONFIG_FILE%.yaml}.clean.yaml"
+
           if [ ! -f "$CLEAN_FILE" ]; then
             echo "Error: Cleaned config file not generated"
             exit 1
           fi
-      
+
           if cmp -s "$CONFIG_FILE" "$CLEAN_FILE"; then
             echo "✓ No changes needed"
             exit 0
           fi
-      
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      
-          mv "$CLEAN_FILE" "$CONFIG_FILE"
-          git add "$CONFIG_FILE"
-      
+
+          git add "$CLEAN_FILE"
+
           if ! git diff --cached --quiet; then
-            git commit -m "chore: clean control characters from $CONFIG_FILE"
+            git commit -m "chore: clean control characters from $CONFIG_FILE -> $CLEAN_FILE"
             git push
           else
             echo "No staged changes to commit"
